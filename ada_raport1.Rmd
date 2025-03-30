@@ -1,0 +1,576 @@
+---
+title: "Analiza danych ankietowych"
+author:
+- Weronika Jaszkiewicz
+- Weronika Pyrtak
+subtitle: Sprawozdanie 1
+output:
+  pdf_document:
+    latex_engine: xelatex
+    toc: true
+    fig_caption: true
+    fig_width: 5
+    fig_height: 4
+    number_sections: true
+  html_document:
+    toc: true
+    df_print: paged
+header-includes:
+- \usepackage{polyglossia}
+- \setmainlanguage{polish}
+- \usepackage{graphicx}
+- \usepackage{float}
+fontsize: 12pt
+---
+
+```{r setup, include=FALSE, message=FALSE, warning=FALSE}
+if (!require(knitr)) install.packages("knitr")
+if (!require(readr)) install.packages("readr")
+if (!require(latex2exp)) install.packages("latex2exp")
+if (!require(dplyr)) install.packages("dplyr")
+if (!require(ggplot2)) install.packages("ggplot2")
+if (!require(vctrs)) install.packages("vctrs")
+if (!require(tidyr)) install.packages("tidyr")
+if (!require(xtable)) install.packages("xtable")
+if (!require(binom)) install.packages("binom")
+
+knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(warning = FALSE, message = FALSE)
+knitr::opts_chunk$set(fig.pos = "H", out.extra = "", fig.align = "center")
+
+```
+
+\newpage
+
+# Część I
+
+## Zadanie 1
+
+W pewnej dużej firmie technologicznej przeprowadzono ankietę mającą na celu ocenę skuteczności programów szkoleniowych dla pracowników. Wzięło w niej udział 200 losowo wybranych osób (losowanie proste ze zwracaniem).
+
+### Zadanie 1.1
+
+Wczytywanie danych z pliku ankieta.csv.
+
+```{r df, echo=FALSE}
+
+df <- read.csv("ankieta.csv", sep = ";", fileEncoding = "Latin2")
+colnames(df) <- c('DZIAŁ','STAŻ','CZY_KIER', 'PYT_1', 
+                    'PYT_2', 'PYT_3', 'PŁEĆ', 'WIEK')
+
+attach(df)
+
+```
+
+Powyższe dane zawierają 200 wierszy oraz 8 kolumn.
+
+Następnie sprawdzono typy przyjmowanych zmiennych.
+
+```{r typy, echo=FALSE, results='asis'}
+tab11 <- sapply(df, class) 
+tab11 <- xtable(data.frame(tab11), row.names = TRUE, caption = "Typy zmiennych", label = "tabela typów zmiennych", align = c("l","l")) 
+print(tab11, type = "latex", table.placement = "H", comment = FALSE, include.colnames = FALSE, caption.placement = "top")
+
+```
+
+Zamieniono zmienne o typie \textit{character} na typ \textit{factor}.
+
+```{r, echo=FALSE}
+char_col <- sapply(df, is.character)
+df[ ,char_col] <- lapply(df[ ,char_col], as.factor)
+
+```
+
+Przeszukano zbiór pod względem braków danych.
+
+```{r brakujace, echo=FALSE, results="asis"}
+
+cat("Liczba wartości brakujących wynosi:", sum(is.na(df)), "\n")
+
+```
+
+Sprawdzono, czy typy zmiennych zostały prawidłowo rozpoznane.
+
+\begin{enumerate}
+
+\item zmienne ilościowe (typ numeric)
+
+```{r ilosciowe, echo=FALSE, results="asis"}
+
+ilosciowe <- which(sapply(df, is.numeric))
+liczba_ilosciowych <- length(ilosciowe)
+tab <- xtable((data.frame(ilosciowe)), digits = 3, row.names = TRUE, label = "Tabela zmiennych ilościowych", caption = "Zmienne ilościowe",  align = c("l","l"))
+print(tab, type = "latex", table.placement = "H", comment = FALSE, include.colnames = FALSE, caption.placement = "top")
+
+cat("Liczba zmiennych ilościowych:", liczba_ilosciowych, "\n")
+
+```
+
+\item zmienne jakościowe (typ factor)
+
+```{r jakosciowe, echo=FALSE, results="asis"}
+
+factor <- which(sapply(df, is.factor))
+liczba_jakosciowych <- length(factor)
+tab <- xtable((data.frame(factor)), digits = 3, row.names = TRUE, label = "Tabela zmiennych jakościowych (factor)", caption = "Zmienne jakościowe (factor)",  align = c("l","l"))
+print(tab, type = "latex", table.placement = "H", comment = FALSE, include.colnames = FALSE, caption.placement = "top")
+
+cat("Liczba zmiennych jakościowych (typ factor):", liczba_jakosciowych, "\n")
+
+```
+
+
+
+\end{enumerate}
+
+### zadanie 1.2
+
+Utworzono zmienna "WIEK_KAT" przeprowadzająx kategoryzację zmiennej "WIEK" korzystając z następujących przedziałów do 35 lat, mi˛edzy 36 a 45 lat, mi˛edzy 46 a 55 lat, powyżej 55 lat.
+
+```{r, echo=FALSE}
+
+df$WIEK_KAT <- cut(df$WIEK, 
+breaks = c(-Inf, 35, 45, 55, Inf), 
+labels = c('0-35', '36-45', '46-55', '55+'))
+
+```
+
+### zadanie 1.3
+
+Sporządzono tablice liczności dla zmiennych: DZIAŁ, STAŻ, CZY_KIER, PŁEĆ, WIEK_KAT.
+
+```{r, echo=FALSE, results = "asis"}
+
+tab_DZIAL <- table(df$DZIAŁ)
+t1 = matrix(tab_DZIAL, ncol=4, nrow=1, byrow = FALSE)
+colnames(t1) = c("HR", "IT", "MK", "PD")
+rownames(t1) = c("Ilość")
+f1 = xtable(t1, caption = "Tablica ilości dla zmiennej DZIAŁ", caption.placement="top")
+print(f1, type = "latex", table.placement = "H", caption.placement = "top", comment = FALSE)
+
+```
+
+```{r, echo=FALSE, results = "asis"}
+tab_STAZ <- table(df$STAŻ)
+t1 = matrix(tab_STAZ, ncol=3, nrow=1, byrow = FALSE)
+colnames(t1) = c('<1 rok', '1-2 lata', '3+ lat')
+rownames(t1) = c("Ilość")
+f1 = xtable(t1, caption = "Tablica ilości dla zmiennej STAŻ", caption.placement="top")
+print(f1, type = "latex", table.placement = "H", caption.placement = "top", comment = FALSE)
+```
+
+```{r, echo=FALSE, results = "asis"}
+tab_CZY_KIER <- table(df$CZY_KIER)
+t1 = matrix(tab_CZY_KIER, ncol=2, nrow=1, byrow = FALSE)
+colnames(t1) = c("TAK", "NIE")
+rownames(t1) = c("Ilość")
+f1 = xtable(t1, caption = "Tablica ilości dla zmiennej CZY KIER", caption.placement="top")
+print(f1, type = "latex", table.placement = "H", caption.placement = "top", comment = FALSE)
+```
+
+```{r, echo=FALSE, results = "asis"}
+tab_PLEC <- table(df$PŁEĆ)
+t1 = matrix(tab_PLEC, ncol=2, nrow=1, byrow = FALSE)
+colnames(t1) = c("Kobieta", "Mężczyzna")
+rownames(t1) = c("Ilość")
+f1 = xtable(t1, caption = "Tablica ilości dla zmiennej PŁEĆ", caption.placement="top")
+print(f1, type = "latex", table.placement = "H", caption.placement = "top", comment = FALSE)
+```
+
+```{r, echo=FALSE, results = "asis"}
+tab_WIEK_KAT <- table(df$WIEK_KAT)
+t1 = matrix(tab_WIEK_KAT, ncol=4, nrow=1, byrow = FALSE)
+colnames(t1) = c('0-35', '36-45', '46-55', '55+')
+rownames(t1) = c("Ilość")
+f1 = xtable(t1, caption = "Tablica ilości dla zmiennej WIEK KAT", caption.placement="top")
+print(f1, type = "latex", table.placement = "H", caption.placement = "top", comment = FALSE)
+```
+
+WNIOSKI: 
+
+Największą grupę pracowników stanowi dział PD (98 osób), a najmniejszą IT (26 osób). Działy HR i MK mają pośrednie wartości (odpowiednio 31 i 45 osób). Może to wskazywać na różne zapotrzebowanie na pracowników w poszczególnych działach. 
+
+Większość pracowników (140 osób) ma od 1 do 2 lat stażu. 41 osób pracuje krócej niż rok, a tylko 19 osób ma staż powyżej 3 lat. Wskazuje to na dużą rotację pracowników lub na to, że firma stosunkowo niedawno zatrudniła większość obecnej kadry.
+
+Większość pracowników (173 osoby) pełni funkcje kierownicze, a jedynie 27 osób nie. Może to oznaczać, że w firmie jest dużo stanowisk kierowniczych lub że definicja „kierownika” obejmuje szerokie spektrum stanowisk.
+
+W firmie przeważają mężczyźni (129 osób) nad kobietami (71 osób). Może to wynikać z charakteru działalności firmy lub preferencji rekrutacyjnych.
+
+Najwięcej pracowników jest w grupie wiekowej 36-45 lat (104 osoby). Pozostałe grupy wiekowe mają znacznie mniejszą reprezentację.
+
+5 zmiennych ilościowych (np. staż, wiek, odpowiedzi na pytania PYT_1–PYT_3). 4 zmienne jakościowe, np. dział, płeć, kategoria wieku. Brak wartości brakujących wskazuje na kompletność i dobrą jakość danych.
+
+### Zadanie 1.4
+
+Sporządzono wykresy kołowe oraz wykresy słupkowe dla zmiennych: PYT_1 oraz PYT_2.
+
+```{r, echo=FALSE, results = "asis"}
+etykiety <- c('zdacydowanie się nie zgadzam', 'nie zgadzam się', 'nie mam zdania', 'zgadzam się', 'zdacydowanie się zgadzam')
+
+pie(table(df$PYT_1), labels = etykiety,, cex = 0.8, main = "Odpowiedź na pierwsze pytanie")
+
+par(mar = c(8, 4, 4, 2))  
+barplot(table(df$PYT_1), names.arg = etykiety, las = 2, cex.names = 0.8, main = "Odpowiedź na pierwsze pytanie")
+```
+Największa liczba respondentów zaznaczyła odpowiedź "zgadzam się", co wskazuje, że ogólna ocena wsparcia i materiałów dostarczanych przez firmę jest pozytywna. Istnieje także pewna grupa osób, które "zdecydowanie się zgadzają", co podkreśla, że część pracowników uważa wsparcie za bardzo dobre.
+
+Znaczna część pracowników wybrała odpowiedź "nie mam zdania", co może sugerować, że nie mieli oni okazji skorzystać ze wsparcia lub materiały nie są dla nich wystarczająco widoczne.
+
+Pewna część respondentów zaznaczyła opcje "nie zgadzam się" i "zdecydowanie się nie zgadzam", ale ich liczba jest stosunkowo mała w porównaniu do grupy zadowolonych pracowników. Może to wskazywać na pewne niedociągnięcia w dostępie do materiałów lub ich jakości, jednak nie jest to powszechny problem.
+
+```{r, echo=FALSE, results = "asis"}
+etykiety <- c('zdacydowanie się nie zgadzam', 'nie zgadzam się', 'zgadzam się', 'zdacydowanie się zgadzam')
+
+pie(table(df$PYT_2), labels = etykiety, cex = 0.8, main = "Odpowiedź na drugie pytanie")
+
+par(mar = c(8, 4, 4, 2))  
+barplot(table(df$PYT_2), names.arg = etykiety, las = 2, cex.names = 0.8, main = "Odpowiedź na drugie pytanie")
+```
+
+Największa część respondentów zaznaczyła odpowiedź "zdecydowanie się zgadzam", co wskazuje, że większość pracowników uważa szkolenia oferowane przez firmę za dobrze dopasowane do ich potrzeb. Istnieje także spora grupa osób, które wybrały opcję "zgadzam się", co dodatkowo potwierdza ogólnie pozytywne nastawienie wobec polityki szkoleniowej firmy.
+
+Stosunkowo niewielka część respondentów wybrała odpowiedź "nie zgadzam się" oraz "zdecydowanie się nie zgadzam", co sugeruje, że niektóre osoby mogą mieć trudności z dostępem do odpowiednich szkoleń lub nie uważają ich za skuteczne w kontekście swojego rozwoju zawodowego.
+
+Pomimo że liczba negatywnych odpowiedzi jest niewielka, warto przeanalizować, czy istnieją konkretne obszary, w których szkolenia mogą być bardziej dostosowane do indywidualnych potrzeb
+
+### zadanie 1.5
+
+Sporządzono tablice wielodzielcze dla par zmiennych: PYT_1 i DZIAŁ, PYT_1 i STAŻ, PYT_1 i CZY_KIER, PYT_1 i PŁEĆ oraz PYT_1 i WIEK_KAT.
+
+```{r, echo=FALSE, results = "asis"}
+
+t3 <- table(df$PYT_1, df$DZIAŁ)
+rownames(t3) <- c('zdacydowanie się nie zgadzam', 'nie zgadzam się', 'nie mam zdania', 'zgadzam się', 'zdacydowanie się zgadzam')
+colnames(t3) <- c("HR", "IT", "MK", "PD")
+f3 = xtable(t3,label="l3",caption="Tabela wielodzielcza dla zmiennych PYT 1 i DZIAL",caption.placement = "top")
+print(f3,type = "latex",caption.placement = "top", comment=FALSE)
+
+```
+Najbardziej pozytywne opinie pochodzą z działów HR i PD – większość respondentów z tych działów wybrała opcje "zgadzam się" i "zdecydowanie się zgadzam". Dział MK (Marketing) jest bardziej podzielony – występuje większy odsetek osób, które nie mają zdania, co może sugerować, że dla tej grupy pytanie nie było jednoznaczne lub temat ich mniej dotyczył. Dział IT wykazuje najmniejszy poziom negatywnych odpowiedzi ("zdecydowanie się nie zgadzam" = 0), ale też stosunkowo niewiele osób udzieliło odpowiedzi skrajnie pozytywnej.
+
+
+```{r, echo=FALSE, results = "asis"}
+
+t3 <- table(df$PYT_1, df$STAŻ)
+rownames(t3) <- c('zdacydowanie się nie zgadzam', 'nie zgadzam się', 'nie mam zdania', 'zgadzam się', 'zdacydowanie się zgadzam')
+colnames(t3) <- c('<1 rok', '1-2 lata', '3+ lat')
+f3 = xtable(t3,label="l3",caption="Tabela wielodzielcza dla zmiennych PYT 1 i STAŻ",caption.placement = "top")
+print(f3,type = "latex",caption.placement = "top", comment=FALSE)
+
+```
+Najbardziej pozytywne odpowiedzi (zgadzam się i zdecydowanie się zgadzam) pochodzą od osób z doświadczeniem 1-2 lata, co sugeruje, że osoby na tym etapie kariery widzą największą wartość badanego zagadnienia. Osoby z najmniejszym stażem (<1 rok) są bardziej podzielone, częściej nie mają zdania lub udzielają odpowiedzi negatywnych. Osoby z największym stażem (3+ lata) rzadko wybierają odpowiedzi skrajne, co może oznaczać, że ich ocena sytuacji jest bardziej neutralna.
+
+Pracownicy z 1-2 latami stażu są najbardziej pozytywnie nastawieni do badanego zagadnienia. Osoby z krótszym stażem mogą wymagać większej ilości informacji lub wsparcia, aby mogły bardziej świadomie ocenić sytuację.
+
+```{r, echo=FALSE, results = "asis"}
+
+t3 <- table(df$PYT_1, df$CZY_KIER)
+rownames(t3) <- c('zdacydowanie się nie zgadzam', 'nie zgadzam się', 'nie mam zdania', 'zgadzam się', 'zdacydowanie się zgadzam')
+colnames(t3) <- c("TAK", "NIE")
+f3 = xtable(t3,label="l3",caption="Tabela wielodzielcza dla zmiennych PYT 1 i $CZY_KIER$",caption.placement = "top")
+print(f3,type = "latex",caption.placement = "top", comment=FALSE)
+
+```
+Osoby na stanowiskach kierowniczych częściej wybierają opcję "zgadzam się" i "zdecydowanie się zgadzam", co może świadczyć o ich większym zadowoleniu. Osoby niepełniące funkcji kierowniczych są bardziej podzielone – widoczny jest większy odsetek neutralnych i negatywnych odpowiedzi.
+
+Pracownicy na stanowiskach kierowniczych mają bardziej pozytywne podejście do badanego aspektu, natomiast pracownicy bez funkcji kierowniczych mogą czuć się mniej związani z tematem lub mieć inne doświadczenia.
+
+```{r, echo=FALSE, results = "asis"}
+
+t3 <- table(df$PYT_1, df$PŁEĆ)
+rownames(t3) <- c('zdacydowanie się nie zgadzam', 'nie zgadzam się', 'nie mam zdania', 'zgadzam się', 'zdacydowanie się zgadzam')
+colnames(t3) <- c("Kobieta", "Mężczyzna")
+f3 = xtable(t3,label="l3",caption="Tabela wielodzielcza dla zmiennych PYT 1 i PŁEĆ",caption.placement = "top")
+print(f3,type = "latex",caption.placement = "top", comment=FALSE)
+
+```
+Mężczyźni są bardziej podzieleni, częściej wybierają opcje neutralne i negatywne. Kobiety częściej wybierają pozytywne odpowiedzi, co może świadczyć o lepszym dopasowaniu badanego zagadnienia do ich oczekiwań.
+
+Istnieją różnice w postrzeganiu badanego tematu w zależności od płci – warto byłoby zbadać, co wpływa na większą satysfakcję kobiet.
+
+
+
+```{r, echo=FALSE, results = "asis"}
+
+t3 <- table(df$PYT_1, df$WIEK_KAT)
+rownames(t3) <- c('zdacydowanie się nie zgadzam', 'nie zgadzam się', 'nie mam zdania', 'zgadzam się', 'zdacydowanie się zgadzam')
+colnames(t3) <- c('0-35', '36-45', '46-55', '55+')
+f3 = xtable(t3,label="l3",caption="Tabela wielodzielcza dla zmiennych PYT 1 i WIEK KAT",caption.placement = "top")
+print(f3,type = "latex",caption.placement = "top", comment=FALSE)
+
+```
+Najbardziej pozytywne odpowiedzi pochodzą od osób w wieku 36-45 lat oraz 46-55 lat – te grupy częściej wybierają opcje "zgadzam się" i "zdecydowanie się zgadzam". Najmłodsza grupa (0-35 lat) oraz najstarsza grupa (55+) mają wyższy odsetek odpowiedzi neutralnych lub negatywnych.
+
+Pracownicy w średnim wieku są najbardziej pozytywnie nastawieni do badanego zagadnienia. Osoby młodsze i starsze mogą mieć inne oczekiwania lub mniej doświadczenia w tym obszarze.
+
+### zadanie 1.6
+
+Sporządzono tablicę wielodzielczą dla pary zmiennych: PYT_2 i PYT_3. 
+
+```{r, echo=FALSE, results = "asis"}
+
+t4 <- table(df$PYT_1, df$PYT_2)
+rownames(t4) <- c('zdacydowanie się nie zgadzam', 'nie zgadzam się', 'nie mam zdania', 'zgadzam się', 'zdacydowanie się zgadzam')
+colnames(t4) <- c('zdacydowanie się nie zgadzam', 'nie zgadzam się', 'zgadzam się', 'zdacydowanie się zgadzam')
+f4 = xtable(t4,label="l4",caption="Tabela wielodzielcza dla zmiennych PYT 1 i PYT 2",caption.placement = "top")
+print(f4,type = "latex",caption.placement = "top", comment=FALSE)
+
+```
+Dane obejmują zarówno zmienne ilościowe (np. STAŻ, WIEK, PYT_1), jak i jakościowe (np. DZIAŁ, PŁEĆ, CZY_KIER). Brak wartości brakujących sugeruje, że zestaw danych jest kompletny i dobrze przygotowany do analizy.
+
+W zbiorze znajduje się 5 zmiennych ilościowych i 4 zmienne jakościowe (faktory).
+
+Najwięcej osób w próbie należy do działu PD (98 osób), najmniej do IT (26 osób).
+
+Większość badanych ma staż pracy 1-2 lata (140 osób), co może wskazywać na młodą kadrę pracowników.
+
+Większość respondentów pełni funkcję kierowniczą (173 TAK vs. 27 NIE).
+
+Przewaga mężczyzn w próbie (129 mężczyzn vs. 71 kobiet).
+
+Największa grupa wiekowa to 36-45 lat (104 osoby).
+
+PYT_1 a DZIAŁ: Najwięcej pozytywnych odpowiedzi ("zgadzam się" lub "zdecydowanie się zgadzam") udzieliły osoby z działu PD.
+
+PYT_1 a STAŻ: Wśród osób z najkrótszym stażem (<1 rok) więcej było odpowiedzi neutralnych lub negatywnych. Może to wynikać z braku doświadczenia lub innego spojrzenia na temat badania.
+
+PYT_1 a CZY_KIER: Kierownicy częściej zgadzali się z twierdzeniem zawartym w PYT_1 niż osoby niepełniące funkcji kierowniczych.
+
+PYT_1 a PŁEĆ: Mężczyźni częściej wyrażali zdecydowaną opinię niż kobiety, które częściej wybierały opcję "nie mam zdania".
+
+PYT_1 a WIEK_KAT: Najwięcej osób w wieku 36-45 lat zgadzało się z PYT_1, natomiast najmniej zdecydowanych odpowiedzi było w grupie 0-35 lat.
+
+PYT_1 a PYT_2: Istnieje silna zależność – osoby, które nie zgadzały się z PYT_1, często miały podobne odpowiedzi na PYT_2, a ci, którzy zgadzali się z PYT_1, także zgadzali się z PYT_2.
+
+Występują różnice w opiniach w zależności od działu, stażu pracy, płci, funkcji kierowniczej i wieku. Kierownicy oraz osoby z dłuższym stażem mają bardziej zdecydowane opinie. Istnieje silna korelacja między odpowiedziami na PYT_1 i PYT_2. Możliwe różnice w podejściu do badanej kwestii między kobietami a mężczyznami oraz młodszymi a starszymi pracownikami.
+
+### zadanie 1.7
+
+Utworzono zmienną CZY_ZADOW na podstawie zmiennej PYT_2 ł ˛acz ˛ac kategorie "nie zgadzam się" i "zdecydowanie się nie zgadzam" oraz "zgadzam się" i "zdecydowanie się
+zgadzam"
+
+```{r, echo=FALSE}
+df$CZY_ZADOW <- cut(df$PYT_2,
+breaks = c(-3, 0, 2),
+labels = c('NIE', 'TAK'))
+
+#dane <- dane %>%
+#  mutate(CZY_ZADOW = case_when(
+#    PYT_2 %in% c(-2, -1) ~ "Niezadowoleni",
+#    PYT_2 %in% c(1, 2) ~ "Zadowoleni",
+#    TRUE ~ NA_character_))
+
+```
+
+### zadanie 1.8
+
+Sporządzono wykresy mozaikowe odpowiadające parom zmiennych CZY_ZADOW i DZIAŁ, CZY_ZADOW i STAŻ, CZY_ZADOW i CZY_KIER, CZY_ZADOW i PŁEĆ oraz CZY_ZADOW i WIEK_KAT.
+```{r, echo=FALSE}
+attach(df)
+Colors = c("navy", "lightblue", "pink", 'red')
+print(mosaicplot(table(CZY_ZADOW, DZIAŁ), color=Colors, xlab = 'Czy zadowolony', ylab = 'Dzial', main = "CZY ZADOWOLONY ~ DZIAL"))
+```
+
+```{r, echo=FALSE}
+print(mosaicplot(table(CZY_ZADOW, STAŻ), color=Colors, xlab = 'Czy zadowolony', ylab = 'Staz', main = "CZY ZADOWOLONY ~ STAZ"))
+```
+
+```{r, echo=FALSE}
+print(mosaicplot(table(CZY_ZADOW, CZY_KIER), color=Colors, xlab = 'Czy zadowolony', ylab = 'Czy kierownik', main = "CZY ZADOWOLONY ~ CZY KIER"))
+```
+
+```{r, echo=FALSE}
+print(mosaicplot(table(CZY_ZADOW, PŁEĆ), color=Colors, xlab = 'Czy zadowolony', ylab = 'Plec', main = "CZY ZADOWOLONY ~ PLEC"))
+```
+
+```{r, echo=FALSE}
+print(mosaicplot(table(CZY_ZADOW, WIEK_KAT), color=Colors, xlab = 'Czy zadowolony', ylab = 'Wiek kat', main = "CZY ZADOWOLONY ~ WIKE KAT"))
+```
+# Zadanie 2
+
+
+# Zadanie 6
+```{r, echo=FALSE}
+
+clopper_pearson_ci <- function(confidence, successes = NULL, trials = NULL, data = NULL) {
+  if (!is.null(data)) {
+    successes <- sum(data)
+    trials <- length(data)
+  }
+  if (is.null(successes) || is.null(trials)) {
+    stop("Należy podać liczbę sukcesów i prób lub wektor danych.")
+  }
+  alpha <- 1 - confidence
+  lower_bound <- qbeta(alpha / 2, successes, trials - successes + 1)
+  upper_bound <- qbeta(1 - alpha / 2, successes + 1, trials - successes)
+  return(c(lower_bound, upper_bound))
+}
+
+# Przykład użycia
+confidence_level <- 0.95
+successes <- 30
+trials <- 100
+ci <- clopper_pearson_ci(confidence_level, successes = successes, trials = trials)
+cat("Przedział ufności (Clopper-Pearson) dla", successes, "/", trials, ":", ci, "\n")
+
+# Generowanie losowych danych binarnych
+data <- rbinom(100, 1, 0.3)
+ci_data <- clopper_pearson_ci(confidence_level, data = data)
+cat("Przedział ufności (Clopper-Pearson) dla danych binarnych:", ci_data, "\n")
+
+
+```
+# Zadanie 7
+```{r, echo=FALSE }
+
+
+# Zakładając, że 'losowe_wartosci' to wektor danych binarnych (0/1), a 'n' to liczba prób
+n <- 10      # liczba prób
+p <- 0.5     # prawdopodobieństwo sukcesu
+size <- 1000 # liczba generowanych wartości
+
+
+losowe_wartosci <- rbinom(n, size, p)
+sukcesy <- sum(losowe_wartosci)
+proby <- length(losowe_wartosci)
+
+# Przedział ufności Cloppera-Pearsona
+ci_cp <- binom.confint(sukcesy, n = proby*size, methods = "exact", conf.level = 0.95)
+cat("Przedział ufności Cloppera-Pearsona:", ci_cp$lower, ci_cp$upper, "\n")
+
+# Przedział ufności Wald’a
+ci_wald <- binom.confint(sukcesy, n = proby*size, conf.level = 0.95, methods="asymptotic", correct = FALSE)
+cat("Przedział ufności Wald’a:", ci_wald$lower, ci_wald$upper, "\n")
+
+# Przedział ufności Wilsona
+ci_wilson <- binom.confint(sukcesy, n = proby*size, methods = "wilson", conf.level = 0.95)
+cat("Przedział ufności Wilsona:", ci_wilson$lower, ci_wilson$upper, "\n")
+
+```
+
+# Zadanie 9
+
+```{r, echo=FALSE ,fig.width=7, fig.height=5, dpi=300}
+library(ggplot2)
+
+# Parametry
+n_values <- c(30, 100, 1000)
+p_values <- seq(0.01, 1, by = 0.02)
+N <- 200  # Liczba powtórzeń
+alpha <- 0.05  # Poziom istotności
+
+listan_p <- list()
+listan_dlug <- list()
+
+# Główna pętla
+for (n in n_values) {
+  lista_pwilson <- numeric(length(p_values))
+  lista_pnormal <- numeric(length(p_values))
+  lista_pbeta <- numeric(length(p_values))
+
+  lista_dlug_wilson <- numeric(length(p_values))
+  lista_dlug_normal <- numeric(length(p_values))
+  lista_dlug_beta <- numeric(length(p_values))
+
+  for (idx in seq_along(p_values)) {
+    p <- p_values[idx]
+    
+    perc_wilson <- 0
+    perc_normal <- 0
+    perc_beta <- 0
+
+    dlug_wilson <- 0
+    dlug_normal <- 0
+    dlug_beta <- 0
+
+    for (i in 1:N) {
+      X <- rbinom(1, n, p)
+      
+      # Obliczanie przedziałów ufności
+      ci_wilson <- binom.confint(X, n, conf.level = 1 - alpha, methods = "wilson")
+      ci_normal <- binom.confint(X, n, conf.level = 1 - alpha, methods = "asymptotic")
+      ci_beta <- binom.confint(X, n, conf.level = 1 - alpha, methods = "exact")
+
+      # Sprawdzanie pokrycia przedziału
+      if (ci_wilson$lower <= p && ci_wilson$upper >= p) {
+        dlug_wilson <- dlug_wilson + (ci_wilson$upper - ci_wilson$lower)
+        perc_wilson <- perc_wilson + 1
+      }
+      if (ci_normal$lower <= p && ci_normal$upper >= p) {
+        dlug_normal <- dlug_normal + (ci_normal$upper - ci_normal$lower)
+        perc_normal <- perc_normal + 1
+      }
+      if (ci_beta$lower <= p && ci_beta$upper >= p) {
+        dlug_beta <- dlug_beta + (ci_beta$upper - ci_beta$lower)
+        perc_beta <- perc_beta + 1
+      }
+    }
+
+    lista_pwilson[idx] <- perc_wilson / N
+    lista_pnormal[idx] <- perc_normal / N
+    lista_pbeta[idx] <- perc_beta / N
+
+    lista_dlug_wilson[idx] <- dlug_wilson / N
+    lista_dlug_normal[idx] <- dlug_normal / N
+    lista_dlug_beta[idx] <- dlug_beta / N
+  }
+
+  listan_p[[as.character(n)]] <- data.frame(p_values, lista_pwilson, lista_pnormal, lista_pbeta)
+  listan_dlug[[as.character(n)]] <- data.frame(p_values, lista_dlug_wilson, lista_dlug_normal, lista_dlug_beta)
+}
+
+# Tworzenie wykresów
+par(mfrow = c(3, 2), mar = c(5, 5, 2, 2))
+
+methods <- c("Wilson", "Normal", "Beta")
+colors <- c("blue", "red", "green")
+
+for (i in seq_along(n_values)) {
+  n <- n_values[i]
+  
+  # Prawdopodobieństwo pokrycia
+  plot(listan_p[[as.character(n)]]$p_values, listan_p[[as.character(n)]]$lista_pwilson, type = "l", col = "blue", 
+     xlab = "p", ylab = "Prawdopodobieństwo pokrycia", 
+     main = paste("Prawdopodobieństwo pokrycia dla n=", n),
+     ylim = c(min(listan_p[[as.character(n)]]$lista_pwilson), 1),  # Poprawny sposób ustawienia zakresu osi Y
+     cex.lab = 0.8,          # Zmniejszenie rozmiaru czcionki etykiet osi
+     cex.axis = 0.8)         # Zmniejszenie rozmiaru czcionki dla wartości na osiach
+
+# Dodanie pozostałych linii
+  lines(listan_p[[as.character(n)]]$p_values, listan_p[[as.character(n)]]$lista_pnormal, col = "red")
+  lines(listan_p[[as.character(n)]]$p_values, listan_p[[as.character(n)]]$lista_pbeta, col = "green")
+
+# Dodanie legendy
+  legend("bottomright", legend = methods, col = colors, lty = 1, 
+       cex = 0.8,          # Zmniejszenie rozmiaru czcionki legendy
+       box.lwd = 0.5,      # Grubość obramowania legendy
+       inset = 0.02)
+
+# Dodanie poziomej przerywanej linii
+  abline(h = 0.95, col = "black", lty = 2)
+
+  # Długość przedziału
+  plot(listan_dlug[[as.character(n)]]$p_values, listan_dlug[[as.character(n)]]$lista_dlug_wilson, type = "l", col = "blue", 
+       xlab = "p", ylab = "Średnia długość przedziału", 
+       main = paste("Długość przedziału dla n=", n),cex.lab = 0.8)
+  lines(listan_dlug[[as.character(n)]]$p_values, listan_dlug[[as.character(n)]]$lista_dlug_normal, col = "red")
+  lines(listan_dlug[[as.character(n)]]$p_values, listan_dlug[[as.character(n)]]$lista_dlug_beta, col = "green")
+  legend("bottomright",legend = methods, col = colors, lty = 1, 
+       cex = 0.8,          # Zmniejszenie rozmiaru czcionki
+       box.lwd = 0.5,      # Grubość obramowania legendy
+       inset = 0.02)
+  abline(h = 0.95, col = "black", lty = 2) 
+}
+
+par(mfrow = c(1, 1))
+```
+
+
+Dla małych próbek (n=30) metoda normalna  wykazuje dużą niestabilność, z wyraźnymi spadkami poniżej poziomu pozostałych metod. W miarę wzrostu liczności próby (n=100, n=1000) różnice między metodami się zmniejszają, a wszystkie trzy metody zbliżają się do oczekiwanego poziomu pokrycia.
+Metoda Wilsona i Beta generalnie utrzymują lepsze prawdopodobieństwo pokrycia, szczególnie dla mniejszych próbek.
+
+Wszystkie metody wykazują podobny kształt – długość przedziału jest największa dla p≈0.5p≈0.5 i maleje dla wartości bliższych 0 i 1. Dla n=30 metoda normalna daje krótsze przedziały, ale kosztem gorszego prawdopodobieństwa pokrycia. Dla większych próbek długości przedziałów uzyskane różnymi metodami są bardzo podobne.
+
+Przy większych n różnice między metodami stają się mniej istotne – wszystkie trzy metody dają podobne prawdopodobieństwo pokrycia i długości przedziałów. Dla małych próbek metoda Walda wydaje się najmniej stabilna i najgorzej dopasowana.
+
+Metoda Walda nie sprawdza się dobrze dla małych prób – daje niestabilne pokrycie i krótsze przedziały kosztem wiarygodności. Metody Wilsona i Beta są bardziej niezawodne, szczególnie dla mniejszych wartości n.Dla dużych próbek wszystkie metody działają podobnie
