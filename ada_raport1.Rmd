@@ -386,10 +386,10 @@ print(mosaicplot(table(CZY_ZADOW, PŁEĆ), color=Colors, xlab = 'Czy zadowolony'
 ```{r, echo=FALSE}
 print(mosaicplot(table(CZY_ZADOW, WIEK_KAT), color=Colors, xlab = 'Czy zadowolony', ylab = 'Wiek kat', main = "CZY ZADOWOLONY ~ WIKE KAT"))
 ```
-# Zadanie 2
+# Część 2
 
-
-# Zadanie 6
+# Część 3 i 4
+## Zadanie 6
 ```{r, echo=FALSE}
 
 clopper_pearson_ci <- function(confidence, successes = NULL, trials = NULL, data = NULL) {
@@ -420,7 +420,7 @@ cat("Przedział ufności (Clopper-Pearson) dla danych binarnych:", ci_data, "\n"
 
 
 ```
-# Zadanie 7
+## Zadanie 7
 ```{r, echo=FALSE }
 
 
@@ -448,7 +448,7 @@ cat("Przedział ufności Wilsona:", ci_wilson$lower, ci_wilson$upper, "\n")
 
 ```
 
-# Zadanie 9
+## Zadanie 9
 
 ```{r, echo=FALSE ,fig.width=7, fig.height=5, dpi=300}
 library(ggplot2)
