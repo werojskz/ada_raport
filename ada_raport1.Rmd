@@ -386,9 +386,218 @@ print(mosaicplot(table(CZY_ZADOW, PŁEĆ), color=Colors, xlab = 'Czy zadowolony'
 ```{r, echo=FALSE}
 print(mosaicplot(table(CZY_ZADOW, WIEK_KAT), color=Colors, xlab = 'Czy zadowolony', ylab = 'Wiek kat', main = "CZY ZADOWOLONY ~ WIKE KAT"))
 ```
-# Część 2
+# Część II
+## Zadanie 2
+Na wykresie słupkowym została przedstawiona proporcja odpiedzi pracowników firmy na pytanie *PYT_1: "Jak bardzo zgadzasz się ze stwierdzeniem, że firma zapewnia odpowiednie wsparcie i materiały umożliwiaja˛ce skuteczne wykorzystanie w praktyce wiedzy zdobytej w trakcie szkoleń?"*. 
+Z wykresu wynika, że połowa badanych zgadza się ze stwierdzeniem, że firma zapewnia odpowiednie wsparcie i materialy umożliwiające skuteczne wykorzystanie w praktyce wiedzy zdobytej w trakcie szkoleń, ponadto 14% badanych zdecydowanie popiera tę tezę, a 20% nie ma zdania na ten temat. Natomiast niecałe 10% nie zgadza się z powyższym stwierdzeniem, a 7% uważa, że jest ono zdecydowanie sprzeczne. 
+```{r, echo=FALSE}
+PYT_1 <- as.factor(PYT_1)
+tabela_PYT_1 <- prop.table(table(PYT_1))
+bp_PYT_1 <- barplot(tabela_PYT_1, col = "lightblue", main = "Proporcje PYT_1", xlab = "Odpowiedź", ylab = "Proporcja", ylim = c(0, 0.6)) 
+text(x = bp_PYT_1, y = tabela_PYT_1, labels = round(tabela_PYT_1, 2), pos = 3, cex = 1) 
 
-# Część 3 i 4
+```
+
+Ponadto sprawdzono jak rozkłada się poziom zgodności z powyższym stwierdzeniem względem pełnionego stanowiska (kierownicze lub niekierownicze) dzięki zmiennej CZY_KIER.
+Z wykresu można wywyniksować, że w obu przypadkach około połowy badanych zgadza się ze stwierdzeniem z PYT_1, jednak ponad dwókrotnie większa część osób (procentowo) bez stanowiska kierowniczego niż na stanowisku kierowniczym jest zdecydowanie zadowolona z udostępnianych materiałów ze szkoleń. Również można zauważyć, że odpowiedzi *nie mam zdania/ nie zgadzam się/ zdecydowanie się nie zgadzam* zanaczyło większy odetek osób na stanowistach kierowniczych niż nie. Zatem z analizy wykresu pudełkowego wynika, że pracownicy na stanowiskach kierowniczych są mniej zdowoleni ze wsparcia i materiałów zapewnianych przez firmę umożliwiaja˛ce skuteczne wykorzystanie w praktyce wiedzy zdobytej w trakcie szkoleń.
+```{r}
+tabela_grupy <- prop.table(table(PYT_1, CZY_KIER), margin = 2)
+bp_grupy <- barplot(tabela_grupy, beside = TRUE, col = c("lightblue", "steelblue", "skyblue", "cornflowerblue", "navy"), legend = rownames(tabela_grupy), main = "PYT_1 wg CZY_KIER",xlab = "Odpowiedź", ylab = "Proporcja", ylim = c(0, 0.6))
+text(x = bp_grupy, y = tabela_grupy, labels = round(tabela_grupy, 2), pos = 3, cex = 1) 
+```
+## Zadanie 3
+Funkcja *sample()* z biblioteki *stats* losuje próbkę z podanego zbioru danych.
+**Składnia:** sample(x, size, replace, prob)
+Gdzie:
+- x - wektor do losowania
+- size - liczba elementów do wylosowania
+- replace - określa czy losowanie jest ze zwracaniem (TRUE/FALSE)
+- prob - prawdopodobieństwa dla poszczególnych elementów(parametr opcjonalny)
+**Przykłady użycia**
+```{r}
+# Losowanie 5 liczb z zakresu 1-10
+sample(1:10, size = 5)
+
+# Losowanie 5 liczb z powtórzeniami
+sample(1:10, size = 5, replace = TRUE)
+
+# Losowanie z różnymi prawdopodobieństwami
+sample(1:10, size = 5, prob = c(0.1, 0.05, 0.15, 0.1, 0.2, 0.05, 0.05, 0.1, 0.1, 0.1))
+```
+
+Następnie z rekordów zawartych w pliku ankieta.csv zostało wylosowane 10% losowych ze wszystkich rekordów za pomocą losowania ze zwracaniem oraz bez zwracania.
+**Losowanie wierszy ze zwracaniem**
+```{r}
+sample_rows_with_replacement <- sample(1:nrow(df), size = round(0.1 * nrow(df)), replace = TRUE)
+df[sample_rows_with_replacement, ]
+
+```
+**Losowanie wierszy bez zwracania** 
+```{r}
+sample_rows_without_replacement <- sample(1:nrow(df), size = round(0.1 * nrow(df)), replace = FALSE)
+df[sample_rows_without_replacement, ]
+```
+## Zadanie 4
+Funkcja *binomial_sim* dla każdej próbki generuje 1 lub 0 z prawdopodobieństwem *p* i zwraca realizację próby.
+Funckja przyjmuje dwa parametry:
+- *n* - długość próby
+- *p* - teoretyczne prawdopodobieństwo sukcesu.
+
+Funkcja *binomial__N_sim* wykonuje *N* prób Monte Carlo z rozkładu dwumianowego korzystając z funkcji *binomial_sim*, zwraca wketor realizacji prób z rozkładu dwumianowego.
+Funkcja przyjmuje trzy paramatry:
+- *n* - długość próby
+- *p* - teoretyczne prawdopodobieństwo sukcesu
+- *N* - liczbę prób Monte Carlo
+```{r}
+# Funkcja do generowania pojedynczej realizacji rozkładu dwumianowego
+binomial_sim <- function(n, p) {
+  result <- sum(runif(n) < p) 
+  return(result)  
+}
+
+# Funkcja do generowania N realizacji rozkładu dwumianowego
+binomial_N_sim <- function(n, p, N) {
+  W <- numeric(N)  
+  for (i in 1:N) {
+    W[i] <- binomial_sim(n, p)  
+  }
+  return(W)  
+}
+```
+
+W celu przetestowania poprawności zaproponowanych funkcji, przeprowadzono symulację, której celem było wygenerowanie wektora zmiennych losowych i obliczenie ich charakterystyk, a następnie porównanie wyników empirycznych z teoretycznymi.
+**Parametry symulacji:**
+- n = 100
+- p = 0.5
+- N = 10000
+**Charakterystyki rozkładu, które zostały uwzględnione:**
+1. **Średnia rozkładu:**
+- **Empiryczna:** obliczona za pomocą funkcji *mean()* na wygenerowanych danych, 
+- **Teoretyczna:** obliczona na podstawie wzoru *np*, gdzie *n* to liczba prób, *p* to prawdopodobieństwo sukcesu.
+2.**Odchylenie standardowe rozkładu:** 
+- **Empiryczne:** obliczone za pomocą funkcji *sd()* na wygenerowanych danych,
+- **Teroretyczne:** obliczone na podstawie wzoru *$$ \sigma = \sqrt{np(1-p)} $$*, gdzie *n* to liczba prób, *p* to prawdopodobieństwo sukcesu.
+3. **Hstogram częstości:** 
+- **Empiryczne:** przedstawione za pomocą funkcji *hist()* na podstawie wygenerowanych danych
+- **Teoretyczne:** porównane z teoretycznymi wartościami prawdopodobieństwa sukcesu, obliczonymi za pomocą funkcji *dbinom()*
+
+Wyniki symulacji sugerują, że funkcja poprawnie generuje zmienną losową z rozkładu dwumianowego.
+```{r, echo = FALSE}
+# Parametry rozkładu dwumianowego
+n <- 100  
+p <- 0.5  
+N <- 10000 
+
+# Generowanie danych
+simulated_data <- binomial_N_sim(n, p, N)
+
+# Teoretyczne wartości
+theoretical_mean <- n * p
+theoretical_sd <- sqrt(n * p * (1 - p))
+
+# Empiryczne wartości
+empirical_mean <- mean(simulated_data)
+empirical_sd <- sd(simulated_data)
+
+cat("Teoretyczna średnia: ", theoretical_mean, "\n")
+cat("Teoretyczne odchylenie standardowe: ", theoretical_sd, "\n")
+cat("Empiryczna średnia: ", empirical_mean, "\n")
+cat("Empiryczne odchylenie standardowe: ", empirical_sd, "\n")
+
+# Teoretyczne prawdopodobieństwa rozkładu dwumianowego
+x_vals <- 0:n
+theoretical_probs <- dbinom(x_vals, size = n, prob = p) * N  
+
+# Histogram wyników symulacji
+hist(simulated_data, 
+     breaks = seq(-0.5, n + 0.5, by = 1),  
+     main = "Porównanie symulacji z rozkładem teoretycznym",
+     xlab = "Liczba sukcesów",
+     col = "lightblue", 
+     border = "black", 
+     freq = TRUE,  
+     right = FALSE)
+
+# Dodanie teoretycznych wartości 
+lines(x_vals, theoretical_probs, col = "red", lwd = 2)  # Linia
+legend("topright", legend = c("Symulacja", "Teoria"), 
+       fill = c("lightblue", NA), col = c("black", "red"), 
+       lty = c(NA, 1), border = "black")
+
+```
+
+
+## Zadnia 5
+Funkcja *wielomianowy_sim* generuje pojedynczą realizację rozkładu wielomianowego z prawdopodbieństwami sukcesu danymi jako wektor *p*.
+Przyjmuje dwa parametry:
+- *n* - liczba prób (wielkość próby)
+- *p* - wektor prawdopodobieństw dla poszczególnych kategorii.
+Zwraca wektor liczności wystąpień każdej kategorii.
+
+Funkcja *wielomianowy_N_sim* wykonuje *N* prób Monte Carlo dla rozkładu wielomianowego.
+Korzysta z funkcji *wielomianowy_sim*, aby wygenerować realizacje prób i zwraca macierz wyników.
+Przyjmuje trzy parametry:
+- *n* - liczba prób (wielkość próby)
+- *p* - wektor prawdopodobieństw dla poszczególnych kategorii
+- *N* - liczba prób Monte Carlo
+```{r}
+# Funkcja generująca pojedynczą realizację rozkładu wielomianowego
+wielomianowy_sim <- function(n, p) {
+  k <- length(p)
+  proby <- sample(1:k, size = n, replace = TRUE, prob = p)
+  tab <- table(factor(proby, levels = 1:k))
+  as.vector(tab)
+}
+
+# Funkcja wykonująca N prób Monte Carlo dla rozkładu wielomianowego
+wielomianowy_N_sim <- function(n, p, N) {
+  k <- length(p)
+  W <- replicate(N, wielomianowy_sim(n, p)) 
+  result <- W 
+  return(result)
+}
+```
+
+Analogicznie do poprzedniego zadania, przeprowadzono symulację, której celem było sprawdzenie poprawności zaproponowanych funckji.
+Została wygenerowana macierz zawierająca realizaje zmiennych rozkładu wielomianowego, a następnie obliczono ich charakterystyki i porówano z teoretycznymi wartościami.
+**Parametry symulacji:**
+- n = 100
+- p = [0.5, 0.1, 0.2, 0.2]
+- N = 10000
+**Charakterystyki rozkładu, które zostały uwzględnione:**
+1. **Średnia rozkładu:**
+- **Empiryczna:** obliczona za pomocą funkcji *rowMeans()* na wygenerowanych danych, 
+- **Teoretyczna:** obliczona na podstawie wzoru *np*, gdzie *n* to liczba prób, *p* to prawdopodobieństwo sukcesu.
+2.**Odchylenie standardowe rozkładu:** 
+- **Empiryczne:** obliczone za pomocą funkcji *apply(simulated_data, 1, sd)* na wygenerowanych danych,
+- **Teroretyczne:** obliczone na podstawie wzoru *$$ \sigma = \sqrt{np(1-p)} $$*, gdzie *n* to liczba prób, *p* to wektor prawdopodobiństw.
+
+Wyniki symulacji sugerują, że funkcja poprawnie generuje zmienną losową z rozkładu wielomianowego.
+```{r}
+# Parametry symulacji
+p <- c(0.5, 0.1, 0.2, 0.2)
+n <- 100
+N <- 10000
+
+# Testowanie funkcji
+simulated_data <- wielomianowy_N_sim(n, p, N)
+
+# Teoretyczne wartości
+teoretical_mean <- n * p
+teoretical_sd <- sqrt(n * p * (1 - p))
+
+# Empiryczne wartości
+empirical_mean <- rowMeans(simulated_data)
+empirical_sd <- apply(simulated_data, 1, sd)
+
+cat("Teoretyczna średnia: ", teoretical_mean, "\n")
+cat("Teoretyczne odchylenie standardowe: ", teoretical_sd, "\n")
+cat("Empiryczna średnia: ", empirical_mean, "\n")
+cat("Empiryczne odchylenie standardowe: ", empirical_sd, "\n")
+```
+
+
+# Część III i IV
 ## Zadanie 6
 ```{r, echo=FALSE}
 
@@ -574,3 +783,5 @@ Wszystkie metody wykazują podobny kształt – długość przedziału jest najw
 Przy większych n różnice między metodami stają się mniej istotne – wszystkie trzy metody dają podobne prawdopodobieństwo pokrycia i długości przedziałów. Dla małych próbek metoda Walda wydaje się najmniej stabilna i najgorzej dopasowana.
 
 Metoda Walda nie sprawdza się dobrze dla małych prób – daje niestabilne pokrycie i krótsze przedziały kosztem wiarygodności. Metody Wilsona i Beta są bardziej niezawodne, szczególnie dla mniejszych wartości n.Dla dużych próbek wszystkie metody działają podobnie
+
+# Część V
