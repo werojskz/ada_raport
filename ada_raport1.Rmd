@@ -393,7 +393,7 @@ Z wykresu wynika, że połowa badanych zgadza się ze stwierdzeniem, że firma z
 ```{r, echo=FALSE}
 PYT_1 <- as.factor(PYT_1)
 tabela_PYT_1 <- prop.table(table(PYT_1))
-bp_PYT_1 <- barplot(tabela_PYT_1, col = "lightblue", main = "Proporcje PYT_1", xlab = "Odpowiedź", ylab = "Proporcja", ylim = c(0, 0.6)) 
+bp_PYT_1 <- barplot(tabela_PYT_1, col = "lightblue", main = "Proporcje PYT_1", xlab = "Odpowiedź", ylab = "Proporcja odpowiedzi", ylim = c(0, 0.6)) 
 text(x = bp_PYT_1, y = tabela_PYT_1, labels = round(tabela_PYT_1, 2), pos = 3, cex = 1) 
 
 ```
@@ -402,7 +402,7 @@ Ponadto sprawdzono jak rozkłada się poziom zgodności z powyższym stwierdzeni
 Z wykresu można wywyniksować, że w obu przypadkach około połowy badanych zgadza się ze stwierdzeniem z PYT_1, jednak ponad dwókrotnie większa część osób (procentowo) bez stanowiska kierowniczego niż na stanowisku kierowniczym jest zdecydowanie zadowolona z udostępnianych materiałów ze szkoleń. Również można zauważyć, że odpowiedzi *nie mam zdania/ nie zgadzam się/ zdecydowanie się nie zgadzam* zanaczyło większy odetek osób na stanowistach kierowniczych niż nie. Zatem z analizy wykresu pudełkowego wynika, że pracownicy na stanowiskach kierowniczych są mniej zdowoleni ze wsparcia i materiałów zapewnianych przez firmę umożliwiaja˛ce skuteczne wykorzystanie w praktyce wiedzy zdobytej w trakcie szkoleń.
 ```{r}
 tabela_grupy <- prop.table(table(PYT_1, CZY_KIER), margin = 2)
-bp_grupy <- barplot(tabela_grupy, beside = TRUE, col = c("lightblue", "steelblue", "skyblue", "cornflowerblue", "navy"), legend = rownames(tabela_grupy), main = "PYT_1 wg CZY_KIER",xlab = "Odpowiedź", ylab = "Proporcja", ylim = c(0, 0.6))
+bp_grupy <- barplot(tabela_grupy, beside = TRUE, col = c("lightblue", "steelblue", "skyblue", "cornflowerblue", "navy"), legend = rownames(tabela_grupy), main = "PYT_1 wg CZY_KIER",xlab = "Odpowiedzi", ylab = "Proporcja odpowiedzi", ylim = c(0, 0.6), names.arg = c("Stanowisko niekierownicze", "Stanowisko kierownicze")) 
 text(x = bp_grupy, y = tabela_grupy, labels = round(tabela_grupy, 2), pos = 3, cex = 1) 
 ```
 ## Zadanie 3
@@ -785,3 +785,264 @@ Przy większych n różnice między metodami stają się mniej istotne – wszys
 Metoda Walda nie sprawdza się dobrze dla małych prób – daje niestabilne pokrycie i krótsze przedziały kosztem wiarygodności. Metody Wilsona i Beta są bardziej niezawodne, szczególnie dla mniejszych wartości n.Dla dużych próbek wszystkie metody działają podobnie
 
 # Część V
+## Zadanie 10 !!! DOKOŃCZ
+1. **Test dokładny**
+W języku programowania R do wykonywania testu dokładnego służy funckja *binom.test()*, która wykonuje dokładny test dwumianowy (test dokładny dla proporcji) oparty na rozkładzie dwumianowym.
+- Stosowany, gdy próbka jest mała, ponieważ nie opiera się na przybliżeniach asymptotycznych.
+Funkcja przyjmuje argumenty:
+- *x* - liczba sukcesów w próbie
+- *n* - liczba obserwacji w próbie
+- *p* - prawdopodonbieństwo sukcesu 
+2. **Test asymptotyczny**
+Do wykonywania testu asyptotycznego język programownaia R wykorzystuje funkcję *prop.test()*, który jest testem z użyciem asymptotycznego przybliżenia normalnego (test chi-kwadrat dla proporcji).
+- Stosowany dla dużych prób, ponieważ opiera się na centralnym twierdzeniu granicznym.
+W celu sprawdzenia parametrów  podanych funkcji przerowadzono symaulację z pramatrami:
+1. Symulacja I:
+- *x1* = 3
+- *n1* = 10
+- *p1* = 0.5 
+```{r}
+x1 <- 3
+n1 <- 10
+p1 <- 0.5
+
+test1_binom <- binom.test(x1, n1, p1)
+test1_prop <- prop.test(x1, n1, p1)
+
+test1_binom
+test1_prop
+```
+2. Symulacja II:
+- *x2* = 260
+- *n2* = 500
+- *p2* = 0.5 
+```{r}
+x2 <- 260
+n2 <- 500
+p2 <- 0.5
+
+test2_binom <- binom.test(x2, n2, p2)
+test2_prop <- prop.test(x2, n2, p2)
+
+test2_binom
+test2_prop
+```
+## Zadanie 11
+### Zadanie 11.1
+```{r}
+alpha <- 0.05
+k <- sum(PŁEĆ == "K")
+n <- length(PŁEĆ)
+p_0 <- 0.5
+
+binom_result <- binom.test(k, n, p = p_0, conf.level = 1 - alpha)
+prop_result <- prop.test(k, n, p = p_0, conf.level = 1 - alpha)
+
+results <- data.frame(
+  Test = c("binom.test", "prop.test"),
+  P_value = c(binom_result$p.value, prop_result$p.value),
+  Interpretation = ifelse(c(binom_result$p.value, prop_result$p.value) < alpha, 
+                          "Odrzucamy H0 - różnica istotna statystycznie", 
+                          "Brak podstaw do odrzucenia H0")
+)
+results
+```
+### Zadanie 11.2
+```{r}
+alpha <- 0.05
+zad <- sum(CZY_ZADOW == "TAK")
+n_zad <- length(CZY_ZADOW)
+p_0 <- 0.7
+
+binom_result <- binom.test(zad, n_zad, p = p_0, conf.level = 1 - alpha)
+prop_result <- prop.test(zad, n_zad, p = p_0, conf.level = 1 - alpha)
+
+results <- data.frame(
+  Test = c("binom.test", "prop.test"),
+  P_value = c(binom_result$p.value, prop_result$p.value),
+  Interpretation = ifelse(c(binom_result$p.value, prop_result$p.value) < alpha, 
+                          "Odrzucamy H0 - różnica istotna statystycznie", 
+                          "Brak podstaw do odrzucenia H0")
+)
+results
+```
+### Zadanie 11.3
+```{r}
+alpha <- 0.05
+k <- sum(PŁEĆ == "K" & CZY_KIER == "Tak")
+n_k <- sum(PŁEĆ == "K")
+m <- sum(PŁEĆ == "M" & CZY_KIER == "Tak")
+n_m <- sum(PŁEĆ == "M")
+
+p_0 <- m/n_m
+
+prop_result <- prop.test(k, n_k, p_0, conf.level = 1 - alpha)
+prop_result
+
+```
+### Zadnie 11.4
+```{r}
+alpha <- 0.05
+k <- sum(PŁEĆ == "K" & CZY_ZADOW == "TAK")
+n_k <- sum(PŁEĆ == "K")
+m <- sum(PŁEĆ == "M" & CZY_ZADOW == "TAK")
+n_m <- sum(PŁEĆ == "M")
+
+p_0 <- m/n_m
+
+prop_result <- prop.test(k, n_k, p_0, conf.level = 1 - alpha)
+prop_result
+
+```
+### Zadanie 11.5
+```{r}
+alpha <- 0.05
+k <- sum(PŁEĆ == "K" & DZIAŁ == "HR")
+n_k <- sum(PŁEĆ == "K")
+m <- sum(PŁEĆ == "M" & DZIAŁ == "HR")
+n_m <- sum(PŁEĆ == "M")
+
+p_0 <- m/n_m
+
+prop_result <- prop.test(k, n_k, p_0, conf.level = 1 - alpha)
+prop_result
+
+```
+## Zadanie 12
+```{r}
+"""powertest <- function(N, n, alpha, p0){
+  p_values <- seq(0.01, 0.99, by = 0.01)
+  l <- length(p_values)
+  binom_vec <- numeric(l)
+  prop_vec <- numeric(l)
+  
+  for (j in 1:l){
+    p <- p_values[j]
+    binom_vec_N <- numeric(N)
+    prop_vec_N <- numeric(N)
+    
+    for (i in 1:N) {
+      binom <- rbinom(1, n, p)  
+      binom_test <- binom.test(binom, n, p0, conf.level = 1 - alpha)
+      binom_vec_N[i] <- binom_test$p.value <= alpha
+      
+      prop_test <- prop.test(binom, n, p0, conf.level = 1 - alpha)
+      prop_vec_N[i] <- prop_test$p.value <= alpha
+    }
+    
+    binom_vec[j] <- mean(binom_vec_N)
+    prop_vec[j] <- mean(prop_vec_N)
+  }
+  
+  return(list(power_bin = binom_vec, power_prop = prop_vec))
+}"""
+```
+```{r}
+# Funkcja powertest
+powertest <- function(N, n, alpha, p0) {
+  p_values <- seq(0.01, 0.99, by = 0.01)
+  l <- length(p_values)
+  binom_vec <- numeric(l)
+  prop_vec <- numeric(l)
+  
+  for (j in 1:l) {
+    p <- p_values[j]
+    binom_vec_N <- numeric(N)
+    prop_vec_N <- numeric(N)
+    
+    for (i in 1:N) {
+      binom <- rbinom(1, n, p)  
+      binom_test <- binom.test(binom, n, p0, conf.level = 1 - alpha)
+      binom_vec_N[i] <- binom_test$p.value <= alpha
+      
+      prop_test <- prop.test(binom, n, p0, conf.level = 1 - alpha)
+      prop_vec_N[i] <- prop_test$p.value <= alpha
+    }
+    
+    binom_vec[j] <- mean(binom_vec_N)
+    prop_vec[j] <- mean(prop_vec_N)
+  }
+  
+  # Zwrócenie wyników w postaci listy
+  return(list(power_bin = binom_vec, power_prop = prop_vec))
+}
+
+```
+
+```{r}
+#POZWIĄZANIE DLA 1n
+N <- 500
+n <- 100
+alpha <- 0.05
+p0 <- 0.9
+
+# Wynik testu
+result <- powertest(N, n, alpha, p0)
+
+# Tworzenie ramki danych do wykresu
+data <- data.frame(
+  p = seq(0.01, 0.99, by = 0.01),
+  Power_Binom = result$power_bin,
+  Power_Prop = result$power_prop
+)
+
+# Tworzenie wykresu
+ggplot(data, aes(x = p)) +
+  geom_line(aes(y = Power_Binom, color = "Test binominalny"), size = 1.2) +
+  geom_line(aes(y = Power_Prop, color = "Test proporcji"), size = 1.2) +
+  geom_vline(aes(xintercept = 0.9, color = "H0: p = 0.9"), linetype = "dashed", size = 1) +  # Dodanie linii na p = 0.9 z opisem w legendzie
+  labs(
+    title = "Porównanie mocy testów",
+    x = "Prawdopodobieństwo sukcesu (p)",
+    y = "Moc testu",
+    color = "Rodzaj testu"
+  ) +
+  theme_minimal() +
+  scale_color_manual(values = c("Test binominalny" = "blue", "Test proporcji" = "red", "H0: p = 0.9" = "black"))
+```
+
+```{r}
+N <- 500
+n_values <- c(30, 100, 150)
+alpha <- 0.05
+p0 <- 0.9
+
+results <- numeric(3)
+for ( i in 1:3){
+  n <- n_values[i]
+  results[i] <- powertest(N, n, alpha, p0)
+}
+```
+
+```{r}
+library(ggplot2)
+
+# Iterowanie przez wyniki i tworzenie wykresów
+for (i in 1:3) {
+  result <- results[[i]]  # Pobieramy wynik z listy
+  
+  # Tworzenie ramki danych do wykresu
+  data <- data.frame(
+    p = seq(0.01, 0.99, by = 0.01),
+    Power_Binom = result$power_bin,
+    Power_Prop = result$power_prop
+  )
+  
+  # Tworzenie wykresu
+  ggplot(data, aes(x = p)) +
+    geom_line(aes(y = Power_Binom, color = "Test binominalny"), size = 1.2) +
+    geom_line(aes(y = Power_Prop, color = "Test proporcji"), size = 1.2) +
+    geom_vline(aes(xintercept = 0.9, color = "H0: p = 0.9"), linetype = "dashed", size = 1) +  # Dodanie linii na p = 0.9 z opisem w legendzie
+    labs(
+      title = paste("Porównanie mocy testów dla n =", n_values[i]),  # Tytuł wykresu uwzględniający wartość n
+      x = "Prawdopodobieństwo sukcesu (p)",
+      y = "Moc testu",
+      color = "Rodzaj testu"
+    ) +
+    theme_minimal() +
+    scale_color_manual(values = c("Test binominalny" = "blue", "Test proporcji" = "red", "H0: p = 0.9" = "black")) 
+}
+```
+
+
+
