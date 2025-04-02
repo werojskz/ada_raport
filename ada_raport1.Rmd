@@ -659,7 +659,7 @@ cat("Przedział ufności Wilsona:", ci_wilson$lower, ci_wilson$upper, "\n")
 
 ## Zadanie 9
 
-```{r, echo=FALSE ,fig.width=7, fig.height=5, dpi=300}
+```{r, echo=FALSE ,fig.width=10, fig.height=7, dpi=300}
 library(ggplot2)
 
 # Parametry
@@ -751,8 +751,8 @@ for (i in seq_along(n_values)) {
 
 # Dodanie legendy
   legend("bottomright", legend = methods, col = colors, lty = 1, 
-       cex = 0.8,          # Zmniejszenie rozmiaru czcionki legendy
-       box.lwd = 0.5,      # Grubość obramowania legendy
+       cex = 0.6,          # Zmniejszenie rozmiaru czcionki legendy
+       box.lwd = 0.01,      # Grubość obramowania legendy
        inset = 0.02)
 
 # Dodanie poziomej przerywanej linii
@@ -765,10 +765,11 @@ for (i in seq_along(n_values)) {
   lines(listan_dlug[[as.character(n)]]$p_values, listan_dlug[[as.character(n)]]$lista_dlug_normal, col = "red")
   lines(listan_dlug[[as.character(n)]]$p_values, listan_dlug[[as.character(n)]]$lista_dlug_beta, col = "green")
   legend("bottomright",legend = methods, col = colors, lty = 1, 
-       cex = 0.8,          # Zmniejszenie rozmiaru czcionki
-       box.lwd = 0.5,      # Grubość obramowania legendy
+       cex = 0.6,          # Zmniejszenie rozmiaru czcionki
+       box.lwd = 0.01,      # Grubość obramowania legendy
        inset = 0.02)
-  abline(h = 0.95, col = "black", lty = 2) 
+  abline(h = 0.95, col = "black", lty = 2)
+
 }
 
 par(mfrow = c(1, 1))
