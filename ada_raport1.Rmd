@@ -11,7 +11,7 @@ output:
     fig_caption: true
     fig_width: 5
     fig_height: 4
-    number_sections: true
+    number_sections: false
   html_document:
     toc: true
     df_print: paged
@@ -21,6 +21,9 @@ header-includes:
 - \usepackage{graphicx}
 - \usepackage{float}
 fontsize: 12pt
+editor_options: 
+  markdown: 
+    wrap: 72
 ---
 
 ```{r setup, include=FALSE, message=FALSE, warning=FALSE}
@@ -46,7 +49,10 @@ knitr::opts_chunk$set(fig.pos = "H", out.extra = "", fig.align = "center")
 
 ## Zadanie 1
 
-W pewnej dużej firmie technologicznej przeprowadzono ankietę mającą na celu ocenę skuteczności programów szkoleniowych dla pracowników. Wzięło w niej udział 200 losowo wybranych osób (losowanie proste ze zwracaniem).
+W pewnej dużej firmie technologicznej przeprowadzono ankietę mającą na
+celu ocenę skuteczności programów szkoleniowych dla pracowników. Wzięło
+w niej udział 200 losowo wybranych osób (losowanie proste ze
+zwracaniem).
 
 ### Zadanie 1.1
 
@@ -91,6 +97,7 @@ cat("Liczba wartości brakujących wynosi:", sum(is.na(df)), "\n")
 
 Sprawdzono, czy typy zmiennych zostały prawidłowo rozpoznane.
 
+````{=tex}
 \begin{enumerate}
 
 \item zmienne ilościowe (typ numeric)
@@ -122,10 +129,13 @@ cat("Liczba zmiennych jakościowych (typ factor):", liczba_jakosciowych, "\n")
 
 
 \end{enumerate}
+````
 
 ### zadanie 1.2
 
-Utworzono zmienna "WIEK_KAT" przeprowadzająx kategoryzację zmiennej "WIEK" korzystając z następujących przedziałów do 35 lat, mi˛edzy 36 a 45 lat, mi˛edzy 46 a 55 lat, powyżej 55 lat.
+Utworzono zmienna "WIEK_KAT" przeprowadzająx kategoryzację zmiennej
+"WIEK" korzystając z następujących przedziałów do 35 lat, mi˛edzy 36 a
+45 lat, mi˛edzy 46 a 55 lat, powyżej 55 lat.
 
 ```{r, echo=FALSE}
 
@@ -137,7 +147,8 @@ labels = c('0-35', '36-45', '46-55', '55+'))
 
 ### zadanie 1.3
 
-Sporządzono tablice liczności dla zmiennych: DZIAŁ, STAŻ, CZY_KIER, PŁEĆ, WIEK_KAT.
+Sporządzono tablice liczności dla zmiennych: DZIAŁ, STAŻ, CZY_KIER,
+PŁEĆ, WIEK_KAT.
 
 ```{r, echo=FALSE, results = "asis"}
 
@@ -186,23 +197,38 @@ f1 = xtable(t1, caption = "Tablica ilości dla zmiennej WIEK KAT", caption.place
 print(f1, type = "latex", table.placement = "H", caption.placement = "top", comment = FALSE)
 ```
 
-WNIOSKI: 
+WNIOSKI:
 
-Największą grupę pracowników stanowi dział PD (98 osób), a najmniejszą IT (26 osób). Działy HR i MK mają pośrednie wartości (odpowiednio 31 i 45 osób). Może to wskazywać na różne zapotrzebowanie na pracowników w poszczególnych działach. 
+Największą grupę pracowników stanowi dział PD (98 osób), a najmniejszą
+IT (26 osób). Działy HR i MK mają pośrednie wartości (odpowiednio 31 i
+45 osób). Może to wskazywać na różne zapotrzebowanie na pracowników w
+poszczególnych działach.
 
-Większość pracowników (140 osób) ma od 1 do 2 lat stażu. 41 osób pracuje krócej niż rok, a tylko 19 osób ma staż powyżej 3 lat. Wskazuje to na dużą rotację pracowników lub na to, że firma stosunkowo niedawno zatrudniła większość obecnej kadry.
+Większość pracowników (140 osób) ma od 1 do 2 lat stażu. 41 osób pracuje
+krócej niż rok, a tylko 19 osób ma staż powyżej 3 lat. Wskazuje to na
+dużą rotację pracowników lub na to, że firma stosunkowo niedawno
+zatrudniła większość obecnej kadry.
 
-Większość pracowników (173 osoby) pełni funkcje kierownicze, a jedynie 27 osób nie. Może to oznaczać, że w firmie jest dużo stanowisk kierowniczych lub że definicja „kierownika” obejmuje szerokie spektrum stanowisk.
+Większość pracowników (173 osoby) pełni funkcje kierownicze, a jedynie
+27 osób nie. Może to oznaczać, że w firmie jest dużo stanowisk
+kierowniczych lub że definicja „kierownika” obejmuje szerokie spektrum
+stanowisk.
 
-W firmie przeważają mężczyźni (129 osób) nad kobietami (71 osób). Może to wynikać z charakteru działalności firmy lub preferencji rekrutacyjnych.
+W firmie przeważają mężczyźni (129 osób) nad kobietami (71 osób). Może
+to wynikać z charakteru działalności firmy lub preferencji
+rekrutacyjnych.
 
-Najwięcej pracowników jest w grupie wiekowej 36-45 lat (104 osoby). Pozostałe grupy wiekowe mają znacznie mniejszą reprezentację.
+Najwięcej pracowników jest w grupie wiekowej 36-45 lat (104 osoby).
+Pozostałe grupy wiekowe mają znacznie mniejszą reprezentację.
 
-5 zmiennych ilościowych (np. staż, wiek, odpowiedzi na pytania PYT_1–PYT_3). 4 zmienne jakościowe, np. dział, płeć, kategoria wieku. Brak wartości brakujących wskazuje na kompletność i dobrą jakość danych.
+5 zmiennych ilościowych (np. staż, wiek, odpowiedzi na pytania
+PYT_1–PYT_3). 4 zmienne jakościowe, np. dział, płeć, kategoria wieku.
+Brak wartości brakujących wskazuje na kompletność i dobrą jakość danych.
 
 ### Zadanie 1.4
 
-Sporządzono wykresy kołowe oraz wykresy słupkowe dla zmiennych: PYT_1 oraz PYT_2.
+Sporządzono wykresy kołowe oraz wykresy słupkowe dla zmiennych: PYT_1
+oraz PYT_2.
 
 ```{r, echo=FALSE, results = "asis"}
 etykiety <- c('zdacydowanie się nie zgadzam', 'nie zgadzam się', 'nie mam zdania', 'zgadzam się', 'zdacydowanie się zgadzam')
@@ -212,11 +238,22 @@ pie(table(df$PYT_1), labels = etykiety,, cex = 0.8, main = "Odpowiedź na pierws
 par(mar = c(8, 4, 4, 2))  
 barplot(table(df$PYT_1), names.arg = etykiety, las = 2, cex.names = 0.8, main = "Odpowiedź na pierwsze pytanie")
 ```
-Największa liczba respondentów zaznaczyła odpowiedź "zgadzam się", co wskazuje, że ogólna ocena wsparcia i materiałów dostarczanych przez firmę jest pozytywna. Istnieje także pewna grupa osób, które "zdecydowanie się zgadzają", co podkreśla, że część pracowników uważa wsparcie za bardzo dobre.
 
-Znaczna część pracowników wybrała odpowiedź "nie mam zdania", co może sugerować, że nie mieli oni okazji skorzystać ze wsparcia lub materiały nie są dla nich wystarczająco widoczne.
+Największa liczba respondentów zaznaczyła odpowiedź "zgadzam się", co
+wskazuje, że ogólna ocena wsparcia i materiałów dostarczanych przez
+firmę jest pozytywna. Istnieje także pewna grupa osób, które
+"zdecydowanie się zgadzają", co podkreśla, że część pracowników uważa
+wsparcie za bardzo dobre.
 
-Pewna część respondentów zaznaczyła opcje "nie zgadzam się" i "zdecydowanie się nie zgadzam", ale ich liczba jest stosunkowo mała w porównaniu do grupy zadowolonych pracowników. Może to wskazywać na pewne niedociągnięcia w dostępie do materiałów lub ich jakości, jednak nie jest to powszechny problem.
+Znaczna część pracowników wybrała odpowiedź "nie mam zdania", co może
+sugerować, że nie mieli oni okazji skorzystać ze wsparcia lub materiały
+nie są dla nich wystarczająco widoczne.
+
+Pewna część respondentów zaznaczyła opcje "nie zgadzam się" i
+"zdecydowanie się nie zgadzam", ale ich liczba jest stosunkowo mała w
+porównaniu do grupy zadowolonych pracowników. Może to wskazywać na pewne
+niedociągnięcia w dostępie do materiałów lub ich jakości, jednak nie
+jest to powszechny problem.
 
 ```{r, echo=FALSE, results = "asis"}
 etykiety <- c('zdacydowanie się nie zgadzam', 'nie zgadzam się', 'zgadzam się', 'zdacydowanie się zgadzam')
@@ -227,15 +264,26 @@ par(mar = c(8, 4, 4, 2))
 barplot(table(df$PYT_2), names.arg = etykiety, las = 2, cex.names = 0.8, main = "Odpowiedź na drugie pytanie")
 ```
 
-Największa część respondentów zaznaczyła odpowiedź "zdecydowanie się zgadzam", co wskazuje, że większość pracowników uważa szkolenia oferowane przez firmę za dobrze dopasowane do ich potrzeb. Istnieje także spora grupa osób, które wybrały opcję "zgadzam się", co dodatkowo potwierdza ogólnie pozytywne nastawienie wobec polityki szkoleniowej firmy.
+Największa część respondentów zaznaczyła odpowiedź "zdecydowanie się
+zgadzam", co wskazuje, że większość pracowników uważa szkolenia
+oferowane przez firmę za dobrze dopasowane do ich potrzeb. Istnieje
+także spora grupa osób, które wybrały opcję "zgadzam się", co dodatkowo
+potwierdza ogólnie pozytywne nastawienie wobec polityki szkoleniowej
+firmy.
 
-Stosunkowo niewielka część respondentów wybrała odpowiedź "nie zgadzam się" oraz "zdecydowanie się nie zgadzam", co sugeruje, że niektóre osoby mogą mieć trudności z dostępem do odpowiednich szkoleń lub nie uważają ich za skuteczne w kontekście swojego rozwoju zawodowego.
+Stosunkowo niewielka część respondentów wybrała odpowiedź "nie zgadzam
+się" oraz "zdecydowanie się nie zgadzam", co sugeruje, że niektóre osoby
+mogą mieć trudności z dostępem do odpowiednich szkoleń lub nie uważają
+ich za skuteczne w kontekście swojego rozwoju zawodowego.
 
-Pomimo że liczba negatywnych odpowiedzi jest niewielka, warto przeanalizować, czy istnieją konkretne obszary, w których szkolenia mogą być bardziej dostosowane do indywidualnych potrzeb
+Pomimo że liczba negatywnych odpowiedzi jest niewielka, warto
+przeanalizować, czy istnieją konkretne obszary, w których szkolenia mogą
+być bardziej dostosowane do indywidualnych potrzeb
 
 ### zadanie 1.5
 
-Sporządzono tablice wielodzielcze dla par zmiennych: PYT_1 i DZIAŁ, PYT_1 i STAŻ, PYT_1 i CZY_KIER, PYT_1 i PŁEĆ oraz PYT_1 i WIEK_KAT.
+Sporządzono tablice wielodzielcze dla par zmiennych: PYT_1 i DZIAŁ,
+PYT_1 i STAŻ, PYT_1 i CZY_KIER, PYT_1 i PŁEĆ oraz PYT_1 i WIEK_KAT.
 
 ```{r, echo=FALSE, results = "asis"}
 
@@ -246,8 +294,15 @@ f3 = xtable(t3,label="l3",caption="Tabela wielodzielcza dla zmiennych PYT 1 i DZ
 print(f3,type = "latex",caption.placement = "top", comment=FALSE)
 
 ```
-Najbardziej pozytywne opinie pochodzą z działów HR i PD – większość respondentów z tych działów wybrała opcje "zgadzam się" i "zdecydowanie się zgadzam". Dział MK (Marketing) jest bardziej podzielony – występuje większy odsetek osób, które nie mają zdania, co może sugerować, że dla tej grupy pytanie nie było jednoznaczne lub temat ich mniej dotyczył. Dział IT wykazuje najmniejszy poziom negatywnych odpowiedzi ("zdecydowanie się nie zgadzam" = 0), ale też stosunkowo niewiele osób udzieliło odpowiedzi skrajnie pozytywnej.
 
+Najbardziej pozytywne opinie pochodzą z działów HR i PD – większość
+respondentów z tych działów wybrała opcje "zgadzam się" i "zdecydowanie
+się zgadzam". Dział MK (Marketing) jest bardziej podzielony – występuje
+większy odsetek osób, które nie mają zdania, co może sugerować, że dla
+tej grupy pytanie nie było jednoznaczne lub temat ich mniej dotyczył.
+Dział IT wykazuje najmniejszy poziom negatywnych odpowiedzi
+("zdecydowanie się nie zgadzam" = 0), ale też stosunkowo niewiele osób
+udzieliło odpowiedzi skrajnie pozytywnej.
 
 ```{r, echo=FALSE, results = "asis"}
 
@@ -258,9 +313,20 @@ f3 = xtable(t3,label="l3",caption="Tabela wielodzielcza dla zmiennych PYT 1 i ST
 print(f3,type = "latex",caption.placement = "top", comment=FALSE)
 
 ```
-Najbardziej pozytywne odpowiedzi (zgadzam się i zdecydowanie się zgadzam) pochodzą od osób z doświadczeniem 1-2 lata, co sugeruje, że osoby na tym etapie kariery widzą największą wartość badanego zagadnienia. Osoby z najmniejszym stażem (<1 rok) są bardziej podzielone, częściej nie mają zdania lub udzielają odpowiedzi negatywnych. Osoby z największym stażem (3+ lata) rzadko wybierają odpowiedzi skrajne, co może oznaczać, że ich ocena sytuacji jest bardziej neutralna.
 
-Pracownicy z 1-2 latami stażu są najbardziej pozytywnie nastawieni do badanego zagadnienia. Osoby z krótszym stażem mogą wymagać większej ilości informacji lub wsparcia, aby mogły bardziej świadomie ocenić sytuację.
+Najbardziej pozytywne odpowiedzi (zgadzam się i zdecydowanie się
+zgadzam) pochodzą od osób z doświadczeniem 1-2 lata, co sugeruje, że
+osoby na tym etapie kariery widzą największą wartość badanego
+zagadnienia. Osoby z najmniejszym stażem (\<1 rok) są bardziej
+podzielone, częściej nie mają zdania lub udzielają odpowiedzi
+negatywnych. Osoby z największym stażem (3+ lata) rzadko wybierają
+odpowiedzi skrajne, co może oznaczać, że ich ocena sytuacji jest
+bardziej neutralna.
+
+Pracownicy z 1-2 latami stażu są najbardziej pozytywnie nastawieni do
+badanego zagadnienia. Osoby z krótszym stażem mogą wymagać większej
+ilości informacji lub wsparcia, aby mogły bardziej świadomie ocenić
+sytuację.
 
 ```{r, echo=FALSE, results = "asis"}
 
@@ -271,9 +337,17 @@ f3 = xtable(t3,label="l3",caption="Tabela wielodzielcza dla zmiennych PYT 1 i $C
 print(f3,type = "latex",caption.placement = "top", comment=FALSE)
 
 ```
-Osoby na stanowiskach kierowniczych częściej wybierają opcję "zgadzam się" i "zdecydowanie się zgadzam", co może świadczyć o ich większym zadowoleniu. Osoby niepełniące funkcji kierowniczych są bardziej podzielone – widoczny jest większy odsetek neutralnych i negatywnych odpowiedzi.
 
-Pracownicy na stanowiskach kierowniczych mają bardziej pozytywne podejście do badanego aspektu, natomiast pracownicy bez funkcji kierowniczych mogą czuć się mniej związani z tematem lub mieć inne doświadczenia.
+Osoby na stanowiskach kierowniczych częściej wybierają opcję "zgadzam
+się" i "zdecydowanie się zgadzam", co może świadczyć o ich większym
+zadowoleniu. Osoby niepełniące funkcji kierowniczych są bardziej
+podzielone – widoczny jest większy odsetek neutralnych i negatywnych
+odpowiedzi.
+
+Pracownicy na stanowiskach kierowniczych mają bardziej pozytywne
+podejście do badanego aspektu, natomiast pracownicy bez funkcji
+kierowniczych mogą czuć się mniej związani z tematem lub mieć inne
+doświadczenia.
 
 ```{r, echo=FALSE, results = "asis"}
 
@@ -284,11 +358,13 @@ f3 = xtable(t3,label="l3",caption="Tabela wielodzielcza dla zmiennych PYT 1 i P�
 print(f3,type = "latex",caption.placement = "top", comment=FALSE)
 
 ```
-Mężczyźni są bardziej podzieleni, częściej wybierają opcje neutralne i negatywne. Kobiety częściej wybierają pozytywne odpowiedzi, co może świadczyć o lepszym dopasowaniu badanego zagadnienia do ich oczekiwań.
 
-Istnieją różnice w postrzeganiu badanego tematu w zależności od płci – warto byłoby zbadać, co wpływa na większą satysfakcję kobiet.
+Mężczyźni są bardziej podzieleni, częściej wybierają opcje neutralne i
+negatywne. Kobiety częściej wybierają pozytywne odpowiedzi, co może
+świadczyć o lepszym dopasowaniu badanego zagadnienia do ich oczekiwań.
 
-
+Istnieją różnice w postrzeganiu badanego tematu w zależności od płci –
+warto byłoby zbadać, co wpływa na większą satysfakcję kobiet.
 
 ```{r, echo=FALSE, results = "asis"}
 
@@ -299,13 +375,19 @@ f3 = xtable(t3,label="l3",caption="Tabela wielodzielcza dla zmiennych PYT 1 i WI
 print(f3,type = "latex",caption.placement = "top", comment=FALSE)
 
 ```
-Najbardziej pozytywne odpowiedzi pochodzą od osób w wieku 36-45 lat oraz 46-55 lat – te grupy częściej wybierają opcje "zgadzam się" i "zdecydowanie się zgadzam". Najmłodsza grupa (0-35 lat) oraz najstarsza grupa (55+) mają wyższy odsetek odpowiedzi neutralnych lub negatywnych.
 
-Pracownicy w średnim wieku są najbardziej pozytywnie nastawieni do badanego zagadnienia. Osoby młodsze i starsze mogą mieć inne oczekiwania lub mniej doświadczenia w tym obszarze.
+Najbardziej pozytywne odpowiedzi pochodzą od osób w wieku 36-45 lat oraz
+46-55 lat – te grupy częściej wybierają opcje "zgadzam się" i
+"zdecydowanie się zgadzam". Najmłodsza grupa (0-35 lat) oraz najstarsza
+grupa (55+) mają wyższy odsetek odpowiedzi neutralnych lub negatywnych.
+
+Pracownicy w średnim wieku są najbardziej pozytywnie nastawieni do
+badanego zagadnienia. Osoby młodsze i starsze mogą mieć inne oczekiwania
+lub mniej doświadczenia w tym obszarze.
 
 ### zadanie 1.6
 
-Sporządzono tablicę wielodzielczą dla pary zmiennych: PYT_2 i PYT_3. 
+Sporządzono tablicę wielodzielczą dla pary zmiennych: PYT_2 i PYT_3.
 
 ```{r, echo=FALSE, results = "asis"}
 
@@ -316,13 +398,20 @@ f4 = xtable(t4,label="l4",caption="Tabela wielodzielcza dla zmiennych PYT 1 i PY
 print(f4,type = "latex",caption.placement = "top", comment=FALSE)
 
 ```
-Dane obejmują zarówno zmienne ilościowe (np. STAŻ, WIEK, PYT_1), jak i jakościowe (np. DZIAŁ, PŁEĆ, CZY_KIER). Brak wartości brakujących sugeruje, że zestaw danych jest kompletny i dobrze przygotowany do analizy.
 
-W zbiorze znajduje się 5 zmiennych ilościowych i 4 zmienne jakościowe (faktory).
+Dane obejmują zarówno zmienne ilościowe (np. STAŻ, WIEK, PYT_1), jak i
+jakościowe (np. DZIAŁ, PŁEĆ, CZY_KIER). Brak wartości brakujących
+sugeruje, że zestaw danych jest kompletny i dobrze przygotowany do
+analizy.
 
-Najwięcej osób w próbie należy do działu PD (98 osób), najmniej do IT (26 osób).
+W zbiorze znajduje się 5 zmiennych ilościowych i 4 zmienne jakościowe
+(faktory).
 
-Większość badanych ma staż pracy 1-2 lata (140 osób), co może wskazywać na młodą kadrę pracowników.
+Najwięcej osób w próbie należy do działu PD (98 osób), najmniej do IT
+(26 osób).
+
+Większość badanych ma staż pracy 1-2 lata (140 osób), co może wskazywać
+na młodą kadrę pracowników.
 
 Większość respondentów pełni funkcję kierowniczą (173 TAK vs. 27 NIE).
 
@@ -330,24 +419,38 @@ Przewaga mężczyzn w próbie (129 mężczyzn vs. 71 kobiet).
 
 Największa grupa wiekowa to 36-45 lat (104 osoby).
 
-PYT_1 a DZIAŁ: Najwięcej pozytywnych odpowiedzi ("zgadzam się" lub "zdecydowanie się zgadzam") udzieliły osoby z działu PD.
+PYT_1 a DZIAŁ: Najwięcej pozytywnych odpowiedzi ("zgadzam się" lub
+"zdecydowanie się zgadzam") udzieliły osoby z działu PD.
 
-PYT_1 a STAŻ: Wśród osób z najkrótszym stażem (<1 rok) więcej było odpowiedzi neutralnych lub negatywnych. Może to wynikać z braku doświadczenia lub innego spojrzenia na temat badania.
+PYT_1 a STAŻ: Wśród osób z najkrótszym stażem (\<1 rok) więcej było
+odpowiedzi neutralnych lub negatywnych. Może to wynikać z braku
+doświadczenia lub innego spojrzenia na temat badania.
 
-PYT_1 a CZY_KIER: Kierownicy częściej zgadzali się z twierdzeniem zawartym w PYT_1 niż osoby niepełniące funkcji kierowniczych.
+PYT_1 a CZY_KIER: Kierownicy częściej zgadzali się z twierdzeniem
+zawartym w PYT_1 niż osoby niepełniące funkcji kierowniczych.
 
-PYT_1 a PŁEĆ: Mężczyźni częściej wyrażali zdecydowaną opinię niż kobiety, które częściej wybierały opcję "nie mam zdania".
+PYT_1 a PŁEĆ: Mężczyźni częściej wyrażali zdecydowaną opinię niż
+kobiety, które częściej wybierały opcję "nie mam zdania".
 
-PYT_1 a WIEK_KAT: Najwięcej osób w wieku 36-45 lat zgadzało się z PYT_1, natomiast najmniej zdecydowanych odpowiedzi było w grupie 0-35 lat.
+PYT_1 a WIEK_KAT: Najwięcej osób w wieku 36-45 lat zgadzało się z PYT_1,
+natomiast najmniej zdecydowanych odpowiedzi było w grupie 0-35 lat.
 
-PYT_1 a PYT_2: Istnieje silna zależność – osoby, które nie zgadzały się z PYT_1, często miały podobne odpowiedzi na PYT_2, a ci, którzy zgadzali się z PYT_1, także zgadzali się z PYT_2.
+PYT_1 a PYT_2: Istnieje silna zależność – osoby, które nie zgadzały się
+z PYT_1, często miały podobne odpowiedzi na PYT_2, a ci, którzy zgadzali
+się z PYT_1, także zgadzali się z PYT_2.
 
-Występują różnice w opiniach w zależności od działu, stażu pracy, płci, funkcji kierowniczej i wieku. Kierownicy oraz osoby z dłuższym stażem mają bardziej zdecydowane opinie. Istnieje silna korelacja między odpowiedziami na PYT_1 i PYT_2. Możliwe różnice w podejściu do badanej kwestii między kobietami a mężczyznami oraz młodszymi a starszymi pracownikami.
+Występują różnice w opiniach w zależności od działu, stażu pracy, płci,
+funkcji kierowniczej i wieku. Kierownicy oraz osoby z dłuższym stażem
+mają bardziej zdecydowane opinie. Istnieje silna korelacja między
+odpowiedziami na PYT_1 i PYT_2. Możliwe różnice w podejściu do badanej
+kwestii między kobietami a mężczyznami oraz młodszymi a starszymi
+pracownikami.
 
 ### zadanie 1.7
 
-Utworzono zmienną CZY_ZADOW na podstawie zmiennej PYT_2 ł ˛acz ˛ac kategorie "nie zgadzam się" i "zdecydowanie się nie zgadzam" oraz "zgadzam się" i "zdecydowanie się
-zgadzam"
+Utworzono zmienną CZY_ZADOW na podstawie zmiennej PYT_2 ł ˛acz ˛ac
+kategorie "nie zgadzam się" i "zdecydowanie się nie zgadzam" oraz
+"zgadzam się" i "zdecydowanie się zgadzam"
 
 ```{r, echo=FALSE}
 df$CZY_ZADOW <- cut(df$PYT_2,
@@ -364,7 +467,10 @@ labels = c('NIE', 'TAK'))
 
 ### zadanie 1.8
 
-Sporządzono wykresy mozaikowe odpowiadające parom zmiennych CZY_ZADOW i DZIAŁ, CZY_ZADOW i STAŻ, CZY_ZADOW i CZY_KIER, CZY_ZADOW i PŁEĆ oraz CZY_ZADOW i WIEK_KAT.
+Sporządzono wykresy mozaikowe odpowiadające parom zmiennych CZY_ZADOW i
+DZIAŁ, CZY_ZADOW i STAŻ, CZY_ZADOW i CZY_KIER, CZY_ZADOW i PŁEĆ oraz
+CZY_ZADOW i WIEK_KAT.
+
 ```{r, echo=FALSE}
 attach(df)
 Colors = c("navy", "lightblue", "pink", 'red')
@@ -386,11 +492,23 @@ print(mosaicplot(table(CZY_ZADOW, PŁEĆ), color=Colors, xlab = 'Czy zadowolony'
 ```{r, echo=FALSE}
 print(mosaicplot(table(CZY_ZADOW, WIEK_KAT), color=Colors, xlab = 'Czy zadowolony', ylab = 'Wiek kat', main = "CZY ZADOWOLONY ~ WIKE KAT"))
 ```
+
 # Część II
+
 ## Zadanie 2
-Na wykresie słupkowym została przedstawiona proporcja odpiedzi pracowników firmy na pytanie *PYT_1: "Jak bardzo zgadzasz się ze stwierdzeniem, że firma zapewnia odpowiednie wsparcie i materiały umożliwiaja˛ce skuteczne wykorzystanie w praktyce wiedzy zdobytej w trakcie szkoleń?"*. 
-Z wykresu wynika, że połowa badanych zgadza się ze stwierdzeniem, że firma zapewnia odpowiednie wsparcie i materialy umożliwiające skuteczne wykorzystanie w praktyce wiedzy zdobytej w trakcie szkoleń, ponadto 14% badanych zdecydowanie popiera tę tezę, a 20% nie ma zdania na ten temat. Natomiast niecałe 10% nie zgadza się z powyższym stwierdzeniem, a 7% uważa, że jest ono zdecydowanie sprzeczne. 
-```{r, echo=FALSE}
+
+Na wykresie słupkowym została przedstawiona proporcja odpiedzi
+pracowników firmy na pytanie *PYT_1: "Jak bardzo zgadzasz się ze
+stwierdzeniem, że firma zapewnia odpowiednie wsparcie i materiały
+umożliwiaja˛ce skuteczne wykorzystanie w praktyce wiedzy zdobytej w
+trakcie szkoleń?"*. Z wykresu wynika, że połowa badanych zgadza się ze
+stwierdzeniem, że firma zapewnia odpowiednie wsparcie i materialy
+umożliwiające skuteczne wykorzystanie w praktyce wiedzy zdobytej w
+trakcie szkoleń, ponadto 14% badanych zdecydowanie popiera tę tezę, a
+20% nie ma zdania na ten temat. Natomiast niecałe 10% nie zgadza się z
+powyższym stwierdzeniem, a 7% uważa, że jest ono zdecydowanie sprzeczne.
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
 PYT_1 <- as.factor(PYT_1)
 tabela_PYT_1 <- prop.table(table(PYT_1))
 bp_PYT_1 <- barplot(tabela_PYT_1, col = "lightblue", main = "Proporcje PYT_1", xlab = "Odpowiedź", ylab = "Proporcja odpowiedzi", ylim = c(0, 0.6)) 
@@ -398,23 +516,36 @@ text(x = bp_PYT_1, y = tabela_PYT_1, labels = round(tabela_PYT_1, 2), pos = 3, c
 
 ```
 
-Ponadto sprawdzono jak rozkłada się poziom zgodności z powyższym stwierdzeniem względem pełnionego stanowiska (kierownicze lub niekierownicze) dzięki zmiennej CZY_KIER.
-Z wykresu można wywyniksować, że w obu przypadkach około połowy badanych zgadza się ze stwierdzeniem z PYT_1, jednak ponad dwókrotnie większa część osób (procentowo) bez stanowiska kierowniczego niż na stanowisku kierowniczym jest zdecydowanie zadowolona z udostępnianych materiałów ze szkoleń. Również można zauważyć, że odpowiedzi *nie mam zdania/ nie zgadzam się/ zdecydowanie się nie zgadzam* zanaczyło większy odetek osób na stanowistach kierowniczych niż nie. Zatem z analizy wykresu pudełkowego wynika, że pracownicy na stanowiskach kierowniczych są mniej zdowoleni ze wsparcia i materiałów zapewnianych przez firmę umożliwiaja˛ce skuteczne wykorzystanie w praktyce wiedzy zdobytej w trakcie szkoleń.
+Ponadto sprawdzono jak rozkłada się poziom zgodności z powyższym
+stwierdzeniem względem pełnionego stanowiska (kierownicze lub
+niekierownicze) dzięki zmiennej CZY_KIER. Z wykresu można wywyniksować,
+że w obu przypadkach około połowy badanych zgadza się ze stwierdzeniem z
+PYT_1, jednak ponad dwókrotnie większa część osób (procentowo) bez
+stanowiska kierowniczego niż na stanowisku kierowniczym jest
+zdecydowanie zadowolona z udostępnianych materiałów ze szkoleń. Również
+można zauważyć, że odpowiedzi *nie mam zdania/ nie zgadzam się/
+zdecydowanie się nie zgadzam* zanaczyło większy odetek osób na
+stanowistach kierowniczych niż nie. Zatem z analizy wykresu pudełkowego
+wynika, że pracownicy na stanowiskach kierowniczych są mniej zdowoleni
+ze wsparcia i materiałów zapewnianych przez firmę umożliwiaja˛ce
+skuteczne wykorzystanie w praktyce wiedzy zdobytej w trakcie szkoleń.
+
 ```{r, echo=FALSE}
 tabela_grupy <- prop.table(table(PYT_1, CZY_KIER), margin = 2)
 bp_grupy <- barplot(tabela_grupy, beside = TRUE, col = c("lightblue", "steelblue", "skyblue", "cornflowerblue", "navy"), legend = rownames(tabela_grupy), main = "PYT_1 wg CZY_KIER",xlab = "Odpowiedzi", ylab = "Proporcja odpowiedzi", ylim = c(0, 0.6), names.arg = c("Stanowisko niekierownicze", "Stanowisko kierownicze")) 
 text(x = bp_grupy, y = tabela_grupy, labels = round(tabela_grupy, 2), pos = 3, cex = 1) 
 ```
+
 ## Zadanie 3
-Funkcja *sample()* z biblioteki *stats* losuje próbkę z podanego zbioru danych.
-**Składnia:** sample(x, size, replace, prob)
-Gdzie:
-- x - wektor do losowania
-- size - liczba elementów do wylosowania
-- replace - określa czy losowanie jest ze zwracaniem (TRUE/FALSE)
-- prob - prawdopodobieństwa dla poszczególnych elementów(parametr opcjonalny)
-**Przykłady użycia**
-```{r, echo=FALSE}
+
+Funkcja *sample()* z biblioteki *stats* losuje próbkę z podanego zbioru
+danych. **Składnia:** sample(x, size, replace, prob) \\ Gdzie:\\ - x -
+wektor do losowania\\ - size - liczba elementów do wylosowania\\ -
+replace - określa czy losowanie jest ze zwracaniem (TRUE/FALSE)\\ -
+prob - prawdopodobieństwa dla poszczególnych elementów(parametr
+opcjonalny)\\
+
+```{r, echo=FALSE, }
 # Losowanie 5 liczb z zakresu 1-10
 sample(1:10, size = 5)
 
@@ -425,29 +556,39 @@ sample(1:10, size = 5, replace = TRUE)
 sample(1:10, size = 5, prob = c(0.1, 0.05, 0.15, 0.1, 0.2, 0.05, 0.05, 0.1, 0.1, 0.1))
 ```
 
-Następnie z rekordów zawartych w pliku ankieta.csv zostało wylosowane 10% losowych ze wszystkich rekordów za pomocą losowania ze zwracaniem oraz bez zwracania.
-**Losowanie wierszy ze zwracaniem**
+Następnie z rekordów zawartych w pliku ankieta.csv zostało wylosowane
+10% losowych ze wszystkich rekordów za pomocą losowania ze zwracaniem
+oraz bez zwracania. \\ **Losowanie wierszy ze zwracaniem**
+
 ```{r, echo=FALSE}
 sample_rows_with_replacement <- sample(1:nrow(df), size = round(0.1 * nrow(df)), replace = TRUE)
 df[sample_rows_with_replacement, ]
 
 ```
-**Losowanie wierszy bez zwracania** 
+
+**Losowanie wierszy bez zwracania**
+
 ```{r, echo=FALSE}
 sample_rows_without_replacement <- sample(1:nrow(df), size = round(0.1 * nrow(df)), replace = FALSE)
 df[sample_rows_without_replacement, ]
 ```
-## Zadanie 4
-Funkcja *binomial_sim* dla każdej próbki generuje 1 lub 0 z prawdopodobieństwem *p* i zwraca realizację próby.
-Funckja przyjmuje dwa parametry:
-- *n* - długość próby
-- *p* - teoretyczne prawdopodobieństwo sukcesu.
 
-Funkcja *binomial__N_sim* wykonuje *N* prób Monte Carlo z rozkładu dwumianowego korzystając z funkcji *binomial_sim*, zwraca wketor realizacji prób z rozkładu dwumianowego.
+## Zadanie 4
+
+Funkcja *binomial_sim* dla każdej próbki generuje 1 lub 0 z
+prawdopodobieństwem *p* i zwraca realizację próby. Funckja przyjmuje dwa
+parametry: - *n* - długość próby - *p* - teoretyczne prawdopodobieństwo
+sukcesu.
+
+Funkcja \*binomial\_\_N_sim\* wykonuje *N* prób Monte Carlo z rozkładu
+dwumianowego korzystając z funkcji *binomial_sim*, zwraca wketor
+realizacji prób z rozkładu dwumianowego.
+
 Funkcja przyjmuje trzy paramatry:
-- *n* - długość próby
-- *p* - teoretyczne prawdopodobieństwo sukcesu
-- *N* - liczbę prób Monte Carlo
+
+\- *n* - długość próby\\ - *p* - teoretyczne prawdopodobieństwo
+sukcesu\\ - *N* - liczbę prób Monte Carlo
+
 ```{r, echo=FALSE}
 # Funkcja do generowania pojedynczej realizacji rozkładu dwumianowego
 binomial_sim <- function(n, p) {
@@ -465,23 +606,27 @@ binomial_N_sim <- function(n, p, N) {
 }
 ```
 
-W celu przetestowania poprawności zaproponowanych funkcji, przeprowadzono symulację, której celem było wygenerowanie wektora zmiennych losowych i obliczenie ich charakterystyk, a następnie porównanie wyników empirycznych z teoretycznymi.
-**Parametry symulacji:**
-- n = 100
-- p = 0.5
-- N = 10000
-**Charakterystyki rozkładu, które zostały uwzględnione:**
-1. **Średnia rozkładu:**
-- **Empiryczna:** obliczona za pomocą funkcji *mean()* na wygenerowanych danych, 
-- **Teoretyczna:** obliczona na podstawie wzoru *np*, gdzie *n* to liczba prób, *p* to prawdopodobieństwo sukcesu.
-2.**Odchylenie standardowe rozkładu:** 
-- **Empiryczne:** obliczone za pomocą funkcji *sd()* na wygenerowanych danych,
-- **Teroretyczne:** obliczone na podstawie wzoru *$$ \sigma = \sqrt{np(1-p)} $$*, gdzie *n* to liczba prób, *p* to prawdopodobieństwo sukcesu.
-3. **Hstogram częstości:** 
-- **Empiryczne:** przedstawione za pomocą funkcji *hist()* na podstawie wygenerowanych danych
-- **Teoretyczne:** porównane z teoretycznymi wartościami prawdopodobieństwa sukcesu, obliczonymi za pomocą funkcji *dbinom()*
+W celu przetestowania poprawności zaproponowanych funkcji,
+przeprowadzono symulację, której celem było wygenerowanie wektora
+zmiennych losowych i obliczenie ich charakterystyk, a następnie
+porównanie wyników empirycznych z teoretycznymi.\\ **Parametry
+symulacji:** \\ - n = 100\\ - p = 0.5\\ - N = 10000\\ **Charakterystyki
+rozkładu,które zostały uwzględnione:**\\ 1. **Średnia rozkładu:**\\ -
+**Empiryczna:** obliczona za pomocą funkcji *mean()* na wygenerowanych
+danych,\\ - **Teoretyczna:** obliczona na podstawie wzoru *np*, gdzie
+*n* to liczba prób, *p* to prawdopodobieństwo sukcesu.\\ 2.**Odchylenie
+standardowe rozkładu:**\\ - **Empiryczne:** obliczone za pomocą funkcji
+*sd()* na wygenerowanych danych,\\ - **Teroretyczne:** obliczone na
+podstawie wzoru $$ \sigma = \sqrt{np(1-p)} $$, gdzie *n* to liczba prób,
+*p* to prawdopodobieństwo sukcesu.\\ 3. **Hstogram częstości:**\\ -
+**Empiryczne:** przedstawione za pomocą funkcji *hist()* na podstawie
+wygenerowanych danych\\ - **Teoretyczne:** porównane z teoretycznymi
+wartościami prawdopodobieństwa sukcesu, obliczonymi za pomocą funkcji
+*dbinom()*\\
 
-Wyniki symulacji sugerują, że funkcja poprawnie generuje zmienną losową z rozkładu dwumianowego.
+Wyniki symulacji sugerują, że funkcja poprawnie generuje zmienną losową
+z rozkładu dwumianowego.
+
 ```{r, echo = FALSE}
 # Parametry rozkładu dwumianowego
 n <- 100  
@@ -526,20 +671,21 @@ legend("topright", legend = c("Symulacja", "Teoria"),
 
 ```
 
-
 ## Zadnia 5
-Funkcja *wielomianowy_sim* generuje pojedynczą realizację rozkładu wielomianowego z prawdopodbieństwami sukcesu danymi jako wektor *p*.
-Przyjmuje dwa parametry:
-- *n* - liczba prób (wielkość próby)
-- *p* - wektor prawdopodobieństw dla poszczególnych kategorii.
-Zwraca wektor liczności wystąpień każdej kategorii.
 
-Funkcja *wielomianowy_N_sim* wykonuje *N* prób Monte Carlo dla rozkładu wielomianowego.
-Korzysta z funkcji *wielomianowy_sim*, aby wygenerować realizacje prób i zwraca macierz wyników.
-Przyjmuje trzy parametry:
-- *n* - liczba prób (wielkość próby)
-- *p* - wektor prawdopodobieństw dla poszczególnych kategorii
-- *N* - liczba prób Monte Carlo
+Funkcja *wielomianowy_sim* generuje pojedynczą realizację rozkładu
+wielomianowego z prawdopodbieństwami sukcesu danymi jako wektor *p*.\\
+Przyjmuje dwa parametry:\\ - *n* - liczba prób (wielkość próby)\\ -
+*p* - wektor prawdopodobieństw dla poszczególnych kategorii.\\ Zwraca
+wektor liczności wystąpień każdej kategorii.\\
+
+Funkcja *wielomianowy_N_sim* wykonuje *N* prób Monte Carlo dla rozkładu
+wielomianowego. Korzysta z funkcji *wielomianowy_sim*, aby wygenerować
+realizacje prób i zwraca macierz wyników.\\ Przyjmuje trzy
+parametry:\\ - *n* - liczba prób (wielkość próby)\\ - *p* - wektor
+prawdopodobieństw dla poszczególnych kategori\\ - *N* - liczba prób
+Monte Carlo
+
 ```{r, echo=FALSE}
 # Funkcja generująca pojedynczą realizację rozkładu wielomianowego
 wielomianowy_sim <- function(n, p) {
@@ -558,21 +704,25 @@ wielomianowy_N_sim <- function(n, p, N) {
 }
 ```
 
-Analogicznie do poprzedniego zadania, przeprowadzono symulację, której celem było sprawdzenie poprawności zaproponowanych funckji.
-Została wygenerowana macierz zawierająca realizaje zmiennych rozkładu wielomianowego, a następnie obliczono ich charakterystyki i porówano z teoretycznymi wartościami.
-**Parametry symulacji:**
-- n = 100
-- p = [0.5, 0.1, 0.2, 0.2]
-- N = 10000
-**Charakterystyki rozkładu, które zostały uwzględnione:**
-1. **Średnia rozkładu:**
-- **Empiryczna:** obliczona za pomocą funkcji *rowMeans()* na wygenerowanych danych, 
-- **Teoretyczna:** obliczona na podstawie wzoru *np*, gdzie *n* to liczba prób, *p* to prawdopodobieństwo sukcesu.
-2.**Odchylenie standardowe rozkładu:** 
-- **Empiryczne:** obliczone za pomocą funkcji *apply(simulated_data, 1, sd)* na wygenerowanych danych,
-- **Teroretyczne:** obliczone na podstawie wzoru *$$ \sigma = \sqrt{np(1-p)} $$*, gdzie *n* to liczba prób, *p* to wektor prawdopodobiństw.
+Analogicznie do poprzedniego zadania, przeprowadzono symulację, której
+celem było sprawdzenie poprawności zaproponowanych funckji. Została
+wygenerowana macierz zawierająca realizaje zmiennych rozkładu
+wielomianowego, a następnie obliczono ich charakterystyki i porówano z
+teoretycznymi wartościami.\\ **Parametry symulacji:**\\ - n = 100\\ - p
+= [0.5, 0.1, 0.2, 0.2] \\ - N = 10000\\ **Charakterystyki rozkładu,
+które zostały uwzględnione:**\\ 1. **Średnia rozkładu:**\\ -
+**Empiryczna:** obliczona za pomocą funkcji *rowMeans()* na
+wygenerowanych danych,\\ - **Teoretyczna:** obliczona na podstawie wzoru
+*np*, gdzie *n* to liczba prób, *p* to prawdopodobieństwo sukcesu.\\
+2.**Odchylenie standardowe rozkładu:**\\ - **Empiryczne:** obliczone za
+pomocą funkcji *apply(simulated_data, 1, sd)* na wygenerowanych
+danych,\\ - **Teroretyczne:** obliczone na podstawie wzoru
+$$ \sigma = \sqrt{np(1-p)} $$, gdzie *n* to liczba prób, *p* to wektor
+prawdopodobiństw.\\
 
-Wyniki symulacji sugerują, że funkcja poprawnie generuje zmienną losową z rozkładu wielomianowego.
+Wyniki symulacji sugerują, że funkcja poprawnie generuje zmienną losową
+z rozkładu wielomianowego.
+
 ```{r, echo=FALSE}
 # Parametry symulacji
 p <- c(0.5, 0.1, 0.2, 0.2)
@@ -596,9 +746,10 @@ cat("Empiryczna średnia: ", empirical_mean, "\n")
 cat("Empiryczne odchylenie standardowe: ", empirical_sd, "\n")
 ```
 
-
 # Część III i IV
+
 ## Zadanie 6
+
 ```{r, echo=FALSE}
 
 clopper_pearson_ci <- function(confidence, successes = NULL, trials = NULL, data = NULL) {
@@ -629,7 +780,9 @@ cat("Przedział ufności (Clopper-Pearson) dla danych binarnych:", ci_data, "\n"
 
 
 ```
+
 ## Zadanie 7
+
 ```{r, echo=FALSE }
 
 
@@ -775,34 +928,74 @@ for (i in seq_along(n_values)) {
 par(mfrow = c(1, 1))
 ```
 
+Dla małych próbek (n=30) metoda normalna wykazuje dużą niestabilność, z
+wyraźnymi spadkami poniżej poziomu pozostałych metod. W miarę wzrostu
+liczności próby (n=100, n=1000) różnice między metodami się zmniejszają,
+a wszystkie trzy metody zbliżają się do oczekiwanego poziomu pokrycia.
+Metoda Wilsona i Beta generalnie utrzymują lepsze prawdopodobieństwo
+pokrycia, szczególnie dla mniejszych próbek.
 
-Dla małych próbek (n=30) metoda normalna  wykazuje dużą niestabilność, z wyraźnymi spadkami poniżej poziomu pozostałych metod. W miarę wzrostu liczności próby (n=100, n=1000) różnice między metodami się zmniejszają, a wszystkie trzy metody zbliżają się do oczekiwanego poziomu pokrycia.
-Metoda Wilsona i Beta generalnie utrzymują lepsze prawdopodobieństwo pokrycia, szczególnie dla mniejszych próbek.
+Wszystkie metody wykazują podobny kształt – długość przedziału jest
+największa dla p≈0.5p≈0.5 i maleje dla wartości bliższych 0 i 1. Dla
+n=30 metoda normalna daje krótsze przedziały, ale kosztem gorszego
+prawdopodobieństwa pokrycia. Dla większych próbek długości przedziałów
+uzyskane różnymi metodami są bardzo podobne.
 
-Wszystkie metody wykazują podobny kształt – długość przedziału jest największa dla p≈0.5p≈0.5 i maleje dla wartości bliższych 0 i 1. Dla n=30 metoda normalna daje krótsze przedziały, ale kosztem gorszego prawdopodobieństwa pokrycia. Dla większych próbek długości przedziałów uzyskane różnymi metodami są bardzo podobne.
+Przy większych n różnice między metodami stają się mniej istotne –
+wszystkie trzy metody dają podobne prawdopodobieństwo pokrycia i
+długości przedziałów. Dla małych próbek metoda Walda wydaje się najmniej
+stabilna i najgorzej dopasowana.
 
-Przy większych n różnice między metodami stają się mniej istotne – wszystkie trzy metody dają podobne prawdopodobieństwo pokrycia i długości przedziałów. Dla małych próbek metoda Walda wydaje się najmniej stabilna i najgorzej dopasowana.
-
-Metoda Walda nie sprawdza się dobrze dla małych prób – daje niestabilne pokrycie i krótsze przedziały kosztem wiarygodności. Metody Wilsona i Beta są bardziej niezawodne, szczególnie dla mniejszych wartości n.Dla dużych próbek wszystkie metody działają podobnie
+Metoda Walda nie sprawdza się dobrze dla małych prób – daje niestabilne
+pokrycie i krótsze przedziały kosztem wiarygodności. Metody Wilsona i
+Beta są bardziej niezawodne, szczególnie dla mniejszych wartości n.Dla
+dużych próbek wszystkie metody działają podobnie
 
 # Część V
-## Zadanie 10 !!! DOKOŃCZ
-1. **Test dokładny**
-W języku programowania R do wykonywania testu dokładnego służy funckja *binom.test()*, która wykonuje dokładny test dwumianowy (test dokładny dla proporcji) oparty na rozkładzie dwumianowym.
-- Stosowany, gdy próbka jest mała, ponieważ nie opiera się na przybliżeniach asymptotycznych.
-Funkcja przyjmuje argumenty:
-- *x* - liczba sukcesów w próbie
-- *n* - liczba obserwacji w próbie
-- *p* - prawdopodonbieństwo sukcesu 
-2. **Test asymptotyczny**
-Do wykonywania testu asyptotycznego język programownaia R wykorzystuje funkcję *prop.test()*, który jest testem z użyciem asymptotycznego przybliżenia normalnego (test chi-kwadrat dla proporcji).
-- Stosowany dla dużych prób, ponieważ opiera się na centralnym twierdzeniu granicznym.
-W celu sprawdzenia parametrów  podanych funkcji przerowadzono symaulację z pramatrami:
-1. Symulacja I:
-- *x1* = 3
-- *n1* = 10
-- *p1* = 0.5 
-```{r}
+
+## Zadanie 10
+
+1.  **Test dokładny** W języku programowania R do wykonywania testu
+    dokładnego służy funckja *binom.test()*, która wykonuje dokładny
+    test dwumianowy (test dokładny dla proporcji) oparty na rozkładzie
+    dwumianowym.\\ Stosowany, gdy próbka jest mała, ponieważ nie opiera
+    się na przybliżeniach asymptotycznych. Funkcja przyjmuje argumenty:
+
+-   *x* - liczba sukcesów w próbie
+-   *n* - liczba obserwacji w próbie
+-   *p* - prawdopodonbieństwo sukcesu
+-   *alternative* - paramter określający hipotezę typ hipotezy
+    alternatywnej: `"two.sided"` (dwustronna, domyślna), `"greater"`
+    (większa) lub `"less"` (mniejsza)
+-   *conf.level* - poziom ufności dla testu (domyślnie = 0.95)
+
+2.  **Test asymptotyczny** Do wykonywania testu asyptotycznego język
+    programownaia R wykorzystuje funkcję *prop.test()*, który jest
+    testem z użyciem asymptotycznego przybliżenia normalnego (test
+    chi-kwadrat dla proporcji).\\ Stosowany dla dużych prób, ponieważ
+    opiera się na centralnym twierdzeniu granicznym. W celu sprawdzenia
+    parametrów podanych funkcji przerowadzono symaulację z pramatrami:
+
+-   *x* - liczba sukcesów w próbie
+-   *n* - liczba obserwacji w próbie
+-   *p* - prawdopodonbieństwo sukcesu
+-   *alternative* - paramter określający hipotezę typ hipotezy
+    alternatywnej: `"two.sided"` (dwustronna, domyślna), `"greater"`
+    (większa) lub `"less"` (mniejsza)
+-   *conf.level* - poziom ufności dla testu (domyślnie = 0.95)
+-   *correct* - Yates' continuity correction to poprawka stosowana w
+    teście chi-kwadrat, szczególnie w przypadku małych prób, mająca na
+    celu poprawienie dokładności testu. Zmienia statystykę testową, aby
+    zredukować nadmierne wartości p w małych próbach, ponieważ w takich
+    przypadkach rozkład chi-kwadrat może być mniej dokładny.
+
+1.  Symulacja I:
+
+-   *x1* = 3
+-   *n1* = 10
+-   *p1* = 0.5
+
+```{r, echo = FALSE}
 x1 <- 3
 n1 <- 10
 p1 <- 0.5
@@ -810,14 +1003,24 @@ p1 <- 0.5
 test1_binom <- binom.test(x1, n1, p1)
 test1_prop <- prop.test(x1, n1, p1)
 
-test1_binom
-test1_prop
+cat("Wynik testu dokładnego:\n")
+cat("P-value:", test1_binom$p.value, "\n")
+
+cat("Wynik testu alternatywnego:\n")
+cat("P-value:", test1_prop$p.value, "\n")
+cat("Poziom: 0.05", "\n")
 ```
-2. Symulacja II:
-- *x2* = 260
-- *n2* = 500
-- *p2* = 0.5 
-```{r}
+
+Według wyników testów wynika, że nie ma podstwa do odrzucenia H0,
+ponieważ p-value jest większe niż poziom istotności.
+
+2.  Symulacja II:
+
+-   *x2* = 260
+-   *n2* = 500
+-   *p2* = 0.5
+
+```{r, echo= FALSE}
 x2 <- 260
 n2 <- 500
 p2 <- 0.5
@@ -825,12 +1028,49 @@ p2 <- 0.5
 test2_binom <- binom.test(x2, n2, p2)
 test2_prop <- prop.test(x2, n2, p2)
 
-test2_binom
-test2_prop
+cat("Wynik testu dokładnego:\n")
+cat("P-value:", test2_binom$p.value, "\n")
+
+cat("Wynik testu alternatywnego:\n")
+cat("P-value:", test2_prop$p.value, "\n")
+cat("Poziom: 0.05", "\n")
 ```
+
+Według wyników testów, nie ma podstaw do odrzucenia hipotezy zerowej
+(H₀), ponieważ p-value jest większe niż poziom istotności.
+
+Różnica w wynikach p-value dla testu dokładnego (binom.test) i testu
+proporcji (prop.test) wynika z różnych metod obliczeń:
+
+-   *binom.test* to test dokładny, który używa rozkładu dwumianowego i
+    jest bardziej precyzyjny w przypadku małych prób.
+
+-   *prop.test* to test aproksymacyjny, który bazuje na rozkładzie
+    normalnym, co jest przybliżeniem i może prowadzić do niewielkich
+    różnic w p-value, szczególnie w małych próbach.
+
+W tym przypadku, wyniki p-value są bardzo podobne, ale test binominalny
+jest dokładniejszy. Warto zauważyć, że dla większych prób (symulacja II)
+wyniki p-value są bliższe sobie, co sugeruje, że test aproksymacyjny
+staje się bardziej dokładny w miarę wzrostu rozmiaru próby.
+
 ## Zadanie 11
+
+Za pomocą funkcji *binom.test()* oraz *prop.test()* przerprowadzono
+weryfikację pięciu hipotez na poziomie ufności 1−α = 0.95.
+
 ### Zadanie 11.1
-```{r}
+
+Pierwsza hipoteza dotyczyła jaki jest stosunek pracujących w firmie
+kobiet. Postawiona hipoteza statystyczna:
+
+$H_0: p = 0.5$
+
+Wyniki testów przedstawione w tabelce poniżej są znacząco mniejsze od
+ustalonego poziomu istotności, zatem odrzucamy hipotezę zerową, co
+sugeruje, że udział kobiet w firmie nie jest równy 50%
+
+```{r, echo=FALSE}
 alpha <- 0.05
 k <- sum(PŁEĆ == "K")
 n <- length(PŁEĆ)
@@ -843,32 +1083,62 @@ results <- data.frame(
   Test = c("binom.test", "prop.test"),
   P_value = c(binom_result$p.value, prop_result$p.value),
   Interpretation = ifelse(c(binom_result$p.value, prop_result$p.value) < alpha, 
-                          "Odrzucamy H0 - różnica istotna statystycznie", 
+                          "Odrzucamy H0", 
                           "Brak podstaw do odrzucenia H0")
 )
 results
 ```
+
 ### Zadanie 11.2
-```{r}
+
+Druga hipoteza dotyczy pozytywnej odpowiedzi na drugie pytanie zadane w
+ankiecie. Postawiona hipoteza statystyczna:
+
+$H_0: p >= 0.7$
+
+Ta hipoteza również została odrzucona, ponieważ wyniki testów
+przedstawione poniżej są drastycznie mniejsze niż ustalony poziom
+istotności, po oznacza, że mniej niż 70% badanych uważa szkolenia za
+przystosowane do ich potrzeb.
+
+```{r, echo=FALSE}
 alpha <- 0.05
 zad <- sum(CZY_ZADOW == "TAK")
 n_zad <- length(CZY_ZADOW)
 p_0 <- 0.7
 
-binom_result <- binom.test(zad, n_zad, p = p_0, conf.level = 1 - alpha)
-prop_result <- prop.test(zad, n_zad, p = p_0, conf.level = 1 - alpha)
+binom_result <- binom.test(zad, n_zad, p = p_0, conf.level = 1 - alpha, alternative = "less")
+prop_result <- prop.test(zad, n_zad, p = p_0, conf.level = 1 - alpha, alternative = "less")
 
 results <- data.frame(
   Test = c("binom.test", "prop.test"),
   P_value = c(binom_result$p.value, prop_result$p.value),
   Interpretation = ifelse(c(binom_result$p.value, prop_result$p.value) < alpha, 
-                          "Odrzucamy H0 - różnica istotna statystycznie", 
-                          "Brak podstaw do odrzucenia H0")
+                          "Odrzucamy H0" , 
+                          "Brak podstaw do odrzucenia H0" )
 )
 results
+
 ```
+
 ### Zadanie 11.3
-```{r}
+
+Kolejna hipoteza dotyczy porónania czy prawdopodobieństwo, że kobieta
+pracuje na stanowisku kierowniczym jest równe prawdopodobieństwu, że
+mężczyzna pracuje na stanowisku kierowniczym. Do zweryfikowania tej
+hipotezy wykorzstano kolumnę CZY_KIER określającą czy pracownik jest na
+stanowisku kierowniczym ("Tak") czy nie ("Nie"). Postawiona hipoteza
+statystyczna:
+
+$$H_0: p = \frac{\text{liczba mężczyzn na stanowisku kierowniczym}}{\text{liczba wszystkich pracujących mężczyzn}}$$
+
+W tym przypadku wyniki obu testów przedstawionych w poniższej tabeli
+wyszły większe niż ustalony poziom istotności, a zatem nie ma podstaw na
+odrzucenie postawione hipotezy zerowej. Oznacza to, że możliwe, że w
+firmie procentowo jest tyle samo kobiet i mężczyzn na stanowisku
+kierowniczym.
+
+```{r, echo = FALSE}
 alpha <- 0.05
 k <- sum(PŁEĆ == "K" & CZY_KIER == "Tak")
 n_k <- sum(PŁEĆ == "K")
@@ -877,12 +1147,35 @@ n_m <- sum(PŁEĆ == "M")
 
 p_0 <- m/n_m
 
-prop_result <- prop.test(k, n_k, p_0, conf.level = 1 - alpha)
-prop_result
+binom_result <- binom.test(k, n_k, p = p_0, conf.level = 1 - alpha)
+prop_result <- prop.test(k, n_k, p = p_0, conf.level = 1 - alpha)
+
+results <- data.frame(
+  Test = c("binom.test", "prop.test"),
+  P_value = c(binom_result$p.value, prop_result$p.value),
+  Interpretation = ifelse(c(binom_result$p.value, prop_result$p.value) < alpha, 
+                          "Odrzucamy H0" , 
+                          "Brak podstaw do odrzucenia H0" )
+)
+results
+
 
 ```
+
 ### Zadnie 11.4
-```{r}
+
+Przedostatnia hipotezy związana jest z optymistyczną odpowiedzią na
+drugie pytanie z ankiety względem płci. Sprawdzamy czy równy procent
+kobiet i mężczyzn uważa, że szkolenia są przystosowane do ich potrzeb.
+Postawiona hipoteza statystyczna:
+
+$$H_0: p = \frac{\text{liczba mężczyzn zadowolonych ze szkolenia}}{\text{liczba wszystkich pracujących mężczyzn}}$$
+
+Z przerowadzonych testó wynika, że nie ma podstaw do odrzucenia hipotezy
+zerowej. Oznacza to, że możliwe, że w firmie pocentowo tyle samo kobiet
+i mężczyn odpowiedziało pozytywnie na drugie pytanie.
+
+```{r, echo=FALSE}
 alpha <- 0.05
 k <- sum(PŁEĆ == "K" & CZY_ZADOW == "TAK")
 n_k <- sum(PŁEĆ == "K")
@@ -891,12 +1184,35 @@ n_m <- sum(PŁEĆ == "M")
 
 p_0 <- m/n_m
 
-prop_result <- prop.test(k, n_k, p_0, conf.level = 1 - alpha)
-prop_result
+binom_result <- binom.test(k, n_k, p = p_0, conf.level = 1 - alpha)
+prop_result <- prop.test(k, n_k, p = p_0, conf.level = 1 - alpha)
+
+results <- data.frame(
+  Test = c("binom.test", "prop.test"),
+  P_value = c(binom_result$p.value, prop_result$p.value),
+  Interpretation = ifelse(c(binom_result$p.value, prop_result$p.value) < alpha, 
+                          "Odrzucamy H0" , 
+                          "Brak podstaw do odrzucenia H0" )
+)
+results
+
 
 ```
+
 ### Zadanie 11.5
-```{r}
+
+Ostatnia postawiona hipoteza sprawdza czy prawdopodbieństwo, że losowa
+kobieta z firmy pracuje w dziale zasobów ludzkich jest większe lub równe
+niż procent mężczyzn pracujących w tym dziale. Postawiona hipoteza
+statystyczna:
+
+$$H_0: p = \frac{\text{liczba mężczyzn pracujących w dziale HR}}{\text{liczba wszystkich pracujących mężczyzn}}$$
+
+Według wyników przedstawionych w poniższej tabelce nie ma podstaw do
+odrzucenia hipotezy zerowej, a zatem nie można określić czy procentowo
+więcej lub tyle samo kobiet pracuje w dziel HR niż mężczyzn.
+
+```{r, echo = FALSE}
 alpha <- 0.05
 k <- sum(PŁEĆ == "K" & DZIAŁ == "HR")
 n_k <- sum(PŁEĆ == "K")
@@ -905,39 +1221,50 @@ n_m <- sum(PŁEĆ == "M")
 
 p_0 <- m/n_m
 
-prop_result <- prop.test(k, n_k, p_0, conf.level = 1 - alpha)
-prop_result
+binom_result <- binom.test(k, n_k, p_0, conf.level = 1 - alpha, alternative = "less")
+prop_result <- prop.test(k, n_k, p_0, conf.level = 1 - alpha, alternative = "less")
 
+results <- data.frame(
+  Test = c("binom.test", "prop.test"),
+  P_value = c(binom_result$p.value, prop_result$p.value),
+  Interpretation = ifelse(c(binom_result$p.value, prop_result$p.value) < alpha, 
+                          "Odrzucamy H0" , 
+                          "Brak podstaw do odrzucenia H0" )
+)
+results
 ```
+
+Przeprowadzona analiza pozwoliła zweryfikować założone hipotezy oraz
+określić, czy istnieją istotne statystycznie różnice w badanych
+aspektach struktury zatrudnienia i opinii pracowników. Uzyskane wyniki
+mogą być podstawą do dalszych analiz oraz ewentualnych działań w
+zakresie polityki zatrudnienia i organizacji szkoleń w firmie.
+
 ## Zadanie 12
-```{r}
-"""powertest <- function(N, n, alpha, p0){
-  p_values <- seq(0.01, 0.99, by = 0.01)
-  l <- length(p_values)
-  binom_vec <- numeric(l)
-  prop_vec <- numeric(l)
-  
-  for (j in 1:l){
-    p <- p_values[j]
-    binom_vec_N <- numeric(N)
-    prop_vec_N <- numeric(N)
-    
-    for (i in 1:N) {
-      binom <- rbinom(1, n, p)  
-      binom_test <- binom.test(binom, n, p0, conf.level = 1 - alpha)
-      binom_vec_N[i] <- binom_test$p.value <= alpha
-      
-      prop_test <- prop.test(binom, n, p0, conf.level = 1 - alpha)
-      prop_vec_N[i] <- prop_test$p.value <= alpha
-    }
-    
-    binom_vec[j] <- mean(binom_vec_N)
-    prop_vec[j] <- mean(prop_vec_N)
-  }
-  
-  return(list(power_bin = binom_vec, power_prop = prop_vec))
-}"""
-```
+
+Do wyznaczenia mocy testu binomalnego (dokładnego) oraz mocy testu
+proporcji (asymptotycznego) przeprowadzono analizę dla hipotezy zerowej:
+$H_0: p = 0.9$ przeciwko hipotezie alternatywnej $H_1: p \neq 0.9$ na
+poziomie ufności 0.95.
+
+Moce testów zostały wyznaczone dla następujących wartości parametru
+$n = (50, 100, 500, 1000)$.
+
+Na poniższych wykresach przedstawiono zależność mocy testu od wartości
+parametru $p \in [0,1]$. Można zauważyć, że dla większości wartości $p$
+funkcja mocy osiąga wartości bliskie 1, jednak w okolicach $p = 0.9$
+występuje wyraźny spadek.
+
+Z poniższych wykresów można wywnioskować wpływ liczności próby na wyniki
+testów jest również istotny. Dla mniejszych prób, na przykład przy
+$n = 50$ lub $n = 100$, spadek mocy w pobliżu $p = 0.9$ jest
+łagodniejszy. Testy mają trudność w rozróżnieniu wartości bliskich
+hipotezie zerowej, co prowadzi do mniejszej precyzji w wykrywaniu
+różnic. Z kolei dla większych prób, takich jak $n = 500$ lub $n = 1000$,
+spadek mocy staje się bardziej stromy. Oznacza to, że testy z większą
+licznością prób wykrywają nawet niewielkie odchylenia od $p = 0.9$ z
+większą precyzją.
+
 ```{r}
 # Funkcja powertest
 powertest <- function(N, n, alpha, p0) {
@@ -964,86 +1291,159 @@ powertest <- function(N, n, alpha, p0) {
     prop_vec[j] <- mean(prop_vec_N)
   }
   
-  # Zwrócenie wyników w postaci listy
   return(list(power_bin = binom_vec, power_prop = prop_vec))
 }
 
 ```
 
 ```{r}
-#POZWIĄZANIE DLA 1n
 N <- 500
-n <- 100
+n_values <- c(50, 100, 500, 1000)
 alpha <- 0.05
 p0 <- 0.9
 
-# Wynik testu
-result <- powertest(N, n, alpha, p0)
+results <- list()
 
-# Tworzenie ramki danych do wykresu
-data <- data.frame(
-  p = seq(0.01, 0.99, by = 0.01),
-  Power_Binom = result$power_bin,
-  Power_Prop = result$power_prop
-)
-
-# Tworzenie wykresu
-ggplot(data, aes(x = p)) +
-  geom_line(aes(y = Power_Binom, color = "Test binominalny"), size = 1.2) +
-  geom_line(aes(y = Power_Prop, color = "Test proporcji"), size = 1.2) +
-  geom_vline(aes(xintercept = 0.9, color = "H0: p = 0.9"), linetype = "dashed", size = 1) +  # Dodanie linii na p = 0.9 z opisem w legendzie
-  labs(
-    title = "Porównanie mocy testów",
-    x = "Prawdopodobieństwo sukcesu (p)",
-    y = "Moc testu",
-    color = "Rodzaj testu"
-  ) +
-  theme_minimal() +
-  scale_color_manual(values = c("Test binominalny" = "blue", "Test proporcji" = "red", "H0: p = 0.9" = "black"))
-```
-
-```{r}
-N <- 500
-n_values <- c(30, 100, 150)
-alpha <- 0.05
-p0 <- 0.9
-
-results <- numeric(3)
-for ( i in 1:3){
+for (i in 1:length(n_values)) {
   n <- n_values[i]
-  results[i] <- powertest(N, n, alpha, p0)
+  results[[i]] <- powertest(N, n, alpha, p0)
 }
 ```
 
-```{r}
-library(ggplot2)
-
-# Iterowanie przez wyniki i tworzenie wykresów
-for (i in 1:3) {
-  result <- results[[i]]  # Pobieramy wynik z listy
+```{r, echo = FALSE}
+for (i in 1:length(n_values)) {
+  n <- n_values[i]
   
-  # Tworzenie ramki danych do wykresu
   data <- data.frame(
     p = seq(0.01, 0.99, by = 0.01),
-    Power_Binom = result$power_bin,
-    Power_Prop = result$power_prop
+    Power_Binom = results[[i]]$power_bin,
+    Power_Prop = results[[i]]$power_prop
   )
   
-  # Tworzenie wykresu
-  ggplot(data, aes(x = p)) +
-    geom_line(aes(y = Power_Binom, color = "Test binominalny"), size = 1.2) +
-    geom_line(aes(y = Power_Prop, color = "Test proporcji"), size = 1.2) +
-    geom_vline(aes(xintercept = 0.9, color = "H0: p = 0.9"), linetype = "dashed", size = 1) +  # Dodanie linii na p = 0.9 z opisem w legendzie
-    labs(
-      title = paste("Porównanie mocy testów dla n =", n_values[i]),  # Tytuł wykresu uwzględniający wartość n
-      x = "Prawdopodobieństwo sukcesu (p)",
-      y = "Moc testu",
-      color = "Rodzaj testu"
-    ) +
-    theme_minimal() +
-    scale_color_manual(values = c("Test binominalny" = "blue", "Test proporcji" = "red", "H0: p = 0.9" = "black")) 
+  plot(data$p, data$Power_Binom, type = "l", col = "blue", 
+       xlab = "Prawdopodobieństwo sukcesu (p)", ylab = "Moc testu", 
+       main = paste("Porównanie mocy testów dla n =", n), 
+       cex.lab = 0.8, cex.axis = 0.8, ylim = c(0, 1))
+  
+  # Dodanie drugiej linii
+  lines(data$p, data$Power_Prop, col = "red", lty = 2)
+  
+  # Dodanie linii przerywanej dla H0: p = 0.9
+  abline(v = 0.9, col = "black", lty = 2)
+  
+   # Dodanie legendy
+  legend("bottomleft", 
+         legend = c("Test binominalny", "Test proporcji", "H0: p = 0.9"), 
+         col = c("blue", "red", "black"), 
+         lty = c(1, 2, 2), 
+         cex = 0.8)
 }
 ```
 
+Podsumowując, wzrost liczności próby poprawia precyzję testów. Dla
+dużych prób, funkcja mocy gwałtownie maleje wokół $p = 0.9$, co sprawia,
+że testy są w stanie lepiej odróżnić wartości zgodne z hipotezą zerową
+od tych, które się od niej różnią. Choć test binomialny i test proporcji
+dają podobne wyniki, test proporcji może być mniej dokładny dla małych
+prób, dlatego w praktyce dla małych próbek zaleca się stosowanie testu
+binomialnego. Dla większych prób test proporcji może być wystarczająco
+precyzyjny i stanowić bardziej efektywne rozwiązanie.
 
+# Zadanie dodatkowe
 
+**Funkcja logit** - przekształcenie stosowane do prawdopodobieństwa,
+które przekształca wartości z przedziału $(0,1)$ na zakres
+$(\infty, - \infty)$, o wzorze:
+
+$$
+\text{logit}(p) = \log\left(\frac{p}{1 - p}\right)
+$$
+
+gdzie:
+
+-   $p$ - prawdopodobieństwo sukcesu w eksperymencie.
+
+Funkcja logit jest używana w regresji logistycznej, gdzie stosuje się ją
+do przekształcenia proporcji na skalę, która może przyjmować dowolne
+wartości rzeczywiste. Dzięki temu możemy modelować zależności pomiędzy
+zmiennymi niezależnymi a prawdopodobieństwem wystąpienia określonego
+zdarzenia.
+
+**Metoda delta** ( znana również jako metoda przybliżenia wariancji
+funkcji lub metoda liniowej aproksymacji) - polega na zastosowaniu
+liniowej aproksymacji do funkcji estymatora, aby obliczyć jego wariancję
+lub inne miary niepewności. Stosowana, gdy estymatorem jest funkcja
+trudna do bezpośredniego obliczenia jednak możliwe jest przybliżenie
+liniowe wokół punktu, którym jest średnia tego estymatora.
+
+W poniższym kodzie została zimplementowana funkcja
+*granice_asymptotycznego_przedziału_ufności()*, która ma na celu
+obliczenie asymptotycznego przedziału ufności prawdopodobieństwa sukcesu
+$p$, wykorzystując funkcję logit oraz metodę delta. Przyjmuje parametry:
+
+-   $n$ - wielkość próby
+
+-   $p$ - prawdopodobieństwo sukcesu
+
+-   $alpha$ - poziom istotności
+
+```{r}
+granice_asymptotycznego_przedziału_ufności <- function(n,p, alpha){
+  x <- rbinom(1, n, p) 
+  p_est = x/n #estymacja proporcji sukcesów
+  
+  #Przekształcenie logit
+  p_logit_est = log(p_est/(1 - p_est))
+  
+  #Metoda delta do obliczenia wariancji przekształconego estymatora
+  var_p_logit_est = (1 / (p_est * (1 - p_est))) * (1 / n)
+  
+  kwantyl_alpha <- qnorm(1 - alpha)
+  
+  #Granice przedziału ufności na skali logit
+  logit_lower = p_logit_est - kwantyl_alpha * sqrt(var_p_logit_est)
+logit_upper = p_logit_est + kwantyl_alpha * sqrt(var_p_logit_est)
+
+  #Odwracanie funkcji ligit
+  p_lower = 1 / (1 + exp(-logit_lower))
+  p_upper = 1 / (1 + exp(-logit_upper))
+
+  
+  result <- c(p_lower, p_upper)
+  return(result)
+}
+
+```
+
+W celu sprawdzenia poprawności zaimplementowanej funkcji przeprowadzono
+sumulację porównującą obliczony asymptotyczny przedział ufności
+prawdopodobieństwa sukcesu $p$ przez tę funkcję i porównano ją z
+wynikiem obliczonym przy pomocy funkcji wbudowanej *prop.test()*
+korzytając z argumentu *conf.int*.
+
+Parametry symulacji:
+
+-   $n$ = 1000
+
+-   $p$ = 0.7
+
+-   $alpha$ = 0.05
+
+Wyniki obliczone za pomocą obu funkcji co sugeruje poprawność
+zaimplementowanej metody do znajdowania granic asyptotycznego przedziału
+ufności dla prawdopodobieństwa sukcesu $p$.
+
+```{r, echo = FALSE}
+n <- 1000
+p <- 0.7
+alpha <- 0.05
+
+custom_result <- granice_asymptotycznego_przedziału_ufności(n, p, alpha)
+print("Granice asymptotycznego przedziału ufności (nasza metoda):")
+print(custom_result)
+
+prop_test_result <- prop.test(n*p, n, conf.level = 1 - alpha)
+print("Granice asymptotycznego przedziału ufności (prop.test()):")
+print(prop_test_result$conf.int)
+
+```
