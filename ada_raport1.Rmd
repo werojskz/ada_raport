@@ -539,10 +539,14 @@ legend("topright",
 Funkcja *sample()* z biblioteki *stats* losuje próbkę z podanego zbioru
 danych. **Składnia:** sample(x, size, replace, prob)
 Gdzie:
-- x - wektor do losowania 
-- size - liczba elementów do wylosowania 
-- replace - określa czy losowanie jest ze zwracaniem (TRUE/FALSE)
-- prob - prawdopodobieństwa dla poszczególnych elementów(parametr
+
+- *x* - wektor do losowania 
+
+- *size* - liczba elementów do wylosowania 
+
+- *replace* - określa czy losowanie jest ze zwracaniem (TRUE/FALSE)
+
+- *prob* - prawdopodobieństwa dla poszczególnych elementów(parametr
 opcjonalny).
 
 ```{r }
@@ -578,17 +582,23 @@ df[sample_rows_without_replacement, ]
 
 Funkcja *binomial_sim* dla każdej próbki generuje 1 lub 0 z
 prawdopodobieństwem *p* i zwraca realizację próby. Funckja przyjmuje dwa
-parametry: - *n* - długość próby - *p* - teoretyczne prawdopodobieństwo
+parametry:
+
+- *n* - długość próby,
+
+- *p* - teoretyczne prawdopodobieństwo
 sukcesu.
 
-Funkcja \*binomial\_\_N_sim\* wykonuje *N* prób Monte Carlo z rozkładu
+Funkcja *binomial_N_sim* wykonuje *N* prób Monte Carlo z rozkładu
 dwumianowego korzystając z funkcji *binomial_sim*, zwraca wketor
 realizacji prób z rozkładu dwumianowego.
 
 Funkcja przyjmuje trzy paramatry:
 
 - *n* - długość próby
+
 - *p* - teoretyczne prawdopodobieństwo sukcesu
+
 - *N* - liczbę prób Monte Carlo
 
 ```{r}
@@ -611,27 +621,40 @@ binomial_N_sim <- function(n, p, N) {
 W celu przetestowania poprawności zaproponowanych funkcji,
 przeprowadzono symulację, której celem było wygenerowanie wektora
 zmiennych losowych i obliczenie ich charakterystyk, a następnie
-porównanie wyników empirycznych z teoretycznymi.\\ **Parametry
-symulacji:** 
-- n = 100
-- p = 0.5
-- N = 10000
-**Charakterystyki
-rozkładu,które zostały uwzględnione:
-**\\ 1. **Średnia rozkładu:**
+porównanie wyników empirycznych z teoretycznymi.
+
+**Parametry symulacji:** 
+
+- *n* = 100
+
+- *p* = 0.5
+
+- *N* = 10000
+
+**Charakterystyki rozkładu,które zostały uwzględnione:**
+
+1. **Średnia rozkładu:**
+
 - **Empiryczna:** obliczona za pomocą funkcji *mean()* na wygenerowanych
 danych,
+
 - **Teoretyczna:** obliczona na podstawie wzoru *np*, gdzie
 *n* to liczba prób, *p* to prawdopodobieństwo sukcesu.
+
 2.**Odchylenie standardowe rozkładu:**
+
 - **Empiryczne:** obliczone za pomocą funkcji
 *sd()* na wygenerowanych danych,
+
 - **Teroretyczne:** obliczone na
 podstawie wzoru $$ \sigma = \sqrt{np(1-p)} $$, gdzie *n* to liczba prób,
 *p* to prawdopodobieństwo sukcesu.
-3. **Hstogram częstości:**
+
+3. **Histogram częstości:**
+
 - **Empiryczne:** przedstawione za pomocą funkcji *hist()* na podstawie
 wygenerowanych danych
+
 - **Teoretyczne:** porównane z teoretycznymi
 wartościami prawdopodobieństwa sukcesu, obliczonymi za pomocą funkcji
 *dbinom()*.
@@ -687,9 +710,13 @@ legend("topright", legend = c("Symulacja", "Teoria"),
 
 Funkcja *wielomianowy_sim* generuje pojedynczą realizację rozkładu
 wielomianowego z prawdopodbieństwami sukcesu danymi jako wektor *p*.
+
 Przyjmuje dwa parametry:
+
 - *n* - liczba prób (wielkość próby)
+
 - *p* - wektor prawdopodobieństw dla poszczególnych kategorii.
+
 Zwraca
 wektor liczności wystąpień każdej kategorii.
 
@@ -697,9 +724,12 @@ Funkcja *wielomianowy_N_sim* wykonuje *N* prób Monte Carlo dla rozkładu
 wielomianowego. Korzysta z funkcji *wielomianowy_sim*, aby wygenerować
 realizacje prób i zwraca macierz wyników. Przyjmuje trzy
 parametry:
+
 - *n* - liczba prób (wielkość próby)
+
 - *p* - wektor
-prawdopodobieństw dla poszczególnych kategori
+prawdopodobieństw dla poszczególnych kategorii
+
 - *N* - liczba prób Monte Carlo
 
 ```{r}
@@ -724,17 +754,33 @@ Analogicznie do poprzedniego zadania, przeprowadzono symulację, której
 celem było sprawdzenie poprawności zaproponowanych funckji. Została
 wygenerowana macierz zawierająca realizaje zmiennych rozkładu
 wielomianowego, a następnie obliczono ich charakterystyki i porówano z
-teoretycznymi wartościami.\\ **Parametry symulacji:**\\ - n = 100\\ - p
-= [0.5, 0.1, 0.2, 0.2] \\ - N = 10000\\ **Charakterystyki rozkładu,
-które zostały uwzględnione:**\\ 1. **Średnia rozkładu:**\\ -
-**Empiryczna:** obliczona za pomocą funkcji *rowMeans()* na
-wygenerowanych danych,\\ - **Teoretyczna:** obliczona na podstawie wzoru
-*np*, gdzie *n* to liczba prób, *p* to prawdopodobieństwo sukcesu.\\
-2.**Odchylenie standardowe rozkładu:**\\ - **Empiryczne:** obliczone za
+teoretycznymi wartościami.
+
+**Parametry symulacji:**
+
+- n = 100
+- p = [0.5, 0.1, 0.2, 0.2]
+- N = 10000
+
+**Charakterystyki rozkładu,które zostały uwzględnione:**
+
+1. **Średnia rozkładu:**
+
+- **Empiryczna:** obliczona za pomocą funkcji *rowMeans()* na
+wygenerowanych danych,
+
+- **Teoretyczna:** obliczona na podstawie wzoru
+*np*, gdzie *n* to liczba prób, *p* to prawdopodobieństwo sukcesu.
+
+2.**Odchylenie standardowe rozkładu:**
+
+- **Empiryczne:** obliczone za
 pomocą funkcji *apply(simulated_data, 1, sd)* na wygenerowanych
-danych,\\ - **Teroretyczne:** obliczone na podstawie wzoru
+danych,
+
+- **Teroretyczne:** obliczone na podstawie wzoru
 $$ \sigma = \sqrt{np(1-p)} $$, gdzie *n* to liczba prób, *p* to wektor
-prawdopodobiństw.\\
+prawdopodobiństw.
 
 Wyniki symulacji sugerują, że funkcja poprawnie generuje zmienną losową
 z rozkładu wielomianowego.
@@ -767,11 +813,17 @@ cat("Empiryczne odchylenie standardowe: ", empirical_sd, "\n")
 ## Zadanie 6
 
 Funkcja *clopper_pearson_ci* oblicza przedział ufności dla proporcji na podstawie metody Cloppera-Pearsona, która jest dokładnym podejściem do wyznaczania przedziału ufności dla proporcji w przypadku prób losowych. Jest to podejście, które jest szczególnie użyteczne w przypadku małych prób lub rzadkich wydarzeń, gdzie standardne metody mogą nie być dokładne.
+
 Funkcja przyjmuje parametry:
+
 - *confidence* -  poziom ufności
+
 - *successes* - liczba sukcesów
+
 - *trials* - liczba prób
+
 - *data* - opcjonalny wektor danych binarnych (0 lub 1).
+
 Jeśli data jest podane, funkcja automatycznie wylicza liczbę sukcesów *successes* i liczbę prób *trials* na podstawie danych.
 Funkcja zwraca dolną i górna granicę przedziału ufności, korzystając z wbudowanej funkcji *qbeta*.
 ```{r}
@@ -812,12 +864,39 @@ cat("Przedział ufności (Clopper-Pearson) dla danych binarnych:", ci_data, "\n"
 ```
 
 ## Zadanie 7
+Na podstawie zmiennej *PYT_3* stworzono zmienną *CZY_ZADOW_2*.
+```{r}
+
+# Tworzenie zmiennej CZY_ZADOW_2 na podstawie PYT_3
+df$CZY_ZADOW_2 <- cut(df$PYT_3, breaks = c(-3, 0, 2),
+                      labels = c("NIE", "TAK"),
+                      include.lowest = TRUE)
+
+# Dla zmiennej CZY_ZADOW
+successes_1 <- sum(df$CZY_ZADOW == "TAK", na.rm = TRUE)
+trials_1 <- sum(df$CZY_ZADOW %in% c("TAK", "NIE"), na.rm = TRUE)
+ci1<- clopper_pearson_ci(0.95,successes_1,trials_1)
+
+# Dla zmiennej CZY_ZADOW_2 
+successes_2 <- sum(df$CZY_ZADOW_2 == "TAK", na.rm = TRUE)
+trials_2 <- sum(df$CZY_ZADOW_2 %in% c("TAK", "NIE"), na.rm = TRUE)
+ci2<- clopper_pearson_ci(0.95,successes_2,trials_2)
+
+cat("Przedział ufności (Clopper-Pearson) dla CZY_ZADOW_2:", ci2,"\n",
+    "Przedział ufności (Clopper-Pearson) dla CZY_ZADOW:", ci1, "\n")
+
+```
+Przedziały ufności dla prawopodobieństwa sukcesu (u nas odpowiedź "TAK"), po kilku tygodniach zmieniły się. Po czasie pracownicy częściej wyrażali zadowolenie. Możliwe, że firma po przeanalizowaniu wcześniejszych wyników ankiety, postanowiła wprowadzić zmiany, które wpływają pozytywnie na pracowników.
 
 ## Zadanie 8
 Funkcja wbudowana *rbinom* generuje dane binarne(0/1) na podstawie rozkładu dwumianowego. Przyjmuje parametry:
+
 - *n* - liczba prób,
+
 - *size* - liczba obserwacji w każdej próbie,
+
 - *p* - prawdopodobieństwo sukcesu.
+
 Wynikiem jest wektor *losowe_wartosci*, który zawiera liczbę sukcesów (liczba 1) w każdej z 10 prób (każda próba ma 1000 prób).
 
 Funkcja *binom.confint* oblicza przedział ufności dla proporcji sukcesów w próbach binarnych. Argument *conf.level = 0.95* ustawia poziom ufności na 95%. Argument *methods = "exact"* oznacza, że do obliczenia przedziału ufności zostanie użyta dokładna metoda Cloppera-Pearsona. Argument *methods = asymptotic"* oznacza, że do obliczenia przedziału ufności zostanie użyta dokładna metoda Walda. Argument *methods = wilson"* oznacza, że do obliczenia przedziału ufności zostanie użyta dokładna metoda Wilsona.
@@ -858,7 +937,7 @@ Metody Wald'a oraz Wilsona są do siebie najbardziej zbliżone. Metoda Clopper-P
 
 ## Zadanie 9
 
-```{r, echo=FALSE ,fig.width=7, fig.height=10, dpi=300}
+```{r, echo=FALSE ,fig.width=7, fig.height=9, dpi=300}
 library(ggplot2)
 
 # Parametry
@@ -1018,7 +1097,8 @@ dużych próbek wszystkie metody działają podobnie
 2.  **Test asymptotyczny** Do wykonywania testu asyptotycznego język
     programownaia R wykorzystuje funkcję *prop.test()*, który jest
     testem z użyciem asymptotycznego przybliżenia normalnego (test
-    chi-kwadrat dla proporcji).\\ Stosowany dla dużych prób, ponieważ
+    chi-kwadrat dla proporcji).
+    Stosowany dla dużych prób, ponieważ
     opiera się na centralnym twierdzeniu granicznym. W celu sprawdzenia
     parametrów podanych funkcji przerowadzono symaulację z pramatrami:
 
@@ -1356,7 +1436,10 @@ for (i in 1:length(n_values)) {
 }
 ```
 
-```{r, echo = FALSE}
+```{r, echo = FALSE,fig.width=7, fig.height=5}
+# Ustawienie układu 2x2: 2 wiersze, 2 kolumny
+par(mfrow = c(2, 2), mar = c(4, 4, 2, 1))  # marginesy dla lepszego dopasowania
+
 for (i in 1:length(n_values)) {
   n <- n_values[i]
   
@@ -1368,22 +1451,19 @@ for (i in 1:length(n_values)) {
   
   plot(data$p, data$Power_Binom, type = "l", col = "blue", 
        xlab = "Prawdopodobieństwo sukcesu (p)", ylab = "Moc testu", 
-       main = paste("Porównanie mocy testów dla n =", n), 
+       main = paste("n =", n), 
        cex.lab = 0.8, cex.axis = 0.8, ylim = c(0, 1))
   
-  # Dodanie drugiej linii
   lines(data$p, data$Power_Prop, col = "red", lty = 2)
-  
-  # Dodanie linii przerywanej dla H0: p = 0.9
   abline(v = 0.9, col = "black", lty = 2)
   
-   # Dodanie legendy
   legend("bottomleft", 
          legend = c("Test binominalny", "Test proporcji", "H0: p = 0.9"), 
          col = c("blue", "red", "black"), 
          lty = c(1, 2, 2), 
-         cex = 0.8)
+         cex = 0.8, bty = "n")
 }
+
 ```
 
 Podsumowując, wzrost liczności próby poprawia precyzję testów. Dla

@@ -1,4 +1,4 @@
-This is XeTeX, Version 3.141592653-2.6-0.999996 (TeX Live 2024) (preloaded format=xelatex 2024.10.5)  5 APR 2025 19:40
+This is XeTeX, Version 3.141592653-2.6-0.999996 (TeX Live 2024) (preloaded format=xelatex 2024.10.5)  5 APR 2025 21:18
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -926,66 +926,65 @@ Overfull \hbox (3.01006pt too wide) in paragraph at lines 687--687
 File: ada_raport1_files/figure-latex/unnamed-chunk-28-1.pdf Graphic file (type 
 pdf)
 <use ada_raport1_files/figure-latex/unnamed-chunk-28-1.pdf>
-[18] [19]
-Overfull \hbox (24.58493pt too wide) in paragraph at lines 1069--1069
+[18] [19] [20] [21]
+Overfull \hbox (18.40492pt too wide) in paragraph at lines 1183--1183
 []\TU/lmtt/m/n/12 ## Przedział ufności (Clopper-Pearson) dla danych binarnych: 
-0.2302199 0.4207669[] 
+0.1947936 0.378667[] 
  []
 
-[20]
-File: ada_raport1_files/figure-latex/unnamed-chunk-33-1.pdf Graphic file (type 
-pdf)
-<use ada_raport1_files/figure-latex/unnamed-chunk-33-1.pdf>
+[22]
+Overfull \vbox (0.47795pt too high) detected at line 1303
+ []
 
-Overfull \hbox (6.0213pt too wide) in paragraph at lines 1149--1149
+[23]
+File: ada_raport1_files/figure-latex/unnamed-chunk-34-1.pdf Graphic file (type 
+pdf)
+<use ada_raport1_files/figure-latex/unnamed-chunk-34-1.pdf>
+
+Overfull \hbox (6.0213pt too wide) in paragraph at lines 1315--1315
  [] 
  []
 
-[21]
-Overfull \vbox (92.47pt too high) has occurred while \output is active []
+[24]
+Overfull \vbox (20.20021pt too high) has occurred while \output is active []
 
-[22]
+[25]
 Missing character: There is no ≈ (U+2248) in font [lmroman12-regular]:mapping=t
 ex-text;!
 Missing character: There is no ≈ (U+2248) in font [lmroman12-regular]:mapping=t
 ex-text;!
-[23]
+[26]
 Missing character: There is no ₀ (U+2080) in font [lmroman12-regular]:mapping=t
 ex-text;!
-[24]
+[27]
 Missing character: There is no α (U+03B1) in font [lmroman12-regular]:mapping=t
 ex-text;!
-[25] [26]
-Overfull \hbox (13.40465pt too wide) in paragraph at lines 1456--1458
+[28] [29]
+Overfull \hbox (13.40465pt too wide) in paragraph at lines 1621--1623
 []\TU/lmr/m/n/12 Moce testów zostały wyznaczone dla następujących wartości para
 metru $[] [] [][][][] [][][][] [][][][] [][][][][]$. 
  []
 
 
-Overfull \vbox (0.69948pt too high) detected at line 1504
+Overfull \vbox (0.69948pt too high) detected at line 1669
  []
 
-[27]
-File: ada_raport1_files/figure-latex/unnamed-chunk-43-1.pdf Graphic file (type 
+[30]
+File: ada_raport1_files/figure-latex/unnamed-chunk-44-1.pdf Graphic file (type 
 pdf)
-<use ada_raport1_files/figure-latex/unnamed-chunk-43-1.pdf>
-File: ada_raport1_files/figure-latex/unnamed-chunk-43-2.pdf Graphic file (type 
-pdf)
-<use ada_raport1_files/figure-latex/unnamed-chunk-43-2.pdf>
-[28]
-File: ada_raport1_files/figure-latex/unnamed-chunk-43-3.pdf Graphic file (type 
-pdf)
-<use ada_raport1_files/figure-latex/unnamed-chunk-43-3.pdf>
-File: ada_raport1_files/figure-latex/unnamed-chunk-43-4.pdf Graphic file (type 
-pdf)
-<use ada_raport1_files/figure-latex/unnamed-chunk-43-4.pdf>
-[29] [30]
-Overfull \hbox (53.04771pt too wide) in paragraph at lines 1570--1575
+<use ada_raport1_files/figure-latex/unnamed-chunk-44-1.pdf>
+
+Overfull \hbox (22.08127pt too wide) in paragraph at lines 1687--1687
+ [] 
+ []
+
+[31]
+Overfull \hbox (53.04771pt too wide) in paragraph at lines 1729--1734
 []\TU/lmr/m/n/12 W poniższym kodzie została zimplementowana funkcja \TU/lmr/m/i
 t/12 granice_asymptotycznego_przedziału_ufności()\TU/lmr/m/n/12 ,
  []
 
-[31] [32] (./ada_raport1.aux)
+[32] [33] (./ada_raport1.aux)
  ***********
 LaTeX2e <2023-11-01> patch level 1
 L3 programming layer <2024-02-20>
@@ -995,12 +994,12 @@ LaTeX Warning: There were multiply-defined labels.
 
  ) 
 Here is how much of TeX's memory you used:
- 20616 strings out of 474772
- 390005 string characters out of 5761268
- 1954842 words of memory out of 5000000
- 42466 multiletter control sequences out of 15000+600000
+ 20583 strings out of 474772
+ 388145 string characters out of 5761268
+ 1953842 words of memory out of 5000000
+ 42436 multiletter control sequences out of 15000+600000
  566444 words of font info for 102 fonts, out of 8000000 for 9000
  1348 hyphenation exceptions out of 8191
- 90i,9n,121p,1008b,590s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 90i,9n,121p,1008b,584s stack positions out of 10000i,1000n,20000p,200000b,200000s
 
-Output written on ada_raport1.pdf (32 pages).
+Output written on ada_raport1.pdf (33 pages).
