@@ -54,11 +54,11 @@ celu ocenę skuteczności programów szkoleniowych dla pracowników. Wzięło
 w niej udział 200 losowo wybranych osób (losowanie proste ze
 zwracaniem).
 
-### Zadanie 1.1
+### Zadanie 1
 
 Wczytywanie danych z pliku ankieta.csv.
 
-```{r df, echo=FALSE}
+```{r df}
 
 df <- read.csv("ankieta.csv", sep = ";", fileEncoding = "Latin2")
 colnames(df) <- c('DZIAŁ','STAŻ','CZY_KIER', 'PYT_1', 
@@ -89,7 +89,7 @@ df[ ,char_col] <- lapply(df[ ,char_col], as.factor)
 
 Przeszukano zbiór pod względem braków danych.
 
-```{r brakujace, echo=FALSE, results="asis"}
+```{r brakujace,echo=FALSE, results="asis"}
 
 cat("Liczba wartości brakujących wynosi:", sum(is.na(df)), "\n")
 
@@ -131,13 +131,13 @@ cat("Liczba zmiennych jakościowych (typ factor):", liczba_jakosciowych, "\n")
 \end{enumerate}
 ````
 
-### zadanie 1.2
+### Zadanie 2
 
-Utworzono zmienna "WIEK_KAT" przeprowadzająx kategoryzację zmiennej
-"WIEK" korzystając z następujących przedziałów do 35 lat, mi˛edzy 36 a
-45 lat, mi˛edzy 46 a 55 lat, powyżej 55 lat.
+Utworzono zmienna "WIEK_KAT" przeprowadzając kategoryzację zmiennej
+"WIEK" korzystając z następujących przedziałów do 35 lat, między 36 a
+45 lat, między 46 a 55 lat, powyżej 55 lat.
 
-```{r, echo=FALSE}
+```{r}
 
 df$WIEK_KAT <- cut(df$WIEK, 
 breaks = c(-Inf, 35, 45, 55, Inf), 
@@ -145,7 +145,7 @@ labels = c('0-35', '36-45', '46-55', '55+'))
 
 ```
 
-### zadanie 1.3
+### Zadanie 3
 
 Sporządzono tablice liczności dla zmiennych: DZIAŁ, STAŻ, CZY_KIER,
 PŁEĆ, WIEK_KAT.
@@ -197,38 +197,35 @@ f1 = xtable(t1, caption = "Tablica ilości dla zmiennej WIEK KAT", caption.place
 print(f1, type = "latex", table.placement = "H", caption.placement = "top", comment = FALSE)
 ```
 
-WNIOSKI:
 
 Największą grupę pracowników stanowi dział PD (98 osób), a najmniejszą
 IT (26 osób). Działy HR i MK mają pośrednie wartości (odpowiednio 31 i
 45 osób). Może to wskazywać na różne zapotrzebowanie na pracowników w
 poszczególnych działach.
 
-Większość pracowników (140 osób) ma od 1 do 2 lat stażu. 41 osób pracuje
+Większość pracowników ma od 1 do 2 lat stażu. 41 osób pracuje
 krócej niż rok, a tylko 19 osób ma staż powyżej 3 lat. Wskazuje to na
 dużą rotację pracowników lub na to, że firma stosunkowo niedawno
 zatrudniła większość obecnej kadry.
 
-Większość pracowników (173 osoby) pełni funkcje kierownicze, a jedynie
-27 osób nie. Może to oznaczać, że w firmie jest dużo stanowisk
-kierowniczych lub że definicja „kierownika” obejmuje szerokie spektrum
+Wielu pracowników (173 osoby) pełni funkcje kierownicze. Może to oznaczać, że w firmie jest dużo takich stanowisk lub że definicja „kierownika” obejmuje szerokie spektrum
 stanowisk.
 
 W firmie przeważają mężczyźni (129 osób) nad kobietami (71 osób). Może
 to wynikać z charakteru działalności firmy lub preferencji
-rekrutacyjnych.
+rekrutacyjnych. Najwięcej pracowników jest w grupie wiekowej 36-45 lat. Pozostałe grupy wiekowe mają znacznie mniejszą reprezentację.
 
-Najwięcej pracowników jest w grupie wiekowej 36-45 lat (104 osoby).
-Pozostałe grupy wiekowe mają znacznie mniejszą reprezentację.
-
-5 zmiennych ilościowych (np. staż, wiek, odpowiedzi na pytania
-PYT_1–PYT_3). 4 zmienne jakościowe, np. dział, płeć, kategoria wieku.
+Jest 5 zmiennych ilościowych (np. staż, wiek, odpowiedzi na pytania
+PYT_1–PYT_3) i 4 zmienne jakościowe, np. dział, płeć, kategoria wieku.
 Brak wartości brakujących wskazuje na kompletność i dobrą jakość danych.
 
-### Zadanie 1.4
+### Zadanie 4
 
-Sporządzono wykresy kołowe oraz wykresy słupkowe dla zmiennych: PYT_1
-oraz PYT_2.
+Sporządzono wykresy kołowe oraz wykresy słupkowe dla zmiennych: PYT_1 (Jak bardzo zgadzasz się ze stwierdzeniem, że firma zapewnia odpowiednie wsparcie i
+materiały umożliwiające skuteczne wykorzystanie w praktyce wiedzy zdobytej w trakcie
+szkoleń?)
+oraz PYT_2 (Jak bardzo zgadzasz się ze stwierdzeniem, że firma oferuje szkolenia dostosowane
+do twoich potrzeb, wspierając twój rozwój zawodowy i szanse na awans?).
 
 ```{r, echo=FALSE, results = "asis"}
 etykiety <- c('zdacydowanie się nie zgadzam', 'nie zgadzam się', 'nie mam zdania', 'zgadzam się', 'zdacydowanie się zgadzam')
@@ -278,9 +275,9 @@ ich za skuteczne w kontekście swojego rozwoju zawodowego.
 
 Pomimo że liczba negatywnych odpowiedzi jest niewielka, warto
 przeanalizować, czy istnieją konkretne obszary, w których szkolenia mogą
-być bardziej dostosowane do indywidualnych potrzeb
+być bardziej dostosowane do indywidualnych potrzeb.
 
-### zadanie 1.5
+### Zadanie 5
 
 Sporządzono tablice wielodzielcze dla par zmiennych: PYT_1 i DZIAŁ,
 PYT_1 i STAŻ, PYT_1 i CZY_KIER, PYT_1 i PŁEĆ oraz PYT_1 i WIEK_KAT.
@@ -385,38 +382,26 @@ Pracownicy w średnim wieku są najbardziej pozytywnie nastawieni do
 badanego zagadnienia. Osoby młodsze i starsze mogą mieć inne oczekiwania
 lub mniej doświadczenia w tym obszarze.
 
-### zadanie 1.6
+### Zadanie 6
 
-Sporządzono tablicę wielodzielczą dla pary zmiennych: PYT_2 i PYT_3.
+Sporządzono tablicę wielodzielczą dla pary zmiennych: PYT_2 i PYT_3 (po kilku tygodniach ponowna odpowiedź na pytanie dotyczące wsparcia w rozwoju zawodowym i możliwości awansu w firmie).
 
 ```{r, echo=FALSE, results = "asis"}
 
 t4 <- table(df$PYT_1, df$PYT_2)
-rownames(t4) <- c('zdacydowanie się nie zgadzam', 'nie zgadzam się', 'nie mam zdania', 'zgadzam się', 'zdacydowanie się zgadzam')
-colnames(t4) <- c('zdacydowanie się nie zgadzam', 'nie zgadzam się', 'zgadzam się', 'zdacydowanie się zgadzam')
+rownames(t4) <- c('zdecyd. nie zgadz.', 'nie zgadz.', 'nie mam zdania', 'zgadz.', 'zdecyd. się zgadzam')
+colnames(t4) <- c('zdecyd. nie zgadz.', 'nie zgadz.', 'zgadz.', 'zdecyd. zgadzam')
 f4 = xtable(t4,label="l4",caption="Tabela wielodzielcza dla zmiennych PYT 1 i PYT 2",caption.placement = "top")
-print(f4,type = "latex",caption.placement = "top", comment=FALSE)
+print(f4, type = "latex", caption.placement = "top", comment = FALSE,size="small")
 
 ```
 
 Dane obejmują zarówno zmienne ilościowe (np. STAŻ, WIEK, PYT_1), jak i
 jakościowe (np. DZIAŁ, PŁEĆ, CZY_KIER). Brak wartości brakujących
 sugeruje, że zestaw danych jest kompletny i dobrze przygotowany do
-analizy.
-
-W zbiorze znajduje się 5 zmiennych ilościowych i 4 zmienne jakościowe
-(faktory).
-
-Najwięcej osób w próbie należy do działu PD (98 osób), najmniej do IT
-(26 osób).
-
-Większość badanych ma staż pracy 1-2 lata (140 osób), co może wskazywać
-na młodą kadrę pracowników.
-
-Większość respondentów pełni funkcję kierowniczą (173 TAK vs. 27 NIE).
-
-Przewaga mężczyzn w próbie (129 mężczyzn vs. 71 kobiet).
-
+analizy. Najwięcej osób w próbie należy do działu PD (98 osób), najmniej do IT
+(26 osób). Większość badanych ma staż pracy 1-2 lata (140 osób), co może wskazywać
+na młodą kadrę pracowników. Większość respondentów pełni funkcję kierowniczą (173 TAK vs. 27 NIE). Przewaga mężczyzn w próbie.
 Największa grupa wiekowa to 36-45 lat (104 osoby).
 
 PYT_1 a DZIAŁ: Najwięcej pozytywnych odpowiedzi ("zgadzam się" lub
@@ -446,26 +431,19 @@ odpowiedziami na PYT_1 i PYT_2. Możliwe różnice w podejściu do badanej
 kwestii między kobietami a mężczyznami oraz młodszymi a starszymi
 pracownikami.
 
-### zadanie 1.7
+### Zadanie 7
 
-Utworzono zmienną CZY_ZADOW na podstawie zmiennej PYT_2 ł ˛acz ˛ac
+Utworzono zmienną CZY_ZADOW na podstawie zmiennej PYT_2 łącząc
 kategorie "nie zgadzam się" i "zdecydowanie się nie zgadzam" oraz
 "zgadzam się" i "zdecydowanie się zgadzam"
 
-```{r, echo=FALSE}
+```{r}
 df$CZY_ZADOW <- cut(df$PYT_2,
 breaks = c(-3, 0, 2),
 labels = c('NIE', 'TAK'))
-
-#dane <- dane %>%
-#  mutate(CZY_ZADOW = case_when(
-#    PYT_2 %in% c(-2, -1) ~ "Niezadowoleni",
-#    PYT_2 %in% c(1, 2) ~ "Zadowoleni",
-#    TRUE ~ NA_character_))
-
 ```
 
-### zadanie 1.8
+### Zadanie 8
 
 Sporządzono wykresy mozaikowe odpowiadające parom zmiennych CZY_ZADOW i
 DZIAŁ, CZY_ZADOW i STAŻ, CZY_ZADOW i CZY_KIER, CZY_ZADOW i PŁEĆ oraz
@@ -476,22 +454,25 @@ attach(df)
 Colors = c("navy", "lightblue", "pink", 'red')
 print(mosaicplot(table(CZY_ZADOW, DZIAŁ), color=Colors, xlab = 'Czy zadowolony', ylab = 'Dzial', main = "CZY ZADOWOLONY ~ DZIAL"))
 ```
+Zadowolenie nie ma związku z działem, do którego należy pracownik. W kązdym dziale jest tyle samo zadowolonych, jak i niezadowoloncy pracowników.
 
 ```{r, echo=FALSE}
 print(mosaicplot(table(CZY_ZADOW, STAŻ), color=Colors, xlab = 'Czy zadowolony', ylab = 'Staz', main = "CZY ZADOWOLONY ~ STAZ"))
 ```
+Im pracownik ma krótszy staż w pracy (1-2 lat), tym batrdziej możliwe, że odpowie twierdząco na pytanie. Może być to związane z mniejszą znajomością polityki firmy i większą nadzieją na awans na początku kariery.
 
 ```{r, echo=FALSE}
 print(mosaicplot(table(CZY_ZADOW, CZY_KIER), color=Colors, xlab = 'Czy zadowolony', ylab = 'Czy kierownik', main = "CZY ZADOWOLONY ~ CZY KIER"))
 ```
-
+Nie ma znaczenia stanowisko kierownicze, na zadowolenie pracownika.
 ```{r, echo=FALSE}
 print(mosaicplot(table(CZY_ZADOW, PŁEĆ), color=Colors, xlab = 'Czy zadowolony', ylab = 'Plec', main = "CZY ZADOWOLONY ~ PLEC"))
 ```
-
+Mężczyźni są częściej zadowoleni z pracy niż kobiety. Może być to spowodowane częstymi różnicami w zarobkach kobiet i mężczyzn na tych samym stanowiskach.
 ```{r, echo=FALSE}
-print(mosaicplot(table(CZY_ZADOW, WIEK_KAT), color=Colors, xlab = 'Czy zadowolony', ylab = 'Wiek kat', main = "CZY ZADOWOLONY ~ WIKE KAT"))
+print(mosaicplot(table(CZY_ZADOW, WIEK_KAT), color=Colors, xlab = 'Czy zadowolony', ylab = 'Wiek kat', main = "CZY ZADOWOLONY ~ WIEK KAT"))
 ```
+Najmłodzi pracownicy są częściej zadowoleni z pracy, jednak z wiekiem się to zmienia. Pracownicy po 45. roku życia rzadziej są zadowoleni z warunków zatrudnienia, co jest wypadkową zdobytego doświadczenia oraz znajomością (być może słabej) organizacji firmy.
 
 # Część II
 
@@ -530,22 +511,41 @@ wynika, że pracownicy na stanowiskach kierowniczych są mniej zdowoleni
 ze wsparcia i materiałów zapewnianych przez firmę umożliwiaja˛ce
 skuteczne wykorzystanie w praktyce wiedzy zdobytej w trakcie szkoleń.
 
-```{r, echo=FALSE}
+```{r, echo=FALSE, fig.width=7,fig.height=5}
 tabela_grupy <- prop.table(table(PYT_1, CZY_KIER), margin = 2)
-bp_grupy <- barplot(tabela_grupy, beside = TRUE, col = c("lightblue", "steelblue", "skyblue", "cornflowerblue", "navy"), legend = rownames(tabela_grupy), main = "PYT_1 wg CZY_KIER",xlab = "Odpowiedzi", ylab = "Proporcja odpowiedzi", ylim = c(0, 0.6), names.arg = c("Stanowisko niekierownicze", "Stanowisko kierownicze")) 
-text(x = bp_grupy, y = tabela_grupy, labels = round(tabela_grupy, 2), pos = 3, cex = 1) 
+
+bp_grupy <- barplot(tabela_grupy, beside = TRUE, 
+                    col = c("lightblue", "steelblue", "skyblue", "cornflowerblue", "navy"), 
+                    main = "PYT_1 wg CZY_KIER", 
+                    xlab = "Odpowiedzi", ylab = "Proporcja odpowiedzi", 
+                    ylim = c(0, 0.6), 
+                    names.arg = c("Stanowisko niekierownicze", "Stanowisko kierownicze"))
+
+
+text(x = bp_grupy, y = tabela_grupy, labels = round(tabela_grupy, 2), pos = 3, cex = 1)
+
+legend("topright", 
+       legend = rownames(tabela_grupy), 
+       fill = c("lightblue", "steelblue", "skyblue", "cornflowerblue", "navy"), 
+       cex = 0.6,
+       xpd = TRUE,        
+       inset = c(0, 0))  
+
+
 ```
 
 ## Zadanie 3
 
 Funkcja *sample()* z biblioteki *stats* losuje próbkę z podanego zbioru
-danych. **Składnia:** sample(x, size, replace, prob) \\ Gdzie:\\ - x -
-wektor do losowania\\ - size - liczba elementów do wylosowania\\ -
-replace - określa czy losowanie jest ze zwracaniem (TRUE/FALSE)\\ -
-prob - prawdopodobieństwa dla poszczególnych elementów(parametr
-opcjonalny)\\
+danych. **Składnia:** sample(x, size, replace, prob)
+Gdzie:
+- x - wektor do losowania 
+- size - liczba elementów do wylosowania 
+- replace - określa czy losowanie jest ze zwracaniem (TRUE/FALSE)
+- prob - prawdopodobieństwa dla poszczególnych elementów(parametr
+opcjonalny).
 
-```{r, echo=FALSE, }
+```{r }
 # Losowanie 5 liczb z zakresu 1-10
 sample(1:10, size = 5)
 
@@ -558,7 +558,8 @@ sample(1:10, size = 5, prob = c(0.1, 0.05, 0.15, 0.1, 0.2, 0.05, 0.05, 0.1, 0.1,
 
 Następnie z rekordów zawartych w pliku ankieta.csv zostało wylosowane
 10% losowych ze wszystkich rekordów za pomocą losowania ze zwracaniem
-oraz bez zwracania. \\ **Losowanie wierszy ze zwracaniem**
+oraz bez zwracania.
+**Losowanie wierszy ze zwracaniem**
 
 ```{r, echo=FALSE}
 sample_rows_with_replacement <- sample(1:nrow(df), size = round(0.1 * nrow(df)), replace = TRUE)
@@ -586,10 +587,11 @@ realizacji prób z rozkładu dwumianowego.
 
 Funkcja przyjmuje trzy paramatry:
 
-\- *n* - długość próby\\ - *p* - teoretyczne prawdopodobieństwo
-sukcesu\\ - *N* - liczbę prób Monte Carlo
+- *n* - długość próby
+- *p* - teoretyczne prawdopodobieństwo sukcesu
+- *N* - liczbę prób Monte Carlo
 
-```{r, echo=FALSE}
+```{r}
 # Funkcja do generowania pojedynczej realizacji rozkładu dwumianowego
 binomial_sim <- function(n, p) {
   result <- sum(runif(n) < p) 
@@ -610,24 +612,34 @@ W celu przetestowania poprawności zaproponowanych funkcji,
 przeprowadzono symulację, której celem było wygenerowanie wektora
 zmiennych losowych i obliczenie ich charakterystyk, a następnie
 porównanie wyników empirycznych z teoretycznymi.\\ **Parametry
-symulacji:** \\ - n = 100\\ - p = 0.5\\ - N = 10000\\ **Charakterystyki
-rozkładu,które zostały uwzględnione:**\\ 1. **Średnia rozkładu:**\\ -
-**Empiryczna:** obliczona za pomocą funkcji *mean()* na wygenerowanych
-danych,\\ - **Teoretyczna:** obliczona na podstawie wzoru *np*, gdzie
-*n* to liczba prób, *p* to prawdopodobieństwo sukcesu.\\ 2.**Odchylenie
-standardowe rozkładu:**\\ - **Empiryczne:** obliczone za pomocą funkcji
-*sd()* na wygenerowanych danych,\\ - **Teroretyczne:** obliczone na
+symulacji:** 
+- n = 100
+- p = 0.5
+- N = 10000
+**Charakterystyki
+rozkładu,które zostały uwzględnione:
+**\\ 1. **Średnia rozkładu:**
+- **Empiryczna:** obliczona za pomocą funkcji *mean()* na wygenerowanych
+danych,
+- **Teoretyczna:** obliczona na podstawie wzoru *np*, gdzie
+*n* to liczba prób, *p* to prawdopodobieństwo sukcesu.
+2.**Odchylenie standardowe rozkładu:**
+- **Empiryczne:** obliczone za pomocą funkcji
+*sd()* na wygenerowanych danych,
+- **Teroretyczne:** obliczone na
 podstawie wzoru $$ \sigma = \sqrt{np(1-p)} $$, gdzie *n* to liczba prób,
-*p* to prawdopodobieństwo sukcesu.\\ 3. **Hstogram częstości:**\\ -
-**Empiryczne:** przedstawione za pomocą funkcji *hist()* na podstawie
-wygenerowanych danych\\ - **Teoretyczne:** porównane z teoretycznymi
+*p* to prawdopodobieństwo sukcesu.
+3. **Hstogram częstości:**
+- **Empiryczne:** przedstawione za pomocą funkcji *hist()* na podstawie
+wygenerowanych danych
+- **Teoretyczne:** porównane z teoretycznymi
 wartościami prawdopodobieństwa sukcesu, obliczonymi za pomocą funkcji
-*dbinom()*\\
+*dbinom()*.
 
 Wyniki symulacji sugerują, że funkcja poprawnie generuje zmienną losową
 z rozkładu dwumianowego.
 
-```{r, echo = FALSE}
+```{r}
 # Parametry rozkładu dwumianowego
 n <- 100  
 p <- 0.5  
@@ -671,22 +683,26 @@ legend("topright", legend = c("Symulacja", "Teoria"),
 
 ```
 
-## Zadnia 5
+## Zadanie 5
 
 Funkcja *wielomianowy_sim* generuje pojedynczą realizację rozkładu
-wielomianowego z prawdopodbieństwami sukcesu danymi jako wektor *p*.\\
-Przyjmuje dwa parametry:\\ - *n* - liczba prób (wielkość próby)\\ -
-*p* - wektor prawdopodobieństw dla poszczególnych kategorii.\\ Zwraca
-wektor liczności wystąpień każdej kategorii.\\
+wielomianowego z prawdopodbieństwami sukcesu danymi jako wektor *p*.
+Przyjmuje dwa parametry:
+- *n* - liczba prób (wielkość próby)
+- *p* - wektor prawdopodobieństw dla poszczególnych kategorii.
+Zwraca
+wektor liczności wystąpień każdej kategorii.
 
 Funkcja *wielomianowy_N_sim* wykonuje *N* prób Monte Carlo dla rozkładu
 wielomianowego. Korzysta z funkcji *wielomianowy_sim*, aby wygenerować
-realizacje prób i zwraca macierz wyników.\\ Przyjmuje trzy
-parametry:\\ - *n* - liczba prób (wielkość próby)\\ - *p* - wektor
-prawdopodobieństw dla poszczególnych kategori\\ - *N* - liczba prób
-Monte Carlo
+realizacje prób i zwraca macierz wyników. Przyjmuje trzy
+parametry:
+- *n* - liczba prób (wielkość próby)
+- *p* - wektor
+prawdopodobieństw dla poszczególnych kategori
+- *N* - liczba prób Monte Carlo
 
-```{r, echo=FALSE}
+```{r}
 # Funkcja generująca pojedynczą realizację rozkładu wielomianowego
 wielomianowy_sim <- function(n, p) {
   k <- length(p)
@@ -750,9 +766,21 @@ cat("Empiryczne odchylenie standardowe: ", empirical_sd, "\n")
 
 ## Zadanie 6
 
-```{r, echo=FALSE}
+Funkcja *clopper_pearson_ci* oblicza przedział ufności dla proporcji na podstawie metody Cloppera-Pearsona, która jest dokładnym podejściem do wyznaczania przedziału ufności dla proporcji w przypadku prób losowych. Jest to podejście, które jest szczególnie użyteczne w przypadku małych prób lub rzadkich wydarzeń, gdzie standardne metody mogą nie być dokładne.
+Funkcja przyjmuje parametry:
+- *confidence* -  poziom ufności
+- *successes* - liczba sukcesów
+- *trials* - liczba prób
+- *data* - opcjonalny wektor danych binarnych (0 lub 1).
+Jeśli data jest podane, funkcja automatycznie wylicza liczbę sukcesów *successes* i liczbę prób *trials* na podstawie danych.
+Funkcja zwraca dolną i górna granicę przedziału ufności, korzystając z wbudowanej funkcji *qbeta*.
+```{r}
 
-clopper_pearson_ci <- function(confidence, successes = NULL, trials = NULL, data = NULL) {
+clopper_pearson_ci <- function(
+    confidence, 
+    successes = NULL, 
+    trials = NULL, 
+    data = NULL) {
   if (!is.null(data)) {
     successes <- sum(data)
     trials <- length(data)
@@ -770,7 +798,9 @@ clopper_pearson_ci <- function(confidence, successes = NULL, trials = NULL, data
 confidence_level <- 0.95
 successes <- 30
 trials <- 100
-ci <- clopper_pearson_ci(confidence_level, successes = successes, trials = trials)
+ci <- clopper_pearson_ci(confidence_level, 
+                         successes = successes, 
+                         trials = trials)
 cat("Przedział ufności (Clopper-Pearson) dla", successes, "/", trials, ":", ci, "\n")
 
 # Generowanie losowych danych binarnych
@@ -783,13 +813,21 @@ cat("Przedział ufności (Clopper-Pearson) dla danych binarnych:", ci_data, "\n"
 
 ## Zadanie 7
 
-```{r, echo=FALSE }
+## Zadanie 8
+Funkcja wbudowana *rbinom* generuje dane binarne(0/1) na podstawie rozkładu dwumianowego. Przyjmuje parametry:
+- *n* - liczba prób,
+- *size* - liczba obserwacji w każdej próbie,
+- *p* - prawdopodobieństwo sukcesu.
+Wynikiem jest wektor *losowe_wartosci*, który zawiera liczbę sukcesów (liczba 1) w każdej z 10 prób (każda próba ma 1000 prób).
+
+Funkcja *binom.confint* oblicza przedział ufności dla proporcji sukcesów w próbach binarnych. Argument *conf.level = 0.95* ustawia poziom ufności na 95%. Argument *methods = "exact"* oznacza, że do obliczenia przedziału ufności zostanie użyta dokładna metoda Cloppera-Pearsona. Argument *methods = asymptotic"* oznacza, że do obliczenia przedziału ufności zostanie użyta dokładna metoda Walda. Argument *methods = wilson"* oznacza, że do obliczenia przedziału ufności zostanie użyta dokładna metoda Wilsona.
 
 
-# Zakładając, że 'losowe_wartosci' to wektor danych binarnych (0/1), a 'n' to liczba prób
-n <- 10      # liczba prób
+```{r}
+
+n <- 1000      # liczba prób
 p <- 0.5     # prawdopodobieństwo sukcesu
-size <- 1000 # liczba generowanych wartości
+size <- 10 # liczba generowanych wartości
 
 
 losowe_wartosci <- rbinom(n, size, p)
@@ -797,22 +835,30 @@ sukcesy <- sum(losowe_wartosci)
 proby <- length(losowe_wartosci)
 
 # Przedział ufności Cloppera-Pearsona
-ci_cp <- binom.confint(sukcesy, n = proby*size, methods = "exact", conf.level = 0.95)
+ci_cp <- binom.confint(sukcesy, n = proby*size,
+                       methods = "exact", 
+                       conf.level = 0.95)
 cat("Przedział ufności Cloppera-Pearsona:", ci_cp$lower, ci_cp$upper, "\n")
 
 # Przedział ufności Wald’a
-ci_wald <- binom.confint(sukcesy, n = proby*size, conf.level = 0.95, methods="asymptotic", correct = FALSE)
+ci_wald <- binom.confint(sukcesy, n = proby*size,
+                         conf.level = 0.95, 
+                         methods="asymptotic", 
+                         correct = FALSE)
 cat("Przedział ufności Wald’a:", ci_wald$lower, ci_wald$upper, "\n")
 
 # Przedział ufności Wilsona
-ci_wilson <- binom.confint(sukcesy, n = proby*size, methods = "wilson", conf.level = 0.95)
+ci_wilson <- binom.confint(sukcesy, n = proby*size,
+                           methods = "wilson", 
+                           conf.level = 0.95)
 cat("Przedział ufności Wilsona:", ci_wilson$lower, ci_wilson$upper, "\n")
 
 ```
+Metody Wald'a oraz Wilsona są do siebie najbardziej zbliżone. Metoda Clopper-Pearsona jest dokładna, ale często daje szerokie przedziały ufności.
 
 ## Zadanie 9
 
-```{r, echo=FALSE ,fig.width=10, fig.height=7, dpi=300}
+```{r, echo=FALSE ,fig.width=7, fig.height=10, dpi=300}
 library(ggplot2)
 
 # Parametry
@@ -1162,7 +1208,7 @@ results
 
 ```
 
-### Zadnie 11.4
+### Zadanie 11.4
 
 Przedostatnia hipotezy związana jest z optymistyczną odpowiedzią na
 drugie pytanie z ankiety względem płci. Sprawdzamy czy równy procent
