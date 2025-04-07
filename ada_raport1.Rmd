@@ -399,10 +399,9 @@ print(f4, type = "latex", caption.placement = "top", comment = FALSE,size="small
 Dane obejmują zarówno zmienne ilościowe (np. STAŻ, WIEK, PYT_1), jak i
 jakościowe (np. DZIAŁ, PŁEĆ, CZY_KIER). Brak wartości brakujących
 sugeruje, że zestaw danych jest kompletny i dobrze przygotowany do
-analizy. Najwięcej osób w próbie należy do działu PD (98 osób), najmniej do IT
-(26 osób). Większość badanych ma staż pracy 1-2 lata (140 osób), co może wskazywać
-na młodą kadrę pracowników. Większość respondentów pełni funkcję kierowniczą (173 TAK vs. 27 NIE). Przewaga mężczyzn w próbie.
-Największa grupa wiekowa to 36-45 lat (104 osoby).
+analizy. Najwięcej osób w próbie należy do działu PD, najmniej do IT. Większość badanych ma staż pracy 1-2 lata, co może wskazywać
+na młodą kadrę pracowników. Większość respondentów pełni funkcję kierowniczą. Przewaga mężczyzn w próbie.
+Największa grupa wiekowa to 36-45 lat.
 
 PYT_1 a DZIAŁ: Najwięcej pozytywnych odpowiedzi ("zgadzam się" lub
 "zdecydowanie się zgadzam") udzieliły osoby z działu PD.
@@ -454,7 +453,7 @@ attach(df)
 Colors = c("navy", "lightblue", "pink", 'red')
 print(mosaicplot(table(CZY_ZADOW, DZIAŁ), color=Colors, xlab = 'Czy zadowolony', ylab = 'Dzial', main = "CZY ZADOWOLONY ~ DZIAL"))
 ```
-Zadowolenie nie ma związku z działem, do którego należy pracownik. W kązdym dziale jest tyle samo zadowolonych, jak i niezadowoloncy pracowników.
+Zadowolenie nie ma związku z działem, do którego należy pracownik. W każdym dziale jest tyle samo zadowolonych, jak i niezadowoloncy pracowników.
 
 ```{r, echo=FALSE}
 print(mosaicplot(table(CZY_ZADOW, STAŻ), color=Colors, xlab = 'Czy zadowolony', ylab = 'Staz', main = "CZY ZADOWOLONY ~ STAZ"))
@@ -468,11 +467,11 @@ Nie ma znaczenia stanowisko kierownicze, na zadowolenie pracownika.
 ```{r, echo=FALSE}
 print(mosaicplot(table(CZY_ZADOW, PŁEĆ), color=Colors, xlab = 'Czy zadowolony', ylab = 'Plec', main = "CZY ZADOWOLONY ~ PLEC"))
 ```
-Mężczyźni są częściej zadowoleni z pracy niż kobiety. Może być to spowodowane częstymi różnicami w zarobkach kobiet i mężczyzn na tych samym stanowiskach.
+Mężczyźni są częściej zadowoleni z oferowanych szkoleń i wsparcia niż kobiety. Może być to spowodowane częstymi różnicami w zarobkach kobiet i mężczyzn na tych samym stanowiskach.
 ```{r, echo=FALSE}
 print(mosaicplot(table(CZY_ZADOW, WIEK_KAT), color=Colors, xlab = 'Czy zadowolony', ylab = 'Wiek kat', main = "CZY ZADOWOLONY ~ WIEK KAT"))
 ```
-Najmłodzi pracownicy są częściej zadowoleni z pracy, jednak z wiekiem się to zmienia. Pracownicy po 45. roku życia rzadziej są zadowoleni z warunków zatrudnienia, co jest wypadkową zdobytego doświadczenia oraz znajomością (być może słabej) organizacji firmy.
+Najmłodzi pracownicy są częściej zadowoleni z pracy, jednak z wiekiem się to zmienia. Pracownicy po 45. roku życia rzadziej są zadowoleni z opcji awansu oferowanych przez firmę, co jest wypadkową zdobytego doświadczenia oraz znajomością (być może słabej) organizacji firmy.
 
 # Część II
 
@@ -853,31 +852,30 @@ trials <- 100
 ci <- clopper_pearson_ci(confidence_level, 
                          successes = successes, 
                          trials = trials)
-cat("Przedział ufności (Clopper-Pearson) dla", successes, "/", trials, ":", ci, "\n")
+cat("Przedział ufności (Clopper-Pearson) dla", 
+    successes, "/", trials, ":", ci, "\n")
 
 # Generowanie losowych danych binarnych
 data <- rbinom(100, 1, 0.3)
 ci_data <- clopper_pearson_ci(confidence_level, data = data)
-cat("Przedział ufności (Clopper-Pearson) dla danych binarnych:", ci_data, "\n")
+cat("Przedział ufności (Clopper-Pearson) 
+    dla danych binarnych:", ci_data, "\n")
 
 
 ```
 
 ## Zadanie 7
-Na podstawie zmiennej *PYT_3* stworzono zmienną *CZY_ZADOW_2*.
+Na podstawie zmiennej *PYT_3* (które jest tym samem pytaniem co PYT_2, tylko zadane kilka tygodni później) stworzono zmienną *CZY_ZADOW_2*.
 ```{r}
-
-# Tworzenie zmiennej CZY_ZADOW_2 na podstawie PYT_3
 df$CZY_ZADOW_2 <- cut(df$PYT_3, breaks = c(-3, 0, 2),
                       labels = c("NIE", "TAK"),
                       include.lowest = TRUE)
 
-# Dla zmiennej CZY_ZADOW
 successes_1 <- sum(df$CZY_ZADOW == "TAK", na.rm = TRUE)
 trials_1 <- sum(df$CZY_ZADOW %in% c("TAK", "NIE"), na.rm = TRUE)
 ci1<- clopper_pearson_ci(0.95,successes_1,trials_1)
 
-# Dla zmiennej CZY_ZADOW_2 
+ 
 successes_2 <- sum(df$CZY_ZADOW_2 == "TAK", na.rm = TRUE)
 trials_2 <- sum(df$CZY_ZADOW_2 %in% c("TAK", "NIE"), na.rm = TRUE)
 ci2<- clopper_pearson_ci(0.95,successes_2,trials_2)
@@ -897,7 +895,7 @@ Funkcja wbudowana *rbinom* generuje dane binarne(0/1) na podstawie rozkładu dwu
 
 - *p* - prawdopodobieństwo sukcesu.
 
-Wynikiem jest wektor *losowe_wartosci*, który zawiera liczbę sukcesów (liczba 1) w każdej z 10 prób (każda próba ma 1000 prób).
+Wynikiem jest wektor *losowe_wartosci*, który zawiera liczbę sukcesów (liczba 1) w każdej z 1000 prób (o długości 10).
 
 Funkcja *binom.confint* oblicza przedział ufności dla proporcji sukcesów w próbach binarnych. Argument *conf.level = 0.95* ustawia poziom ufności na 95%. Argument *methods = "exact"* oznacza, że do obliczenia przedziału ufności zostanie użyta dokładna metoda Cloppera-Pearsona. Argument *methods = asymptotic"* oznacza, że do obliczenia przedziału ufności zostanie użyta dokładna metoda Walda. Argument *methods = wilson"* oznacza, że do obliczenia przedziału ufności zostanie użyta dokładna metoda Wilsona.
 
@@ -913,20 +911,17 @@ losowe_wartosci <- rbinom(n, size, p)
 sukcesy <- sum(losowe_wartosci)
 proby <- length(losowe_wartosci)
 
-# Przedział ufności Cloppera-Pearsona
 ci_cp <- binom.confint(sukcesy, n = proby*size,
                        methods = "exact", 
                        conf.level = 0.95)
 cat("Przedział ufności Cloppera-Pearsona:", ci_cp$lower, ci_cp$upper, "\n")
 
-# Przedział ufności Wald’a
 ci_wald <- binom.confint(sukcesy, n = proby*size,
                          conf.level = 0.95, 
                          methods="asymptotic", 
                          correct = FALSE)
 cat("Przedział ufności Wald’a:", ci_wald$lower, ci_wald$upper, "\n")
 
-# Przedział ufności Wilsona
 ci_wilson <- binom.confint(sukcesy, n = proby*size,
                            methods = "wilson", 
                            conf.level = 0.95)
@@ -1009,7 +1004,7 @@ for (n in n_values) {
 # Tworzenie wykresów
 par(mfrow = c(3, 2), mar = c(5, 5, 2, 2))
 
-methods <- c("Wilson", "Normal", "Beta")
+methods <- c("Wilson", "Walda", "C-P")
 colors <- c("blue", "red", "green")
 
 for (i in seq_along(n_values)) {
@@ -1053,28 +1048,21 @@ for (i in seq_along(n_values)) {
 par(mfrow = c(1, 1))
 ```
 
-Dla małych próbek (n=30) metoda normalna wykazuje dużą niestabilność, z
+Dla małych próbek (n=30) metoda Wald'a wykazuje dużą niestabilność, z
 wyraźnymi spadkami poniżej poziomu pozostałych metod. W miarę wzrostu
 liczności próby (n=100, n=1000) różnice między metodami się zmniejszają,
 a wszystkie trzy metody zbliżają się do oczekiwanego poziomu pokrycia.
-Metoda Wilsona i Beta generalnie utrzymują lepsze prawdopodobieństwo
-pokrycia, szczególnie dla mniejszych próbek.
 
-Wszystkie metody wykazują podobny kształt – długość przedziału jest
-największa dla p≈0.5p≈0.5 i maleje dla wartości bliższych 0 i 1. Dla
-n=30 metoda normalna daje krótsze przedziały, ale kosztem gorszego
-prawdopodobieństwa pokrycia. Dla większych próbek długości przedziałów
-uzyskane różnymi metodami są bardzo podobne.
+Na wykresach widać, istotną wadę przedziału Cloppera-Pearsona tj. są "ekstremalnie konserwatywne", ponieważ prawdopodobieństwo pokrycia nieznanego parametru p jest większe od poziomu ufności 95% dla wszytskich p. Dzieje się tak ze względu na ich długość. Faktycznie na wykresach długości przedziałów, metoda C-P osiąga największe wartości wśród metod, które wraz z zwiększającą się wartościa n, zmiejszają się.
+Na wykresach prawdopodobieństwa pokrycia wykres metody C-P ma swoje minimum w okolicach p=0.5. Natomiast metody Wilsona i Wald'a mają tam swoje maksimum. Wraz z większającą sie liczbą *n* wszystkie 3 metody wypłaszczają się w okolicy prawdopodobieństwa pokrycia 0.95.
+
+Wszystkie metody wykazują podobny kształt – długość przedziału jest największa dla p=0.5 i maleje dla wartości bliższych 0 i 1. Dla n=30 metoda Wald'a daje krótsze przedziały, ale kosztem gorszegoprawdopodobieństwa pokrycia. Dla większych próbek długości przedziałów uzyskane różnymi metodami są bardzo podobne.
 
 Przy większych n różnice między metodami stają się mniej istotne –
 wszystkie trzy metody dają podobne prawdopodobieństwo pokrycia i
-długości przedziałów. Dla małych próbek metoda Walda wydaje się najmniej
-stabilna i najgorzej dopasowana.
-
-Metoda Walda nie sprawdza się dobrze dla małych prób – daje niestabilne
+długości przedziałów.Metoda Walda nie sprawdza się dobrze dla małych prób – daje niestabilne
 pokrycie i krótsze przedziały kosztem wiarygodności. Metody Wilsona i
-Beta są bardziej niezawodne, szczególnie dla mniejszych wartości n.Dla
-dużych próbek wszystkie metody działają podobnie
+C-P są bardziej niezawodne, szczególnie dla mniejszych wartości n.
 
 # Część V
 

@@ -1,4 +1,4 @@
-This is XeTeX, Version 3.141592653-2.6-0.999996 (TeX Live 2024) (preloaded format=xelatex 2024.10.5)  5 APR 2025 21:18
+This is XeTeX, Version 3.141592653-2.6-0.999996 (TeX Live 2024) (preloaded format=xelatex 2024.10.5)  7 APR 2025 21:29
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -888,7 +888,7 @@ LaTeX Font Info:    Font shape `TU/latinmodern-math.otf(3)/m/n' will be
 LaTeX Font Info:    Font shape `TU/latinmodern-math.otf(3)/m/n' will be
 (Font)              scaled to size 7.99915pt on input line 534.
 [9]
-Underfull \hbox (badness 5446) in paragraph at lines 601--604
+Underfull \hbox (badness 5446) in paragraph at lines 600--603
 \TU/lmr/m/n/12 Sporządzono wykresy mozaikowe odpowiadające parom zmiennych CZY_
 ZADOW
  []
@@ -918,7 +918,7 @@ File: ada_raport1_files/figure-latex/unnamed-chunk-23-1.pdf Graphic file (type
 pdf)
 <use ada_raport1_files/figure-latex/unnamed-chunk-23-1.pdf>
 
-Overfull \hbox (3.01006pt too wide) in paragraph at lines 687--687
+Overfull \hbox (3.01006pt too wide) in paragraph at lines 686--686
  [] 
  []
 
@@ -926,47 +926,28 @@ Overfull \hbox (3.01006pt too wide) in paragraph at lines 687--687
 File: ada_raport1_files/figure-latex/unnamed-chunk-28-1.pdf Graphic file (type 
 pdf)
 <use ada_raport1_files/figure-latex/unnamed-chunk-28-1.pdf>
-[18] [19] [20] [21]
-Overfull \hbox (18.40492pt too wide) in paragraph at lines 1183--1183
-[]\TU/lmtt/m/n/12 ## Przedział ufności (Clopper-Pearson) dla danych binarnych: 
-0.1947936 0.378667[] 
- []
-
-[22]
-Overfull \vbox (0.47795pt too high) detected at line 1303
- []
-
-[23]
+[18] [19] [20] [21] [22] [23]
 File: ada_raport1_files/figure-latex/unnamed-chunk-34-1.pdf Graphic file (type 
 pdf)
 <use ada_raport1_files/figure-latex/unnamed-chunk-34-1.pdf>
 
-Overfull \hbox (6.0213pt too wide) in paragraph at lines 1315--1315
+Overfull \hbox (6.0213pt too wide) in paragraph at lines 1305--1305
  [] 
  []
 
 [24]
 Overfull \vbox (20.20021pt too high) has occurred while \output is active []
 
-[25]
-Missing character: There is no ≈ (U+2248) in font [lmroman12-regular]:mapping=t
-ex-text;!
-Missing character: There is no ≈ (U+2248) in font [lmroman12-regular]:mapping=t
-ex-text;!
-[26]
+[25] [26]
 Missing character: There is no ₀ (U+2080) in font [lmroman12-regular]:mapping=t
 ex-text;!
 [27]
 Missing character: There is no α (U+03B1) in font [lmroman12-regular]:mapping=t
 ex-text;!
 [28] [29]
-Overfull \hbox (13.40465pt too wide) in paragraph at lines 1621--1623
+Overfull \hbox (13.40465pt too wide) in paragraph at lines 1617--1619
 []\TU/lmr/m/n/12 Moce testów zostały wyznaczone dla następujących wartości para
 metru $[] [] [][][][] [][][][] [][][][] [][][][][]$. 
- []
-
-
-Overfull \vbox (0.69948pt too high) detected at line 1669
  []
 
 [30]
@@ -974,17 +955,17 @@ File: ada_raport1_files/figure-latex/unnamed-chunk-44-1.pdf Graphic file (type
 pdf)
 <use ada_raport1_files/figure-latex/unnamed-chunk-44-1.pdf>
 
-Overfull \hbox (22.08127pt too wide) in paragraph at lines 1687--1687
+Overfull \hbox (22.08127pt too wide) in paragraph at lines 1683--1683
  [] 
  []
 
-[31]
-Overfull \hbox (53.04771pt too wide) in paragraph at lines 1729--1734
+[31] [32]
+Overfull \hbox (53.04771pt too wide) in paragraph at lines 1725--1730
 []\TU/lmr/m/n/12 W poniższym kodzie została zimplementowana funkcja \TU/lmr/m/i
 t/12 granice_asymptotycznego_przedziału_ufności()\TU/lmr/m/n/12 ,
  []
 
-[32] [33] (./ada_raport1.aux)
+[33] [34] (./ada_raport1.aux)
  ***********
 LaTeX2e <2023-11-01> patch level 1
 L3 programming layer <2024-02-20>
@@ -1002,4 +983,4 @@ Here is how much of TeX's memory you used:
  1348 hyphenation exceptions out of 8191
  90i,9n,121p,1008b,584s stack positions out of 10000i,1000n,20000p,200000b,200000s
 
-Output written on ada_raport1.pdf (33 pages).
+Output written on ada_raport1.pdf (34 pages).
