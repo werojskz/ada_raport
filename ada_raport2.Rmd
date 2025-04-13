@@ -1,0 +1,163 @@
+---
+title: "Analiza danych ankietowych"
+author:
+- Weronika Jaszkiewicz
+- Weronika Pyrtak
+subtitle: Sprawozdanie 2
+output:
+  pdf_document:
+    latex_engine: xelatex
+    toc: true
+    fig_caption: true
+    fig_width: 5
+    fig_height: 4
+    number_sections: false
+  html_document:
+    toc: true
+    df_print: paged
+header-includes:
+- \usepackage{polyglossia}
+- \setmainlanguage{polish}
+- \usepackage{graphicx}
+- \usepackage{float}
+fontsize: 12pt
+editor_options: 
+  markdown: 
+    wrap: 72
+---
+
+```{r setup, include=FALSE, message=FALSE, warning=FALSE}
+if (!require(knitr)) install.packages("knitr")
+if (!require(readr)) install.packages("readr")
+if (!require(latex2exp)) install.packages("latex2exp")
+if (!require(dplyr)) install.packages("dplyr")
+if (!require(ggplot2)) install.packages("ggplot2")
+if (!require(vctrs)) install.packages("vctrs")
+if (!require(tidyr)) install.packages("tidyr")
+if (!require(xtable)) install.packages("xtable")
+if (!require(binom)) install.packages("binom")
+
+knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(warning = FALSE, message = FALSE)
+knitr::opts_chunk$set(fig.pos = "H", out.extra = "", fig.align = "center")
+
+```
+
+\newpage
+
+# Część I
+
+## Zadanie 1
+ W firmie technologicznej przeprowadzono ankietę, w której pracownicy zostali poproszeni
+ o wyrażenie opinii na temat skuteczności szkolenia "Efektywna komunikacja w zespole"
+ zorganizowanego przez firmę. Wśród próbki 200 pracowników (losowanie proste ze
+ zwracaniem) uzyskano wyniki:
+ -  14 pracowników- bardzo niezadowolonych,
+ -  17 pracowników- niezadowolonych,
+ -  40 pracowników- nie ma zdania,
+ -  100 pracowników- zadowolonych,
+ -  29 pracowników- bardzo zadowolonych,
+ Na podstawie danych wyznaczono przedział ufności dla wektora prawodobieństw opisującego
+ stopień zadowolenia ze szkolenia. Wybrano dwie metody dokładną Cloppera-Pearsona oraz asymptotyczną Wilsona. Przyjęto poziom ufności 0.95.
+
+```{r df,echo=FALSE}
+
+
+
+# Dane
+counts <- c(14, 17, 40, 100, 29)
+n <- sum(counts)
+kategorie <- c("zdecyd. nie zgadz.",
+               "nie zgadz.", "nie mam zdania",
+               "zgadz.", "zdecyd. zgadzam")
+estymatory <- counts / n
+alpha<-0.05
+
+# Przedziały ufności
+results_cp <- binom.confint(x = counts, 
+                            n = n, conf.level =1-alpha/5,
+                            methods = "exact")
+results_wilson <- binom.confint(x = counts,
+                                n = n, conf.level = 1-alpha/5,
+                                methods = "wilson")
+
+print(results_cp[c("x","lower","upper")])
+print(results_wilson[c("x","lower","upper")])
+
+
+```
+## Zadanie 2
+
+```{r typy, results='asis'}
+
+testuj_hipoteze_multinomial <- function(x, p0) {
+  # Dane wejściowe:
+  # x  - wektor obserwacji (liczności)
+  # p0 - wektor hipotetycznych prawdopodobieństw
+  
+  n <- sum(x)
+  k <- length(x)
+  expected <- n * p0
+  
+  # Statystyka testu chi-kwadrat Pearsona
+  chisq_stat <- sum((x - expected)^2 / expected)
+  pval_chisq <- 1 - pchisq(chisq_stat, df = k - 1)
+  
+  # Statystyka testu największej wiarygodności (G^2)
+  # Uwaga: 0*log(0) = 0, więc pomijamy tam gdzie xi = 0
+  nonzero <- x > 0
+  g2_stat <- 2 * sum(x[nonzero] * log(x[nonzero] / expected[nonzero]))
+  pval_g2 <- 1 - pchisq(g2_stat, df = k - 1)
+  
+  # Wyniki w formie ramki danych
+  result <- data.frame(
+    Test = c("Chi-kwadrat Pearsona", 
+             "Chi-kwadrat największej wiarygodności"),
+    Statystyka = round(c(chisq_stat, g2_stat), 4),
+    P_value = round(c(pval_chisq, pval_g2), 4)
+  )
+  
+  return(result)
+}
+
+x <- c(14, 17, 40, 100, 29)
+
+# Hipotetyczne prawdopodobieństwa (np. równe)
+p0 <- rep(0.2, 5)
+
+# Test
+testuj_hipoteze_multinomial(x, p0)
+
+```
+
+## Zadanie 3
+
+```{r,echo=FALSE}
+
+df <- read.csv("ankieta.csv", sep = ";", fileEncoding = "Latin2")
+colnames(df) <- c('DZIAŁ','STAŻ','CZY_KIER', 'PYT_1', 
+                    'PYT_2', 'PYT_3', 'PŁEĆ', 'WIEK')
+
+attach(df)
+
+
+```
+
+```{r,echo=FALSE}
+# 1. Filtrowanie pracowników z Działu Produktowego
+df_prod <- subset(df, DZIAŁ == "PD")
+
+# 2. Liczność odpowiedzi na PYT_1
+x <- table(df_prod$PYT_1)
+x <- as.numeric(x)  # upewniamy się, że to wektor liczbowy
+
+# 3. Hipotetyczny równomierny rozkład
+p0 <- rep(1/length(x), length(x))
+
+# 4. Funkcja z zadania 2
+testuj_hipoteze_multinomial(x, p0)
+
+```
+
+
+
