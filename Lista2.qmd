@@ -1,0 +1,261 @@
+---
+title: "Lista2"
+---
+
+```{r setup, include=FALSE, message=FALSE, warning=FALSE}
+if (!require(knitr)) install.packages("knitr")
+if (!require(readr)) install.packages("readr")
+if (!require(latex2exp)) install.packages("latex2exp")
+if (!require(dplyr)) install.packages("dplyr")
+if (!require(ggplot2)) install.packages("ggplot2")
+if (!require(vctrs)) install.packages("vctrs")
+if (!require(tidyr)) install.packages("tidyr")
+if (!require(xtable)) install.packages("xtable")
+if (!require(binom)) install.packages("binom")
+
+knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(warning = FALSE, message = FALSE)
+knitr::opts_chunk$set(fig.pos = "H", out.extra = "", fig.align = "center")
+```
+
+# CZĘŚĆ I
+
+## Zadanie 1
+
+```{r, echo = FALSE}
+alpha <- 0.05
+x_values <- c(14, 17, 40, 100, 29)
+n_trials <- rep(200, length(x_values))
+
+#Przedziały ufności Cloppera Pearsona
+result_binom <- binom.confint(x_values, n_trials, 1 - alpha/5, methods = "exact")
+
+result_df_binom <- result_binom[, c("x", "lower", "upper")]
+print(result_df_binom)
+
+#Przedziały ufności Wilsona
+result_wilson <- binom.confint(x_values, n_trials, 1 - alpha/5, methods = "wilson")
+
+result_df_wilosn <- result_wilson[, c("x", "lower", "upper")]
+print(result_df_wilosn)
+```
+
+## Zadanie 2
+
+```{r}
+library(stats)
+
+critical_test <- function(x_values, n, p0_values) {
+  statistic <- 0
+  for (i in 1:length(x_values)) {
+    x <- x_values[i]
+    p0 <- p0_values[i]
+    statistic <- statistic + ((x - n * p0)^2) / (n * p0)
+  }
+  p_value <- 1 - pchisq(statistic, df = length(x_values) - 1)
+  
+  return(p_value)}
+
+```
+
+```{r}
+IW_test <- function(x_values, n, p0_values){
+  statistic <- 0
+  for (i in 1:length(x_values)) {
+    x <- x_values[i]
+    p0 <- p0_values[i]
+    statistic <- statistic + x*log(x/(n*p0))
+  }
+  statistic = 2*statistic
+  p_value <- 1 - pchisq(statistic, df = length(x_values) - 1)
+  
+  return(p_value)
+}
+```
+
+## Zadanie 3
+
+```{r}
+library(tidyverse)
+df <- read.csv("ankieta.csv", sep = ";", fileEncoding = "Latin2")
+df_PD <- df[df$DZIAŁ == "PD", ]
+data <- table(df_PD$PYT_1)
+view(df)
+```
+
+Według obu testów odrzucamy H0, bo jest o wiele mniejsze niż poziom istaotności alpha = 0.05
+
+```{r}
+p0_values <- c(0.2,0.2,0.2,0.2,0.2) 
+x_values <- data
+n <- sum(data)
+
+test1 <- critical_test(x_values, n, p0_values)
+print(test1)
+
+test2 <- IW_test(x_values, n, p0_values)
+print(test2)
+```
+
+# Część II
+
+## Zadanie 4 
+
+**Test Fishera**, znany również jako **test F** lub **test jednorodności wariancji**, jest statystycznym testem używanym do porównywania wariancji dwóch próbek populacji. Służy do określenia, czy wariancje dwóch grup są równe czy też nie. Test opiera się na rozkładzie F, który jest rozkładem prawdopodobieństwa porównującym stosunek dwóch wariancji. Jeśli hipoteza zerowa jest prawdziwa, stosunek wariancji powinien być bliski 1. Jeśli stosunek jest znacznie różny od 1, sugeruje to, że wariancje dwóch grup nie są równe.
+
+Test Fishera dla tabel $r\times c$ zwany jest również **testem Freemana-Haltona**. Test ten jest rozszerzeniem na tabele $r\times c$ dokaładnego testu Fishera. Określa dokładne prawdopodobieństwo wystąpienia konkretnego rozkładu liczb w tabeli przy znanym $n$ i ustalonych sumach brzegowych.
+
+W języku programowania R w paczce *stats* występuje funkcja *fisher.test()* służąca do przeprowadzania testu Fishera dla przypadku $2 \times 2$ jak również przypadków o większej liczbie kolumn/wierszy. Funkacj przyjmuje parametry:
+
+**x** – macierz 2-wymiarowa (tabela kontyngencji) lub obiekt typu faktor.
+
+**y** – drugi faktor (używany tylko, jeśli $x$ nie jest macierzą).
+
+**workspace** – liczba całkowita określająca ilość pamięci do obliczeń dla dużych tabel (w jednostkach po 4 bajty).
+
+**hybrid** – czy dla dużych tabel stosować przybliżoną metodę hybrydową (domyślnie: $FALSE$, czyli dokładnie).
+
+**hybridPars** – parametry sterujące warunkami przybliżenia chi-kwadrat (domyślnie tzw. warunki Cochrana).
+
+**control** – lista ustawień technicznych dla algorytmu (np. $mult$ – rozmiar pamięci na ścieżki w obliczeniach).
+
+**or** – zakładany iloraz szans (odds ratio), używany tylko w przypadku tabel $2 \times 2$.
+
+**alternative** – rodzaj hipotezy alternatywnej: *"two.sided"* (dwustronna), *"greater"* lub *"less"*.
+
+**conf.int** – czy obliczyć przedział ufności dla ilorazu szans (tylko dla $2 \times 2$).
+
+**conf.level** – poziom ufności dla przedziału (np. 0.95 dla 95%).
+
+**simulate.p.value** – czy obliczyć p-value przy pomocy symulacji Monte Carlo (zalecane dla dużych tabel).
+
+**B** – liczba powtórzeń w symulacji Monte Carlo.
+
+Funkcja zwraca:
+
+**method** – nazwa zastosowanego testu, np. "Fisher's Exact Test for Count Data"
+
+**data.name** – nazwa tabeli kontyngencji przekazanej do testu
+
+**p.value** – wartość p, określająca istotność statystyczną wyniku
+
+**alternative** – określenie hipotezy alternatywnej: "two.sided" (dwustronna), "less" lub "greater"
+
+**estimate** – oszacowany iloraz szans (odds ratio), zwracany tylko w przypadku tabeli 2×2
+
+**conf.int** – przedział ufności dla ilorazu szans, domyślnie 95% (również tylko dla tabeli 2×2)
+
+**null.value** – wartość zakładana w hipotezie zerowej (np. iloraz szans = 1)
+
+```{r}
+x_fisher <- matrix(c(8, 2, 1, 5), nrow = 2)
+x_freeman_halton <- matrix(1:6, nrow = 2, ncol = 3)
+
+freeman_halton_test <- fisher.test(x_freeman_halton, y = NULL, workspace = 200000, hybrid = FALSE, hybridPars = c(expect = 5, percent = 80, Emin = 1), control = list(), or = 1, alternative = "two.sided", conf.int = TRUE, conf.level = 0.95, simulate.p.value = FALSE, B = 2000)
+
+fisher_test <- fisher.test(x_fisher, y = NULL, workspace = 200000, hybrid = FALSE, hybridPars = c(expect = 5, percent = 80, Emin = 1), control = list(), or = 1, alternative = "two.sided", conf.int = TRUE, conf.level = 0.95, simulate.p.value = FALSE, B = 2000)
+
+freeman_halton_test
+fisher_test
+```
+
+Wyniki testu Fishera dla danych liczbowych:
+
+1.  Test dla x_freeman_halton:
+
+p-value = 1: Wynik testu wskazuje, że nie ma dowodów na to, by istnieła istotna statystycznie różnica między grupami. Przy p-value równym 1, nie możemy odrzucić hipotezy zerowej (brak związku).
+
+Hipoteza alternatywna: Dwustronna (testuje, czy iloraz szans jest różny od 1).
+
+2.  Test dla x_fisher:
+
+p-value = 0.03497: Wynik wskazuje na statystycznie istotną różnicę, ponieważ p-value jest mniejsze niż standardowy próg 0.05. Oznacza to, że istnieje związek między badanymi zmiennymi.
+
+Hipoteza alternatywna: Zakłada, że iloraz szans nie jest równy 1 (testuje, czy szanse w grupach się różnią).
+
+Przedział ufności (95%) dla ilorazu szans: \[1.008849, 1049.791446\], co oznacza, że z 95% pewnością, iloraz szans w populacji mieści się w tym przedziale.
+
+Iloraz szans (odds ratio): 15.46969 – sugeruje, że jedna z grup ma około 15.47 razy większe szanse na daną cechę w porównaniu do drugiej grupy.
+
+## Zadanie 5
+
+```{r}
+tabela <- table(df$PŁEĆ, df$CZY_KIER)
+fisher.test(tabela)
+```
+
+## Zadanie 6
+
+```{r}
+df$CZY_ZADOW <- cut(df$PYT_2,
+breaks = c(-3, 0, 2),
+labels = c('NIE', 'TAK'))
+
+df$WIEK_KAT <- cut(df$WIEK, 
+breaks = c(-Inf, 35, 45, 55, Inf), 
+labels = c('0-35', '36-45', '46-55', '55+'))
+
+view(df)
+```
+
+a)  zajmowanie stanowiska kierowniczego nie zale˙zy od wieku (CZY_KIER oraz WIEK_KAT)
+
+    ```{r}
+    tabela <- table(df$CZY_KIER, df$WIEK_KAT)
+    fisher.test(tabela, workspace = 1e8)
+    ```
+
+b)  zajmowanie stanowiska kierowniczego nie zale˙zy od sta˙zu pracy (CZY_KIER oraz STA˙Z)
+
+    ```{r}
+    tabela <- table(df$CZY_KIER, df$STAŻ)
+    fisher.test(tabela)
+    ```
+
+c)  stopie´n zadowolenia ze szkole´n w kontek´scie dopasowania do indywidualnych potrzeb w pierwszym badanym okresie nie zale˙zy od zajmowanego stanowiska (PYT_2 oraz CZY_KIER)
+
+    ```{r}
+    tabela <- table(df$PYT_2, df$CZY_KIER)
+    fisher.test(tabela)
+    ```
+
+    ```{r}
+    tabela <- table(df$CZY_ZADOW, df$CZY_KIER)
+    fisher.test(tabela)
+    ```
+
+d)  stopie´n zadowolenia ze szkole´n w kontek´scie dopasowania do indywidualnych potrzeb w pierwszym badanym okresie nie zale˙zy od sta˙zu (PYT_2 oraz STA˙Z)
+
+    ```{r}
+    tabela <- table(df$PYT_2, df$STAŻ)
+    fisher.test(tabela)
+    ```
+
+    ```{r}
+    tabela <- table(df$CZY_ZADOW, df$STAŻ)
+    fisher.test(tabela)
+    ```
+
+e)  stopie´n zadowolenia ze szkole´n w kontek´scie dopasowania do indywidualnych potrzeb w pierwszym badanym okresie nie zale˙zy od płci (PYT_2 oraz PŁE´C)
+
+    ```{r}
+    tabela <- table(df$PYT_2,df$PŁEĆ)
+    fisher.test(tabela)
+    ```
+
+    ```{r}
+    tabela <- table(df$CZY_ZADOW, df$PŁEĆ)
+    fisher.test(tabela)
+    ```
+
+f)  stopie´n zadowolenia ze szkole´n w kontek´scie dopasowania do indywidualnych potrzeb w pierwszym badanym okresie nie zale˙zy od wieku (PYT_2 oraz WIEK_KAT)
+
+    ```{r}
+    tabela <- table(df$PYT_2, df$WIEK_KAT)
+    fisher.test(tabela, workspace = 1e8)
+    ```
+
+    ```{r}
+    tabela <- table(df$CZY_ZADOW, df$WIEK_KAT)
+    fisher.test(tabela)
+    ```
