@@ -198,21 +198,21 @@ labels = c('0-35', '36-45', '46-55', '55+'))
 view(df)
 ```
 
-a)  zajmowanie stanowiska kierowniczego nie zale˙zy od wieku (CZY_KIER oraz WIEK_KAT)
+a)  zajmowanie stanowiska kierowniczego nie zależy od wieku (CZY_KIER oraz WIEK_KAT)
 
     ```{r}
     tabela <- table(df$CZY_KIER, df$WIEK_KAT)
     fisher.test(tabela, workspace = 1e8)
     ```
 
-b)  zajmowanie stanowiska kierowniczego nie zale˙zy od sta˙zu pracy (CZY_KIER oraz STA˙Z)
+b)  zajmowanie stanowiska kierowniczego nie zależy od stażu pracy (CZY_KIER oraz STAŻ)
 
     ```{r}
     tabela <- table(df$CZY_KIER, df$STAŻ)
     fisher.test(tabela)
     ```
 
-c)  stopie´n zadowolenia ze szkole´n w kontek´scie dopasowania do indywidualnych potrzeb w pierwszym badanym okresie nie zale˙zy od zajmowanego stanowiska (PYT_2 oraz CZY_KIER)
+c)  stopień zadowolenia ze szkoleń w kontekście dopasowania do indywidualnych potrzeb w pierwszym badanym okresie nie zależy od zajmowanego stanowiska (PYT_2 oraz CZY_KIER)
 
     ```{r}
     tabela <- table(df$PYT_2, df$CZY_KIER)
@@ -224,7 +224,7 @@ c)  stopie´n zadowolenia ze szkole´n w kontek´scie dopasowania do indywidualn
     fisher.test(tabela)
     ```
 
-d)  stopie´n zadowolenia ze szkole´n w kontek´scie dopasowania do indywidualnych potrzeb w pierwszym badanym okresie nie zale˙zy od sta˙zu (PYT_2 oraz STA˙Z)
+d)  stopień zadowolenia ze szkoleń w kontekście dopasowania do indywidualnych potrzeb w pierwszym badanym okresie nie zależy od stażu (PYT_2 oraz STAŻ)
 
     ```{r}
     tabela <- table(df$PYT_2, df$STAŻ)
@@ -236,7 +236,7 @@ d)  stopie´n zadowolenia ze szkole´n w kontek´scie dopasowania do indywidualn
     fisher.test(tabela)
     ```
 
-e)  stopie´n zadowolenia ze szkole´n w kontek´scie dopasowania do indywidualnych potrzeb w pierwszym badanym okresie nie zale˙zy od płci (PYT_2 oraz PŁE´C)
+e)  stopień zadowolenia ze szkoleń w kontekście dopasowania do indywidualnych potrzeb w pierwszym badanym okresie nie zależy od płci (PYT_2 oraz PŁEĆ)
 
     ```{r}
     tabela <- table(df$PYT_2,df$PŁEĆ)
@@ -248,7 +248,7 @@ e)  stopie´n zadowolenia ze szkole´n w kontek´scie dopasowania do indywidualn
     fisher.test(tabela)
     ```
 
-f)  stopie´n zadowolenia ze szkole´n w kontek´scie dopasowania do indywidualnych potrzeb w pierwszym badanym okresie nie zale˙zy od wieku (PYT_2 oraz WIEK_KAT)
+f)  stopień zadowolenia ze szkoleń w kontekście dopasowania do indywidualnych potrzeb w pierwszym badanym okresie nie zależy od wieku (PYT_2 oraz WIEK_KAT)
 
     ```{r}
     tabela <- table(df$PYT_2, df$WIEK_KAT)
