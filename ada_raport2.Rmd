@@ -5,6 +5,9 @@ author:
 - Weronika Pyrtak
 subtitle: Sprawozdanie 2
 output:
+  html_document:
+    toc: true
+    df_print: paged
   pdf_document:
     extra_dependencies: ["multirow"]
     latex_engine: xelatex
@@ -13,9 +16,6 @@ output:
     fig_width: 5
     fig_height: 4
     number_sections: false
-  html_document:
-    toc: true
-    df_print: paged
 header-includes:
 - \usepackage{polyglossia}
 - \setmainlanguage{polish}
@@ -38,6 +38,7 @@ if (!require(tidyr)) install.packages("tidyr")
 if (!require(xtable)) install.packages("xtable")
 if (!require(binom)) install.packages("binom")
 if (!require(energy)) install.packages("energy")
+if (!require(DescTools)) install.packages("DescTools")
 
 knitr::opts_chunk$set(echo = TRUE)
 knitr::opts_chunk$set(warning = FALSE, message = FALSE)
@@ -50,17 +51,21 @@ knitr::opts_chunk$set(fig.pos = "H", out.extra = "", fig.align = "center")
 # Część I
 
 ## Zadanie 1
- W firmie technologicznej przeprowadzono ankietę, w której pracownicy zostali poproszeni
- o wyrażenie opinii na temat skuteczności szkolenia "Efektywna komunikacja w zespole"
- zorganizowanego przez firmę. Wśród próbki 200 pracowników (losowanie proste ze
- zwracaniem) uzyskano wyniki:\
- -  14 pracowników- bardzo niezadowolonych,\
- -  17 pracowników- niezadowolonych,\
- -  40 pracowników- nie ma zdania,\
- -  100 pracowników- zadowolonych,\
- -  29 pracowników- bardzo zadowolonych, \
- Na podstawie danych wyznaczono przedział ufności dla wektora prawodobieństw opisującego
- stopień zadowolenia ze szkolenia. Wybrano dwie metody dokładną Cloppera-Pearsona oraz asymptotyczną Wilsona. Przyjęto poziom ufności 0.95.
+
+W firmie technologicznej przeprowadzono ankietę, w której pracownicy
+zostali poproszeni o wyrażenie opinii na temat skuteczności szkolenia
+"Efektywna komunikacja w zespole" zorganizowanego przez firmę. Wśród
+próbki 200 pracowników (losowanie proste ze zwracaniem) uzyskano
+wyniki:\
+- 14 pracowników- bardzo niezadowolonych,\
+- 17 pracowników- niezadowolonych,\
+- 40 pracowników- nie ma zdania,\
+- 100 pracowników- zadowolonych,\
+- 29 pracowników- bardzo zadowolonych,\
+Na podstawie danych wyznaczono przedział ufności dla wektora
+prawodobieństw opisującego stopień zadowolenia ze szkolenia. Wybrano
+dwie metody dokładną Cloppera-Pearsona oraz asymptotyczną Wilsona.
+Przyjęto poziom ufności 0.95.
 
 ```{r df,echo=FALSE, results='hide'}
 
@@ -86,6 +91,7 @@ print(results_wilson[c("x","lower","upper")])
 
 
 ```
+
 \begin{table}[H]
 \centering
 \caption{Przedziały ufności dla dwóch estymacji}
@@ -104,21 +110,28 @@ print(results_wilson[c("x","lower","upper")])
 \end{tabular}
 \end{table}
 
-Porównując pierwszą i drugą estymację, widać że przedziały ufności dla wszystkich wartości x są bardzo podobne, z minimalnymi przesunięciami w kierunku wyższych wartości w drugiej estymacji. Różnice są jednak bardzo niewielkie, co świadczy o stabilności oszacowań i sugeruje, że wyniki obu metod są zgodne.  
-W obu przypadkach szerokość przedziałów maleje wraz ze wzrostem liczby obserwacji x, co jest zgodne z intuicją — większe próby dają dokładniejsze oszacowania.
+Porównując pierwszą i drugą estymację, widać że przedziały ufności dla
+wszystkich wartości x są bardzo podobne, z minimalnymi przesunięciami w
+kierunku wyższych wartości w drugiej estymacji. Różnice są jednak bardzo
+niewielkie, co świadczy o stabilności oszacowań i sugeruje, że wyniki
+obu metod są zgodne.\
+W obu przypadkach szerokość przedziałów maleje wraz ze wzrostem liczby
+obserwacji x, co jest zgodne z intuicją — większe próby dają
+dokładniejsze oszacowania.
 
 ## Zadanie 2
 
-Napisano funkcję *testuj_hipoteze_multinomial()*, która wyznacza wartość poziomu krytycznego w następujących
- testach:  
- - chi-kwadrat Pearsona,  
- - chi-kwadrat największej wiarogodności,  
- służacych do weryfikacji hipotezy $H_0: p = p_0$ przy hipotezie alternatywnej $H_0: p\not = p_0$ na
- podstawie obserwacji $x$ wektora losowego $X$ z rozkładu wielomianowego z parametrami $n$ i $p$.  
- Funkcja przyjmuje dwa parametry:  
- - $x$ - wektor obserwacji,  
- - $p_0$ - wektor hipotetycznych prawdopodobieństw.  
- Funkcja zwraca tabelę z wynikami testu: statystykę oraz p-value.
+Napisano funkcję *testuj_hipoteze_multinomial()*, która wyznacza wartość
+poziomu krytycznego w następujących testach:\
+- chi-kwadrat Pearsona,\
+- chi-kwadrat największej wiarogodności,\
+służacych do weryfikacji hipotezy $H_0: p = p_0$ przy hipotezie
+alternatywnej $H_0: p\not = p_0$ na podstawie obserwacji $x$ wektora
+losowego $X$ z rozkładu wielomianowego z parametrami $n$ i $p$.\
+Funkcja przyjmuje dwa parametry:\
+- $x$ - wektor obserwacji,\
+- $p_0$ - wektor hipotetycznych prawdopodobieństw.\
+Funkcja zwraca tabelę z wynikami testu: statystykę oraz p-value.
 
 ```{r typy, results='hide'}
 
@@ -150,6 +163,7 @@ p0 <- rep(0.2, 5)
 testuj_hipoteze_multinomial(x, p0)
 
 ```
+
 \begin{table}[H]
 \centering
 \caption{Wyniki testów chi-kwadrat dla weryfikacji hipotezy $H_0 : \mathbf{p} = \mathbf{p_0}$}
@@ -163,19 +177,26 @@ Chi-kwadrat największej wiarygodności & 106{,}1186 & 0{,}0000 \\
 \end{tabular}
 \end{table}
 
-
-Zarówno test chi-kwadrat Pearsona, jak i test chi-kwadrat największej wiarygodności dały bardzo wysokie wartości statystyk testowych (odpowiednio $123.15$ oraz $106.12$) oraz p-value równe 0.  
-Przy standardowym poziomie istotności $\alpha=0.05$ oba testy prowadzą do odrzucenia hipotezy zerowej $H_0:p=p_0$. Oznacza to, że rozkład empiryczny obserwacji istotnie różni się od rozkładu teoretycznego zakładanego w hipotezie zerowej. Oba testy dają zgodne wnioski.
+Zarówno test chi-kwadrat Pearsona, jak i test chi-kwadrat największej
+wiarygodności dały bardzo wysokie wartości statystyk testowych
+(odpowiednio $123.15$ oraz $106.12$) oraz p-value równe 0.\
+Przy standardowym poziomie istotności $\alpha=0.05$ oba testy prowadzą
+do odrzucenia hipotezy zerowej $H_0:p=p_0$. Oznacza to, że rozkład
+empiryczny obserwacji istotnie różni się od rozkładu teoretycznego
+zakładanego w hipotezie zerowej. Oba testy dają zgodne wnioski.
 
 ## Zadanie 3
-Na podstawie danych z ankiety z poprzedniej listy zweryfikowano hipotezę, że w grupie
- pracowników zatrudnionwych w Dziale Produktowym rozkład odpowiedzi na pytanie "Jak bardzo zgadzasz się ze stwierdzeniem, że firma zapewnia odpowiednie wsparcie i
- materiały umożliwiające skuteczne wykorzystanie w praktyce wiedzy zdobytej w trakcie
- szkoleń?" jest
- równomierny, tzn. jest jednakowe prawdopodobieństwo, że pracownik zatrudniony w Dziale
- Produkcjnym udzielił odpowiedzi "zdecydowanie się nie zgadzam", "nie zgadzam się", "nie
- mam zdania", "zgadzam się", "zdecydowanie się zgadzam" na pytanie PYT_1. Przyjęto poziom
- istotności $0.05$.
+
+Na podstawie danych z ankiety z poprzedniej listy zweryfikowano
+hipotezę, że w grupie pracowników zatrudnionwych w Dziale Produktowym
+rozkład odpowiedzi na pytanie "Jak bardzo zgadzasz się ze stwierdzeniem,
+że firma zapewnia odpowiednie wsparcie i materiały umożliwiające
+skuteczne wykorzystanie w praktyce wiedzy zdobytej w trakcie szkoleń?"
+jest równomierny, tzn. jest jednakowe prawdopodobieństwo, że pracownik
+zatrudniony w Dziale Produkcjnym udzielił odpowiedzi "zdecydowanie się
+nie zgadzam", "nie zgadzam się", "nie mam zdania", "zgadzam się",
+"zdecydowanie się zgadzam" na pytanie PYT_1. Przyjęto poziom istotności
+$0.05$.
 
 ```{r,echo=FALSE, results='hide'}
 
@@ -203,6 +224,7 @@ p0 <- rep(1/length(x), length(x))
 testuj_hipoteze_multinomial(x, p0)
 
 ```
+
 \begin{table}[H]
 \centering
 \caption{Wyniki testów chi-kwadrat dla odpowiedzi na pytanie PYT\_1 w Dziale Produkcyjnym}
@@ -216,25 +238,308 @@ Chi-kwadrat największej wiarygodności & 52{,}5271 & 0{,}0000 \\
 \end{tabular}
 \end{table}
 
-Przeprowadzone testy chi-kwadrat Pearsona oraz największej wiarygodności wskazują na bardzo wysokie wartości statystyk testowych (odpowiednio 64,86 oraz 52,53) oraz p-value równe 0. Przy przyjętym poziomie istotności $\alpha=0.05$, w obu testach odrzucamy hipotezę zerową o równomiernym rozkładzie odpowiedzi na pytanie PYT_1 wśród pracowników Działu Produkcyjnego. Oznacza to, że rozkład odpowiedzi na PYT_1 nie jest równomierny — nie wszystkie odpowiedzi ("zdecydowanie się nie zgadzam", "nie zgadzam się", "nie mam zdania", "zgadzam się", "zdecydowanie się zgadzam") są jednakowo prawdopodobne.
+Przeprowadzone testy chi-kwadrat Pearsona oraz największej wiarygodności
+wskazują na bardzo wysokie wartości statystyk testowych (odpowiednio
+64,86 oraz 52,53) oraz p-value równe 0. Przy przyjętym poziomie
+istotności $\alpha=0.05$, w obu testach odrzucamy hipotezę zerową o
+równomiernym rozkładzie odpowiedzi na pytanie PYT_1 wśród pracowników
+Działu Produkcyjnego. Oznacza to, że rozkład odpowiedzi na PYT_1 nie
+jest równomierny — nie wszystkie odpowiedzi ("zdecydowanie się nie
+zgadzam", "nie zgadzam się", "nie mam zdania", "zgadzam się",
+"zdecydowanie się zgadzam") są jednakowo prawdopodobne.
 
 \newpage
 
+# Część II
+
+## Zadanie 4
+
+**Test Fishera**, znany również jako **test F** lub **test jednorodności
+wariancji**, jest statystycznym testem używanym do porównywania
+wariancji dwóch próbek populacji. Służy do określenia, czy wariancje
+dwóch grup są równe czy też nie. Test opiera się na rozkładzie F, który
+jest rozkładem prawdopodobieństwa porównującym stosunek dwóch wariancji.
+Jeśli hipoteza zerowa jest prawdziwa, stosunek wariancji powinien być
+bliski 1. Jeśli stosunek jest znacznie różny od 1, sugeruje to, że
+wariancje dwóch grup nie są równe.
+
+Test Fishera dla tabel $r\times c$ zwany jest również **testem
+Freemana-Haltona**. Test ten jest rozszerzeniem na
+tabele $r\times c$ dokaładnego testu Fishera. Określa dokładne
+prawdopodobieństwo wystąpienia konkretnego rozkładu liczb w tabeli przy
+znanym $n$ i ustalonych sumach brzegowych.
+
+W języku programowania R w paczce *stats* występuje funkcja
+*fisher.test()* służąca do przeprowadzania testu Fishera dla przypadku
+$2 \times 2$ jak również przypadków o większej liczbie kolumn/wierszy.
+Funkacj przyjmuje parametry:
+
+**x** – macierz 2-wymiarowa (tabela kontyngencji) lub obiekt typu
+faktor.
+
+**y** – drugi faktor (używany tylko, jeśli $x$ nie jest macierzą).
+
+**workspace** – liczba całkowita określająca ilość pamięci do obliczeń
+dla dużych tabel (w jednostkach po 4 bajty).
+
+**hybrid** – czy dla dużych tabel stosować przybliżoną metodę hybrydową
+(domyślnie: $FALSE$, czyli dokładnie).
+
+**hybridPars** – parametry sterujące warunkami przybliżenia chi-kwadrat
+(domyślnie tzw. warunki Cochrana).
+
+**control** – lista ustawień technicznych dla algorytmu (np. $mult$ –
+rozmiar pamięci na ścieżki w obliczeniach).
+
+**or** – zakładany iloraz szans (odds ratio), używany tylko w przypadku
+tabel $2 \times 2$.
+
+**alternative** – rodzaj hipotezy alternatywnej: *"two.sided"*
+(dwustronna), *"greater"* lub *"less"*.
+
+**conf.int** – czy obliczyć przedział ufności dla ilorazu szans (tylko
+dla $2 \times 2$).
+
+**conf.level** – poziom ufności dla przedziału (np. 0.95 dla 95%).
+
+**simulate.p.value** – czy obliczyć p-value przy pomocy symulacji Monte
+Carlo (zalecane dla dużych tabel).
+
+**B** – liczba powtórzeń w symulacji Monte Carlo.
+
+Funkcja zwraca:
+
+**method** – nazwa zastosowanego testu, np. "Fisher's Exact Test for
+Count Data"
+
+**data.name** – nazwa tabeli kontyngencji przekazanej do testu
+
+**p.value** – wartość p, określająca istotność statystyczną wyniku
+
+**alternative** – określenie hipotezy alternatywnej: "two.sided"
+(dwustronna), "less" lub "greater"
+
+**estimate** – oszacowany iloraz szans (odds ratio), zwracany tylko w
+przypadku tabeli 2×2
+
+**conf.int** – przedział ufności dla ilorazu szans, domyślnie 95%
+(również tylko dla tabeli 2×2)
+
+**null.value** – wartość zakładana w hipotezie zerowej (np. iloraz szans
+= 1)
+
+```{r, echo = FALSE}
+x_fisher <- matrix(c(8, 2, 1, 5), nrow = 2) 
+x_freeman_halton <- matrix(1:6, nrow = 2, ncol = 3)  
+
+freeman_halton_test <- fisher.test(x_freeman_halton, y = NULL, workspace = 200000, hybrid = FALSE, hybridPars = c(expect = 5, percent = 80, Emin = 1), control = list(), or = 1, alternative = "two.sided", conf.int = TRUE, conf.level = 0.95, simulate.p.value = FALSE, B = 2000)  
+
+freeman_halton_test 
+```
+
+Wyniki testu Fishera dla danych liczbowych:
+
+1.  **Test dla x_freeman_halton:**
+
+Wynik testu wskazuje, że nie ma dowodów na to, by istnieła istotna
+statystycznie różnica między grupami. Przy p-value równym 1, nie możemy
+odrzucić hipotezy zerowej (brak związku).
+
+Hipoteza alternatywna: Dwustronna (testuje, czy iloraz szans jest różny
+od 1).
+
+```{r, echo = FALSE}
+fisher_test <- fisher.test(x_fisher, y = NULL, workspace = 200000, hybrid = FALSE, hybridPars = c(expect = 5, percent = 80, Emin = 1), control = list(), or = 1, alternative = "two.sided", conf.int = TRUE, conf.level = 0.95, simulate.p.value = FALSE, B = 2000)  
+
+fisher_test
+```
+
+2.  **Test dla x_fisher:**
+
+Wynik wskazuje na statystycznie istotną różnicę, ponieważ p-value
+(0.03497) jest mniejsze niż standardowy próg 0.05. Oznacza to, że
+istnieje związek między badanymi zmiennymi.
+
+Hipoteza alternatywna: Zakłada, że iloraz szans nie jest równy 1
+(testuje, czy szanse w grupach się różnią).
+
+Przedział ufności (95%) dla ilorazu szans: [1.008849, 1049.791446], co
+oznacza, że z 95% pewnością, iloraz szans w populacji mieści się w tym
+przedziale.
+
+Iloraz szans (odds ratio): 15.46969 – sugeruje, że jedna z grup ma około
+15.47 razy większe szanse na daną cechę w porównaniu do drugiej grupy.
+
+## Zadanie 5
+
+Wkorzystując test Fishera, na poziomie istotnosci 0.05, zweryfikowano
+hipotezę, że nie istnieje zależność między płcią a zajmowaniem
+kierowniczego stanowiska.
+
+```{r, echo = FALSE}
+tabela <- table(df$PŁEĆ, df$CZY_KIER) 
+fisher.test(tabela)
+```
+
+Na podstawie analizy i przy poziomie istotności 0.05, nie możemy
+stwierdzić, że kobiety i mężczyźni różnią się pod względem
+prawdopodobieństwa bycia kierownikiem – uznajemy, że prawdopodobieństwa
+są równe.
+
+## Zadanie 6
+
+Wykorzystując test Freemana-Haltona na poziomie istotnosci 0.05
+zweryfikowano następujące hipotezy:
+
+```{r, echo=FALSE}
+df$CZY_ZADOW <- cut(df$PYT_2, breaks = c(-3, 0, 2), labels = c('NIE', 'TAK')) 
+df$WIEK_KAT <- cut(df$WIEK,  breaks = c(-Inf, 35, 45, 55, Inf),  labels = c('0-35', '36-45', '46-55', '55+'))  
+```
+
+a)  Zajmowanie stanowiska kierowniczego nie zależy od wieku.
+
+    ```{r, echo=FALSE}
+    tabela <- table(df$CZY_KIER, df$WIEK_KAT) 
+    fisher.test(tabela, workspace = 1e8)
+    ```
+
+    Na podstawie analizy, nie możemy stwierdzić, że wiek wpływa na
+    prawdopodobieństwo bycia kierownikiem – uznajemy, że
+    prawdopodobieństwa są równe.
+
+b)  Zajmowanie stanowiska kierowniczego nie zależy od stażu pracy.
+
+    ```{r, echo=FALSE}
+    tabela <- table(df$CZY_KIER, df$STAŻ) 
+    fisher.test(tabela)
+    ```
+
+    Na podstawie analizy, możemy stwierdzić, że jest powiązanie między
+    stażem pracy a zajmowaniem stanowiska kierowniczego.
+
+c)  Stopień zadowolenia ze szkoleń w kontekście dopasowania do
+    indywidualnych potrzeb w pierwszym badanym okresie nie zależy od
+    zajmowanego stanowiska.
+
+    ```{r, echo=FALSE}
+    tabela <- table(df$PYT_2, df$CZY_KIER) 
+    fisher.test(tabela)
+    ```
+
+    Na podstawie analizy, można zatem stwierdzić, że poziom
+    zadowowolenia z dopasowania szkoleń do potrzeb zależy od zajmowanego
+    stanowiska w pierwszym badanym okresie.
+
+    ```{r, echo=FALSE}
+    tabela <- table(df$CZY_ZADOW, df$CZY_KIER) 
+    fisher.test(tabela)
+    ```
+
+    Na podstawie wyników testu nie można stwierdzić istotnej zależności
+    między zajmowaniem stanowiska kierowniczego a zadowoleniem ze
+    szkoleń.
+
+d)  Stopień zadowolenia ze szkoleń w kontekście dopasowania do
+    indywidualnych potrzeb w pierwszym badanym okresie nie zależy od
+    stażu.
+
+    ```{r, echo=FALSE}
+    tabela <- table(df$PYT_2, df$STAŻ) 
+    fisher.test(tabela)
+    ```
+
+    Na podstawie analizy, można zatem stwierdzić, że poziom zadowolenia
+    z dopasowania szkoleń do potrzeb zależy od stażu pracy w pierwszym
+    badanym okresie.
+
+    ```{r, echo=FALSE}
+    tabela <- table(df$CZY_ZADOW, df$STAŻ) 
+    fisher.test(tabela)
+    ```
+
+    Na podstawie wyników testu nie można stwierdzić istotnej zależności
+    między stażem pracy a zadowoleniem ze szkoleń.
+
+e)  Stopień zadowolenia ze szkoleń w kontekście dopasowania do
+    indywidualnych potrzeb w pierwszym badanym okresie nie zale˙zy od
+    płci.
+
+    ```{r, echo=FALSE}
+    tabela <- table(df$PYT_2,df$PŁEĆ) 
+    fisher.test(tabela)
+    ```
+
+    Na podstawie analizy, nie można stwierdzić zależności poziomu
+    zadowolenia z dopasowania szkoleń do potrzeb względem płci w
+    pierwszym badanym okresie.
+
+    ```{r, echo=FALSE}
+    tabela <- table(df$CZY_ZADOW, df$PŁEĆ) 
+    fisher.test(tabela)
+    ```
+
+    Na podstawie wyników testu nie można stwierdzić istotnej zależności
+    między płcią pracownika a zadowoleniem ze szkoleń.
+
+f)  Stopień zadowolenia ze szkoleń w kontekście dopasowania do
+    indywidualnych potrzeb w pierwszym badanym okresie nie zależy od
+    wieku.
+
+    ```{r, echo=FALSE}
+    tabela <- table(df$PYT_2, df$WIEK_KAT) 
+    fisher.test(tabela, workspace = 1e8)
+    ```
+
+    Na podstawie wyników testu, nie można stwierdzić zależności poziomem
+    zadowolenia dopasowania szkoleń do potrzeb względem płci w pierwszym
+    badanym okresie.
+
+    ```{r, echo=FALSE}
+    tabela <- table(df$CZY_ZADOW, df$WIEK_KAT) 
+    fisher.test(tabela)
+    ```
+
+    Na podstawie wyników testu nie można stwierdzić istotnej zależności
+    między płcią pracownika a zadowoleniem ze szkoleń.
+
+Podsumowując, można zauważyć, że wynik testu zależy od tego, czy
+analizujemy pełną skalę ocen zadowolenia ze szkoleń (od -2 do 2), czy
+też sprowadzamy odpowiedzi do postaci binarnej (TAK/NIE). Można
+zauważyć, że bardziej szczegółowe dane (skala porządkowa) mogą
+dostarczyć dokładniejszych i bardziej czułych wyników analizy
+statystycznej niż uproszczona zmienna binarna, która może zatracać
+istotne różnice w ocenach.
+
 # Część III
 
-
 ## Zadanie 7
-Funkcja *chisq.test()*, służy do wykonania testu niezależności chi-kwadrat. Zwraca ona statystykę testu chi-kwadrat, stopnie swobody, p-value. Na tej podstawie można ocenić, czy zmienne są niezależne. Hipoteza zerowa $H_0$: zmienne są niezależne, hipoteza alternatywna $H_1:$ zmienna są zależne.
+
+Funkcja *chisq.test()*, służy do wykonania testu niezależności
+chi-kwadrat. Zwraca ona statystykę testu chi-kwadrat, stopnie swobody,
+p-value. Na tej podstawie można ocenić, czy zmienne są niezależne.
+Hipoteza zerowa $H_0$: zmienne są niezależne, hipoteza alternatywna
+$H_1:$ zmienna są zależne.
+
 ```{r}
 tablica <- matrix(c(10, 20, 30, 40), nrow = 2, byrow = TRUE)
 chisq.test(tablica)
 
 ```
-Biorąc poziom istotności $\alpha=0.05$, nie ma podstaw do odrzucenia hipotezy zerowej o niezależności zmiennych. Oznacza to, że brak jest statystycznie istotnych dowodów na istnienie zależności pomiędzy badanymi cechami.
+
+Biorąc poziom istotności $\alpha=0.05$, nie ma podstaw do odrzucenia
+hipotezy zerowej o niezależności zmiennych. Oznacza to, że brak jest
+statystycznie istotnych dowodów na istnienie zależności pomiędzy
+badanymi cechami.
 
 ## Zadanie 8
-Korzystając z funkcji poznanej w zadaniu 7. zweryfikowano hipotezę, że stopień zadowolenia ze szkoleń w kontekście dopasowania do indywidualnych potrzeb w pierwszym badanym okresie nie zależy od zajmowanego stanowiska. Przyjęto poziom istotności 0.01.  
-Zatem hipotezą zerową $H_0$ jest: PYT_2 i CZY_KIER są niezależne. Hipotezą alternatywną $H_1$ jest: PYT_2 i CZY_KIER są zależne.
+
+Korzystając z funkcji poznanej w zadaniu 7. zweryfikowano hipotezę, że
+stopień zadowolenia ze szkoleń w kontekście dopasowania do
+indywidualnych potrzeb w pierwszym badanym okresie nie zależy od
+zajmowanego stanowiska. Przyjęto poziom istotności 0.01.\
+Zatem hipotezą zerową $H_0$ jest: PYT_2 i CZY_KIER są niezależne.
+Hipotezą alternatywną $H_1$ jest: PYT_2 i CZY_KIER są zależne.
+
 ```{r, echo=FALSE, results='hide'}
 # Tworzymy tabelę kontyngencji
 tabela <- table(df$PYT_2, df$CZY_KIER)
@@ -249,6 +554,7 @@ print(test)
 print(test$stdres)
 
 ```
+
 \begin{table}[H]
 \centering
 \caption{Reszty standaryzowane z testu chi-kwadrat Pearsona}
@@ -263,30 +569,55 @@ print(test$stdres)
 \hline
 \end{tabular}
 \end{table}
+
 ```{r, echo=FALSE}
 # Wykres asocjacyjny
 assocplot(tabela, main = "Wykres asocjacyjny: PKT_2 vs CZY_KIER")
 
 ```
 
-Stąd
-$$p_{value}=0.004397 < \alpha=0.01$$
-Zatem odrzucamy hipotezę zerową. Wyniki testu chi-kwadrat wskazują na statystycznie istotną zależność między oceną dopasowania szkoleń a tym, czy ktoś pełni funkcję kierowniczą.  
-Przedstawiono również reszty standaryzowane. Reszty są różnicą miezy wartościami obserwowanymi a oczekiwanymi. Jednak różnica standaryzowana jest dana wzorem:
-$$R=\frac{O-E}{\sqrt{E}}$$
-gdzie:  
- - $O$ - wartość obserwowana,  
- - $E$ - wartość oczekiwana.  
-Test chi-kwadrat mówi czy jest zależność, a reszty pokazują gdzie dokładnie ona jest. Reszty pokazują, które kombinacje zmiennych łamią założenie niezależności. Gdy $R=0$, to wartość obserwowana i oczekiwana są do siebie zbliżone, nie daje nam to efektu. Gdy $|R|>2$, różnica jest istotna statystycznie.   
-W powstałej tabeli reszt standaryzowanych, wartość $|R|>2$ w PYT_2=1. Zatem kierownicy odpowiedzieli '1' o wiele więcej razy niż się oczekiwano, a nie-kierownicy odpowiedzieli '1' o wiele mniej razy niż się oczekiwano, co wskazuje na złamanie założenia niezależności. Pozostałe wartości reszt są niewielkie, zatem one nie łamią założenia niezależności.  
-Następnie przedstawiono wykres asocjacyjny, który ukazuje reszty standaryzowane dla tabeli kontyngencji. Każdy słupek odnosi się do jednej z kategorii PYT_2. Oś Y przedstawia odpowiedzi CZY_KIER - "TAK" lub "NIE". Kolor czerwony słupka określa, że jest mniej przypadków niż oczekiwano (ujemna reszta), a czarny, że więcej przypadków niż oczekiwano (dodatnia reszta).Wartości z tabeli wyraźnie widać na wykresie - dla odpowiedzi '1' w PYT_2, pojawiają się największe reszty standaryzowane, a więc najsilniejsze odchylenia od niezależności. Analiza wykresu asocjacyjnego wskazuje, że osoby na stanowiskach kierowniczych częściej oceniały szkolenia jako średnio dopasowane, natomiast osoby niepełniące funkcji kierowniczych częściej udzielały ocen skrajnych (niskich lub wysokich).
+Stąd $$p_{value}=0.004397 < \alpha=0.01$$ Zatem odrzucamy hipotezę
+zerową. Wyniki testu chi-kwadrat wskazują na statystycznie istotną
+zależność między oceną dopasowania szkoleń a tym, czy ktoś pełni funkcję
+kierowniczą.\
+Przedstawiono również reszty standaryzowane. Reszty są różnicą miezy
+wartościami obserwowanymi a oczekiwanymi. Jednak różnica standaryzowana
+jest dana wzorem: $$R=\frac{O-E}{\sqrt{E}}$$ gdzie:\
+- $O$ - wartość obserwowana,\
+- $E$ - wartość oczekiwana.\
+Test chi-kwadrat mówi czy jest zależność, a reszty pokazują gdzie
+dokładnie ona jest. Reszty pokazują, które kombinacje zmiennych łamią
+założenie niezależności. Gdy $R=0$, to wartość obserwowana i oczekiwana
+są do siebie zbliżone, nie daje nam to efektu. Gdy $|R|>2$, różnica jest
+istotna statystycznie.\
+W powstałej tabeli reszt standaryzowanych, wartość $|R|>2$ w PYT_2=1.
+Zatem kierownicy odpowiedzieli '1' o wiele więcej razy niż się
+oczekiwano, a nie-kierownicy odpowiedzieli '1' o wiele mniej razy niż
+się oczekiwano, co wskazuje na złamanie założenia niezależności.
+Pozostałe wartości reszt są niewielkie, zatem one nie łamią założenia
+niezależności.\
+Następnie przedstawiono wykres asocjacyjny, który ukazuje reszty
+standaryzowane dla tabeli kontyngencji. Każdy słupek odnosi się do
+jednej z kategorii PYT_2. Oś Y przedstawia odpowiedzi CZY_KIER - "TAK"
+lub "NIE". Kolor czerwony słupka określa, że jest mniej przypadków niż
+oczekiwano (ujemna reszta), a czarny, że więcej przypadków niż
+oczekiwano (dodatnia reszta).Wartości z tabeli wyraźnie widać na
+wykresie - dla odpowiedzi '1' w PYT_2, pojawiają się największe reszty
+standaryzowane, a więc najsilniejsze odchylenia od niezależności.
+Analiza wykresu asocjacyjnego wskazuje, że osoby na stanowiskach
+kierowniczych częściej oceniały szkolenia jako średnio dopasowane,
+natomiast osoby niepełniące funkcji kierowniczych częściej udzielały
+ocen skrajnych (niskich lub wysokich).
 
 powrownanie z zad 6!!!
 
 ## Zadanie 9
 
-Przeprowadzono symulacje w celu oszacowania mocy testu Fishera oraz mocy testu chi-kwadrat Pearsona, generując dane z tabeli
-2×2, w której $p_{11} = 1/40$, $p_{12} = 3/40$, $p_{21} = 19/40$, $p_{22} = 17/40$. Symulacje wykonano dla $n =50$, $n=100$ oraz $n=1000$.\\
+Przeprowadzono symulacje w celu oszacowania mocy testu Fishera oraz mocy
+testu chi-kwadrat Pearsona, generując dane z tabeli 2×2, w której
+$p_{11} = 1/40$, $p_{12} = 3/40$, $p_{21} = 19/40$, $p_{22} = 17/40$.
+Symulacje wykonano dla $n =50$, $n=100$ oraz $n=1000$.\\
+
 ```{r,echo=FALSE, results='hide'}
 moc_testu <- function(n, p, N = 500, alpha = 0.05, test = "chisq") {
   sukcesy <- 0
@@ -340,13 +671,22 @@ moc_testu(1000, p, test = "fisher")
 \end{tabular}
 \end{table}
 
-
-Przeprowadzone symulacje pokazują, że moc testu statystycznego silnie zależy od liczności próby. Dla małych prób (n = 50) zarówno test chi-kwadrat, jak i test Fishera mają niską moc, co może prowadzić do niewykrycia zależności w danych.Oznacza to dużą szansę na błąd II rodzaju, czyli nieodrzucenie fałszywej hipotezy zerowej. Dla n = 100 moc rośnie, ale nadal może być niewystarczająca w badaniach wymagających dużej czułości. Dopiero przy dużej liczności próby (n = 1000) oba testy niemal zawsze wykrywają zależność (moc ≈ 1). Test Fishera okazuje się nieco bardziej efektywny przy małych próbach.
+Przeprowadzone symulacje pokazują, że moc testu statystycznego silnie
+zależy od liczności próby. Dla małych prób (n = 50) zarówno test
+chi-kwadrat, jak i test Fishera mają niską moc, co może prowadzić do
+niewykrycia zależności w danych.Oznacza to dużą szansę na błąd II
+rodzaju, czyli nieodrzucenie fałszywej hipotezy zerowej. Dla n = 100 moc
+rośnie, ale nadal może być niewystarczająca w badaniach wymagających
+dużej czułości. Dopiero przy dużej liczności próby (n = 1000) oba testy
+niemal zawsze wykrywają zależność (moc ≈ 1). Test Fishera okazuje się
+nieco bardziej efektywny przy małych próbach.
 
 ## Zadanie 10
- Napisano funkcję, która dla danych z tablicy dwudzielczej oblicza wartość poziomu
- krytycznego w teście niezależnosci opartym na ilorazie wiarogodności. Korzystając z napisanej
- funkcji, wykonano test dla danych przeanalizowanych w zadaniu 8.
+
+Napisano funkcję, która dla danych z tablicy dwudzielczej oblicza
+wartość poziomu krytycznego w teście niezależnosci opartym na ilorazie
+wiarogodności. Korzystając z napisanej funkcji, wykonano test dla danych
+przeanalizowanych w zadaniu 8.
 
 ```{r, results='hide'}
 test_IW <- function(tabela) {
@@ -366,15 +706,300 @@ tabela <- table(df$PYT_2, df$CZY_KIER)
 test_IW(tabela)
 
 ```
-Otrzymana wartość statystyki wyniosła $G^{2} = 8.33$ przy $3$ stopniach swobody, a odpowiadająca jej wartość p wyniosła $p = 0.0397$. Przy założonym poziomie istotności $\alpha = 0.01$, nie ma podstaw do odrzucenia hipotezy zerowej o niezależności badanych zmiennych ($p>\alpha$). Oznacza to, że test $G^{2}$ nie wykazał istotnego statystycznie związku między oceną dopasowania szkoleń do indywidualnych potrzeb (PYT_2) a pełnieniem funkcji kierowniczej (CZY_KIER). Wynik ten jest nieco odmienny od wyniku testu chi-kwadrat z zadania 8, w którym zależność uznano za istotną. Może to wynikać z różnic w czułości testów przy danej liczności próby oraz przyjętym poziomie istotności.
-\newpage
+
+Otrzymana wartość statystyki wyniosła $G^{2} = 8.33$ przy $3$ stopniach
+swobody, a odpowiadająca jej wartość p wyniosła $p = 0.0397$. Przy
+założonym poziomie istotności $\alpha = 0.01$, nie ma podstaw do
+odrzucenia hipotezy zerowej o niezależności badanych zmiennych
+($p>\alpha$). Oznacza to, że test $G^{2}$ nie wykazał istotnego
+statystycznie związku między oceną dopasowania szkoleń do indywidualnych
+potrzeb (PYT_2) a pełnieniem funkcji kierowniczej (CZY_KIER). Wynik ten
+jest nieco odmienny od wyniku testu chi-kwadrat z zadania 8, w którym
+zależność uznano za istotną. Może to wynikać z różnic w czułości testów
+przy danej liczności próby oraz przyjętym poziomie istotności. \newpage
+
+# Część IV i V
+
+## Zadanie 11
+
+Celem jest analiza związku między paleniem papierosów a ryzykiem
+śmiercie z powodu raka płuc oraz choroby niedokrwiennej serca. Na
+podstawie danych obliczono różnicę proporcji, ryzyko względne oraz
+iloraz szans, które zastosowano do oceny sił zależności.
+
+**Różnica proporcji (Risk Difference, RD):**\
+Różnica między proporcją osób, które doświadczyły danego zdarzenia (np.
+śmierci) w dwóch grupach (np. palacze vs. niepalacze). Mierzy absolutną
+różnicę w ryzyku.
+
+**Ryzyko względne (Relative Risk, RR):**\
+Stosunek ryzyka wystąpienia zdarzenia w jednej grupie do ryzyka w
+drugiej grupie. Mówi, jak wiele razy jedno ryzyko jest wyższe od
+drugiego.
+
+**Iloraz szans (Odds Ratio, OR):**\
+Stosunek szans (odds) wystąpienia zdarzenia w jednej grupie do szans
+wystąpienia tego samego zdarzenia w drugiej grupie. Pomaga w ocenie siły
+związku między zmiennymi, szczególnie w badaniach
+przypadków-kontrolnych.
+
+```{r,echo = FALSE}
+library(knitr)
+
+tabela_choroby <- data.frame(
+  Choroba = c("Rak płuc", "Niedokrwienie serca"),
+  Palacz = c(0.00140, 0.00669),
+  Niepalacz = c(0.00010, 0.00413)
+)
+
+kable(tabela_choroby)
+
+# Rak płuc
+p_rak_palacz <- tabela_choroby[tabela_choroby$Choroba == "Rak płuc", "Palacz"]
+p_rak_niepalacz <- tabela_choroby[tabela_choroby$Choroba == "Rak płuc", "Niepalacz"]
+
+RP_p <- p_rak_palacz - p_rak_niepalacz
+RR_p <- p_rak_palacz / p_rak_niepalacz
+OR_p <- (p_rak_palacz / (1 - p_rak_palacz)) / (p_rak_niepalacz / (1 - p_rak_niepalacz))
+
+# Choroba niedokrwienna serca
+p_serce_palacz <- tabela_choroby[tabela_choroby$Choroba == "Niedokrwienie serca", "Palacz"]
+p_serce_niepalacz <- tabela_choroby[tabela_choroby$Choroba == "Niedokrwienie serca", "Niepalacz"]
+
+RP_s <- p_serce_palacz - p_serce_niepalacz
+RR_s <- p_serce_palacz / p_serce_niepalacz
+OR_s <- (p_serce_palacz / (1 - p_serce_palacz)) / (p_serce_niepalacz / (1 - p_serce_niepalacz))
+
+# Tabela wyników
+tabela_wyniki <- data.frame(
+  Choroba = c("Rak płuc", "Niedokrwienie serca"),
+  RP = round(c(RP_p, RP_s), 5),
+  RR = round(c(RR_p, RR_s), 2),
+  OR = round(c(OR_p, OR_s), 2)
+)
+
+# Ładne wyświetlenie tabeli wyników
+kable(tabela_wyniki)
+```
+
+**Rak płuc**
+
+**Różnica proporcji** (RP = 0.00130) Oznacza, że w grupie palaczy umiera
+rocznie o 0.13% więcej osób z powodu raka płuc niż w grupie niepalących.
+
+**Ryzyko względne** (RR = 14) Palacze mają 14 razy wyższe ryzyko śmierci
+z powodu raka płuc w porównaniu do osób niepalących. To bardzo silny
+związek.
+
+**Iloraz szans** (OR = 14.018) Wskazuje, że szansa na śmierć z powodu
+raka płuc jest ponad 14 razy większa u palaczy niż u niepalących.
+Potwierdza to silną zależność.
+
+**Choroba niedokrwienna serca**
+
+**Różnica proporcji** (RP = 0.00256) Oznacza, że wśród palaczy rocznie
+umiera o 0.256% więcej osób z powodu choroby serca niż wśród niepalących
+— różnica większa bezwzględnie niż dla raka płuc, ale...
+
+**Ryzyko względne** (RR ≈ 1.62) Palacze mają około 1.62 razy wyższe
+ryzyko śmierci z powodu choroby serca niż niepalący — związek jest
+obecny, ale znacznie słabszy niż w przypadku raka płuc.
+
+**Iloraz szans** (OR ≈ 1.62) Szansa na śmierć z powodu choroby serca
+jest około 1.62 razy większa u palaczy niż u niepalących.
+
+Podsumowując, choć różnica proporcji (RP) jest większa dla choroby
+serca, to ryzyko względne i iloraz szans — które lepiej mierzą siłę
+zależności — są znacznie większe dla raka płuc. To oznacza, że palenie
+papierosów ma znacznie silniejszy związek ze śmiercią z powodu raka płuc
+niż ze śmiercią z powodu choroby niedokrwiennej serca.
+
+## Zadanie 12
+
+### 12.1
+
+```{r, echo = FALSE}
+library(knitr)
+
+zmarli_bez <- 1085
+zmarli_pas <- 703 
+zywi_bez <- 55623
+zywi_pas <- 441239
+
+p_smierc_pas <- zmarli_bez / (zywi_bez + zmarli_bez)
+p_smierc_bez <- zmarli_pas / (zywi_pas + zmarli_pas)
+
+wyniki <- data.frame(
+  Wskaźnik = c(
+    "Prawdopodobieństwo śmierci (pasażerowie bez pasów)",
+    "Prawdopodobieństwo śmierci (pasażerowie z pasami)"
+  ),
+  Wartość = c(
+    round(p_smierc_bez, 5),
+    round(p_smierc_pas, 5)
+  )
+)
+
+kable(wyniki)
+
+```
+
+### 12.2
+
+```{r, echo = FALSE}
+p_pasy_smierc <- zmarli_pas / (zmarli_pas + zmarli_bez)
+p_pasy_zywi <- zywi_pas / (zywi_pas + zywi_bez)
+
+wyniki <- data.frame(
+  Wskaźnik = c(
+    "Proporcja pasażerów z pasami wśród zmarłych",
+    "Proporcja pasażerów z pasami wśród żywych"
+  ),
+  Wartość = c(
+    round(p_pasy_smierc, 5),
+    round(p_pasy_zywi, 5)
+  )
+)
+
+kable(wyniki)
+```
+
+### 12.3
+
+Najbardziej naturalnym wyborem zmiennej objaśnianej w tym badaniu jest
+**śmierć w wypadku** (śmiertelny vs. niesmiertelny), ponieważ celem
+badania jest ocena, jak użycie pasów wpływa na ryzyko śmierci w wypadku.
+
+```{r, echo = FALSE}
+RP = p_smierc_pas- p_smierc_bez 
+RR = p_smierc_pas/p_smierc_bez
+OR = (p_smierc_pas/(1 - p_smierc_pas))/(p_smierc_bez/(1 - p_smierc_bez))
+
+wyniki <- data.frame(
+  Wskaźnik = c(
+    "Różnica proporcji:",
+  "Ryzyko względne:",
+  "Iloraz szans:"
+  ),
+  Wartość = c(
+    round(RP, 5),
+    round(RR, 5), 
+    round(OR, 5)
+  )
+)
+kable(wyniki)
+```
+
+**Różnica proporcji**:
+
+Różnica proporcji wynosi 1.75%,co oznacza, że brak pasów zwiększa ryzyko
+śmierci o 1,75 punktu procentowego.
+
+**Ryzyko względne (RR)**:
+
+Ryzyko względne wynosi 12,03, co oznacza, że osoby bez pasów miały ponad
+12 razy większe ryzyko śmierci niż osoby z pasami.
+
+**Iloraz szans** :
+
+Iloraz szans wynosi 12.2, co oznacza, że osoby, które nie używają pasów
+bezpieczeństwa, mają 12.2 razy wyższe szanse na śmierć w wypadku niż
+osoby, które używają pasów.
+
+Ryzyko względne (RR) i iloraz szans (OR) przyjmują podobne wartości,
+ponieważ śmiertelność w analizowanych danych jest niewielka – czyli mamy
+do czynienia z rzadkim zdarzeniem. W takich sytuacjach:
+
+$$
+p \ll 1 \Rightarrow p \approx \text{szansa (odds)}
+$$
+
+Dlatego:
+
+$$
+RR \approx OR
+$$
+
+## Zadanie 13
+
+Miary współzmienności to liczby opisujące relacje między zmiennymi.
+Przykładowymi miarami współzmienności są *tau* i *gamma*.
+
+*Tau* to miara współzależności zmiennych nominalnych, stosowana w
+tabelach krzyżowych. Opiera się na losowym przypisaniu kategorii i
+mierzy, o ile lepiej możemy przewidzieć wartość jednej zmiennej, znając
+wartość drugiej, w porównaniu do losowego zgadywania. Im wyższa wartość
+tau (maksymalnie 1), tym silniejszy związek między zmiennymi.
+
+*Gamma* to miara współzależności zmiennych porządkowych. Mierzy siłę i
+kierunek związku między dwiema zmiennymi, uwzględniając jedynie ich
+rangi. Gamma ocenia, jak często zmiany w jednej zmiennej powodują zmiany
+w drugiej w tym samym lub przeciwnym kierunku. Wartość gamma mieści się
+w przedziale od -1 do 1: wartość 1 oznacza doskonałą dodatnią zależność,
+-1 doskonałą ujemną zależność, a 0 brak zależności.
+
+1.  Miara współzmienności dla stopnia zadowolenia ze szkoleń w
+    kontekście dopasowania do indywidualnych potrzeb w pierwszym badanym
+    okresie i zajmowanego stanowiska:
+
+```{r, echo = FALSE}
+  tau <- GoodmanKruskalTau(x = df$PYT_2, y = df$CZY_KIER, direction = "row")
+print(paste("Współczynnik tau wynosi:", round(tau, 5)))
+```
+
+Wartość współczynnika tau jest bardzo bliska zeru, co sugeruje, że
+między zmiennymi nie występuje istotny związek. Stopień zadowolenia ze
+szkoleń nie różnicuje się wyraźnie w zależności od zajmowanego
+stanowiska.
+
+2.  Miary współzmienności dla stopnia zadowolenia ze szkoleń w
+    kontekście dopasowania do indywidualnych potrzeb w pierwszym badanym
+    okresie i stażu pracy:
+
+```{r, echo= FALSE}
+tau <- GoodmanKruskalTau(x = df$PYT_2, y = df$STAŻ, direction = "row")
+gamma <-GoodmanKruskalGamma(x = df$PYT_2, y = df$STAŻ)
+
+print(paste("Współczynnik tau wynosi:", round(tau, 5)))
+print(paste("Współczynnik gamma wynosi:", round(gamma, 5)))
+```
+
+Wartość współczynnika *tau* wskazuje, że znajomość poziomu zadowolenia
+ze szkoleń pozwala przewidzieć długość stażu pracy jedynie o około 2%
+lepiej niż bez tej wiedzy. Jest to wynik bardzo słaby, co sugeruje brak
+istotnej zależności między zmiennymi.
+
+Wartość współczynnika *gamma* sugeruje słabą dodatnią zależność: wzrost
+jednego z parametrów wiąże się z niewielkim wzrostem drugiego w tym
+samym kierunku. Siła tej zależności jest jednak niska.
+
+3.  Miara współzmienności dla zajmowanego stanowiska i stażu pracy:
+
+```{r, echo = FALSE}
+tau <- GoodmanKruskalTau(x = df$CZY_KIER, y = df$STAŻ, direction = "row")
+
+print(paste("Współczynnik tau wynosi:", round(tau, 5)))
+```
+
+Wartość miary tau oznacza, że znajomość jednej zmiennej pozwala
+przewidzieć drugą o około 11,6% lepiej niż przy losowym doborze. Jest to
+niewielka, lecz zauważalna zależność, co może sugerować, że osoby na
+wyższych stanowiskach mają tendencję do dłuższego stażu pracy, ale
+związek ten nie jest silny.
 
 # Część dodatkowa
+
 ## Zadanie 1
-Napisano funkcję, która dla dwóch wektorów danych oblicza wartość poziomu
- krytycznego (p-value) w teście opartym na korelacji odległości. Następnie dla wygenerowanych
- danych zweryfikowano hipotezę o niezależności przy użyciu napisanej funkcji.  
- Pod uwagę wzięto dwa przypadki. W pierwszym przykładzie wektory $X$ i $Y$ są niezależne, gdzie $X_n, Y_n\sim N(0,1)$. W drugim wektory są zależne: $X_n\sim N(0,1)$ oraz $Y_n\sim X_{n}^{2}+N(0,0.1)$. Za poziom istotności przyjęto $0.05$.
+
+Napisano funkcję, która dla dwóch wektorów danych oblicza wartość
+poziomu krytycznego (p-value) w teście opartym na korelacji odległości.
+Następnie dla wygenerowanych danych zweryfikowano hipotezę o
+niezależności przy użyciu napisanej funkcji.\
+Pod uwagę wzięto dwa przypadki. W pierwszym przykładzie wektory $X$ i
+$Y$ są niezależne, gdzie $X_n, Y_n\sim N(0,1)$. W drugim wektory są
+zależne: $X_n\sim N(0,1)$ oraz $Y_n\sim X_{n}^{2}+N(0,0.1)$. Za poziom
+istotności przyjęto $0.05$.
+
 ```{r, results='hide'}
 library(energy)
 
@@ -396,69 +1021,87 @@ test_korelacji_odleglosci(x, y)
 
 
 ```
-Dla danych niezależnych mamy $p=0.656$, czyli nie ma podstaw do odrzucenia hipotezy zerowej o niezależności zmiennych. Oznacza to, że test nie wykrył zależności między $X$ i $Y$, co jest zgodne z założeniem, że dane są niezależne.  
-Dla drugiego przypadku $p=0.002$, czyli $p<0.05$ Hipoteza zerowa została odrzucona — test wykrył istotną zależność między $X$ a $Y$. Co ważne, test oparty na korelacji odległościowej potrafi wykrywać również nieliniowe zależności, więc nawet jeśli korelacja liniowa byłaby bliska zeru, związek może być obecny.
+
+Dla danych niezależnych mamy $p=0.656$, czyli nie ma podstaw do
+odrzucenia hipotezy zerowej o niezależności zmiennych. Oznacza to, że
+test nie wykrył zależności między $X$ i $Y$, co jest zgodne z
+założeniem, że dane są niezależne.\
+Dla drugiego przypadku $p=0.002$, czyli $p<0.05$ Hipoteza zerowa została
+odrzucona — test wykrył istotną zależność między $X$ a $Y$. Co ważne,
+test oparty na korelacji odległościowej potrafi wykrywać również
+nieliniowe zależności, więc nawet jeśli korelacja liniowa byłaby bliska
+zeru, związek może być obecny.
 
 ## Zadanie 2
 
-Dla zadanych $\pi_{1}$ oraz $\pi_{2}$ pokazano, że wartość ryzyka względnego (RR) nie
- jest bardziej oddalona od wartości 1 (wartość odpowiadająca niezależności) niż wartość
- odpowiadającego ilorazu szans (OR).  
- Innymi słowy należy pokazać, że:
-$$|RR-1|\leq|OR-1|$$
- dla dwóch prawdopodobieństw: 
- - $\pi_1=P(Zdarzenie|Grupa1)$,
- - $\pi_2=P(Zdarzenie|Grupa2)$.
- gdzie $\pi_1, \pi_2 \in (0,1)$.
- 
- Obliczamy ryzyko względne:
- $$RR=\frac{\pi_1}{\pi_2}$$
-oraz iloraz szans:
-$$OR=\frac{\pi_1(1-\pi_2)}{\pi_2(1-pi_1)} $$
-Wtedy
+Dla zadanych $\pi_{1}$ oraz $\pi_{2}$ pokazano, że wartość ryzyka
+względnego (RR) nie jest bardziej oddalona od wartości 1 (wartość
+odpowiadająca niezależności) niż wartość odpowiadającego ilorazu szans
+(OR).\
+Innymi słowy należy pokazać, że: $$|RR-1|\leq|OR-1|$$ dla dwóch
+prawdopodobieństw: - $\pi_1=P(Zdarzenie|Grupa1)$, -
+$\pi_2=P(Zdarzenie|Grupa2)$. gdzie $\pi_1, \pi_2 \in (0,1)$.
+
+Obliczamy ryzyko względne: $$RR=\frac{\pi_1}{\pi_2}$$ oraz iloraz szans:
+$$OR=\frac{\pi_1(1-\pi_2)}{\pi_2(1-pi_1)} $$ Wtedy
 
 $$L= \left| \frac{\pi_1}{\pi_2} -1 \right|=\left|\frac{\pi_1-\pi_2}{\pi_2}\right|$$
 
-oraz 
+oraz
 $$P=\left|\frac{\pi_1(1-\pi_2)-\pi_2(1-\pi_1)}{\pi_2(1-\pi_1)}\right|=\left|\frac{\pi_1-\pi_2}{\pi_2(1-\pi_1)}\right|$$
 Wiadomo, że:
 $$L= \left|\frac{\pi_1-\pi_2}{\pi_2}\right|\leq\left|\frac{\pi_1-\pi_2}{\pi_2(1-\pi_1)}\right|=P$$
-ponieważ w mianownik prawdodpodobieństwo $\pi_2$ jest przemnożone przez wyrażenie $1-\pi_1$, które jest mniejsze od 1. Zatem mianownik $\pi_2(1-\pi_1)<\pi_2$, co powoduje, że prawa strona nierówności jest ostro większa. W przypadku, gdy $\pi_1,\pi_2=\frac{1}{2}$, lewa strona nierówności równa się prawej, co należało udowodnić.  
-Dla dowolnych prawdopodobieństw $\pi_{1}$ oraz $\pi_{2}$ odpowiadających ryzyku w dwóch grupach, wartość ryzyka względnego (RR) jest zawsze bliższa wartości 1 (czyli niezależności) niż odpowiadający jej iloraz szans (OR). Intuicyjnie wynika to z faktu, że OR „przesadza” efekt relacji, szczególnie gdy prawdopodobieństwa są duże — i dlatego jest bardziej oddalony od 1. W analizie danych epidemiologicznych i klinicznych często wskazuje się, że RR jest łatwiejszy do interpretacji, a OR bywa bardziej „drastyczny”.
+ponieważ w mianownik prawdodpodobieństwo $\pi_2$ jest przemnożone przez
+wyrażenie $1-\pi_1$, które jest mniejsze od 1. Zatem mianownik
+$\pi_2(1-\pi_1)<\pi_2$, co powoduje, że prawa strona nierówności jest
+ostro większa. W przypadku, gdy $\pi_1,\pi_2=\frac{1}{2}$, lewa strona
+nierówności równa się prawej, co należało udowodnić.\
+Dla dowolnych prawdopodobieństw $\pi_{1}$ oraz $\pi_{2}$ odpowiadających
+ryzyku w dwóch grupach, wartość ryzyka względnego (RR) jest zawsze
+bliższa wartości 1 (czyli niezależności) niż odpowiadający jej iloraz
+szans (OR). Intuicyjnie wynika to z faktu, że OR „przesadza” efekt
+relacji, szczególnie gdy prawdopodobieństwa są duże — i dlatego jest
+bardziej oddalony od 1. W analizie danych epidemiologicznych i
+klinicznych często wskazuje się, że RR jest łatwiejszy do interpretacji,
+a OR bywa bardziej „drastyczny”.
 
 ## Zadanie 3
+
 Niech D oznacza posiadanie pewnej choroby, a E pozostawanie wystawionym
- na pewny czynnik ryzyka. W badaniach epidemiologicznych definuje się miarę AR nazywaną
- ryzykiem przypisanym (ang. attributable risk).  
- a) Niech $P(E′) = 1−P(E)$, wówczas $AR = [P(D)−P(D|E′)]/P(D)$.  
- - $D$: posiadanie choroby,  
- - $E$: ekspozycja na czynnik ryzyka,  
- - $E'$: brak ekspozycji,  
- - $P(D)$: ogólne prawdopodobieństwo zachorowania,  
- - $P(D∣E'$): prawdopodobieństwo zachorowania bez czynnika ryzyka.  
- Miara AR mówi nam, jaki ułamek wszystkich przypadków choroby (D) można przypisać działaniu czynnika ryzyka (E). Licznik - różnica między ogólnym ryzykiem choroby a ryzykiem u osób nieeksponowanych, czyli efekt „ponad tło”. Mianownik - skaluje to względem całkowitego ryzyka.  
- b) Pokaż, żee AR ma związek z ryzykiem względnym, tzn.:
- $$ AR=[P(E)(RR−1)]/[1+P(E)(RR−1)]$$
- 
- \begin{align*}
+na pewny czynnik ryzyka. W badaniach epidemiologicznych definuje się
+miarę AR nazywaną ryzykiem przypisanym (ang. attributable risk).\
+a) Niech $P(E′) = 1−P(E)$, wówczas $AR = [P(D)−P(D|E′)]/P(D)$.\
+- $D$: posiadanie choroby,\
+- $E$: ekspozycja na czynnik ryzyka,\
+- $E'$: brak ekspozycji,\
+- $P(D)$: ogólne prawdopodobieństwo zachorowania,\
+- $P(D∣E'$): prawdopodobieństwo zachorowania bez czynnika ryzyka.\
+Miara AR mówi nam, jaki ułamek wszystkich przypadków choroby (D) można
+przypisać działaniu czynnika ryzyka (E). Licznik - różnica między
+ogólnym ryzykiem choroby a ryzykiem u osób nieeksponowanych, czyli efekt
+„ponad tło”. Mianownik - skaluje to względem całkowitego ryzyka.\
+b) Pokaż, żee AR ma związek z ryzykiem względnym, tzn.:
+$$ AR=[P(E)(RR−1)]/[1+P(E)(RR−1)]$$
+
+\begin{align*}
 \text{RR} &= \frac{P(D|E)}{P(D|E')} \Rightarrow P(D|E) = RR \cdot P(D|E') \\
 \\
 P(D) &= P(E) \cdot P(D|E) + P(E') \cdot P(D|E') \\
      &= P(E) \cdot RR \cdot P(D|E') + (1 - P(E)) \cdot P(D|E') \\
      &= P(D|E') \cdot \left[ P(E) \cdot RR + (1 - P(E)) \right] \\
      &= P(D|E') \cdot \left[ 1 + P(E)(RR - 1) \right]
-\end{align*}
-
-\begin{align*}
+\end{align*} \begin{align*}
 \text{Licznik AR} &= P(D) - P(D|E') \\
 &= P(D|E') \cdot \left[1 + P(E)(RR - 1)\right] - P(D|E') \\
 &= P(D|E') \cdot P(E)(RR - 1)
-\end{align*}
-
-\begin{align*}
+\end{align*} \begin{align*}
 AR &= \frac{P(D) - P(D|E')}{P(D)} \\
 &= \frac{P(D|E') \cdot P(E)(RR - 1)}{P(D|E') \cdot \left[1 + P(E)(RR - 1)\right]} \\
 &= \frac{P(E)(RR - 1)}{1 + P(E)(RR - 1)}
 \end{align*}
 
-Ryzyko przypisane (AR) określa, jaka część przypadków choroby może być przypisana działaniu badanego czynnika ryzyka. Jest ono funkcją ryzyka względnego (RR) oraz częstości występowania ekspozycji (P(E)). Wzór pokazuje, że nawet jeśli RR jest wysokie, niskie P(E) ogranicza wielkość AR — a więc wpływ czynnika ryzyka na populację.
+Ryzyko przypisane (AR) określa, jaka część przypadków choroby może być
+przypisana działaniu badanego czynnika ryzyka. Jest ono funkcją ryzyka
+względnego (RR) oraz częstości występowania ekspozycji (P(E)). Wzór
+pokazuje, że nawet jeśli RR jest wysokie, niskie P(E) ogranicza wielkość
+AR — a więc wpływ czynnika ryzyka na populację.
