@@ -987,6 +987,136 @@ niewielka, lecz zauważalna zależność, co może sugerować, że osoby na
 wyższych stanowiskach mają tendencję do dłuższego stażu pracy, ale
 związek ten nie jest silny.
 
+## Zadanie 14
+
+Analiza korespondencji to metoda eksploracyjna służąca do badania
+zależności między kategoriami dwóch zmiennych przedstawionych w tabeli
+kontyngencji.
+
+```{r, echo = FALSE}
+tabela_PYT_2_STAZ <- table(df$PYT_2, df$STAŻ) 
+```
+
+```{r}
+correspondence_analysis <- function(tabela){
+  "Przedstawienie zależności między wierszami i kolumnami tabeli kontyngencji"
+  
+n <- sum(tabela)
+p_matrix <- as.matrix(tabela/n) # normalizacja tabeli
+
+#Wektory częstości brzegowych 
+r <- rowSums(p_matrix) # wierszy 
+c <- colSums(p_matrix) # kolumn
+names(r) <- NULL 
+names(c) <- NULL
+
+D_r <- diag(r^(-1/2)) # macierz częstości wierszowych (podniesiona do -1/2 potęgi)
+D_c <- diag(c^(-1/2)) # macierz częsctości kolmnowych (podniesiona do -1/2 potęgi)
+
+R <- solve(D_r) %*% p_matrix # macierz profili wierszowych (macierz częstości wierszowych podniesiona do -1/2 potęgi)
+C <- p_matrix %*% solve(D_c) # macierz profili kolumnowych (macierz częsctości kolmnowych podniesiona do -1/2 potęgi)
+
+A <- D_r%*%(p_matrix - r%*%t(c))%*%D_c # macierz residuów standaryzowanych
+
+svd_result <- svd(A)
+U <- svd_result$u      
+Gamma <- diag(svd_result$d) 
+V <- svd_result$v
+
+F <- D_r%*%U%*%Gamma # współrzędne kategorii cech dla wierszy 
+G <- D_c%*%V%*%Gamma # współrzędne kategorii cech dla kolumn
+
+row_x <- F[,1]
+row_y <- F[,2]
+
+col_x <- G[,1]
+col_y <- G[,2]
+
+# Wykres
+xlim <- range(c(row_x, col_x))
+ylim <- range(c(row_y, col_y))
+
+plot(NA, NA, xlim = xlim, ylim = ylim,
+     xlab = "Dimension 1", ylab = "Dimension 2",
+     main = "Correspondence Analysis Plot", asp = 1)
+
+points(row_x, row_y, col = "blue", pch = 1)
+points(col_x, col_y, col = "red", pch = 17)
+abline(h = 0, v = 0, lty = 2)
+text(row_x, row_y, labels = rownames(tabela), pos = 3, col = "blue", cex = 0.8)
+text(col_x, col_y, labels = colnames(tabela), pos = 3, col = "red", cex = 0.8)
+
+return(list(
+  mass_rows = r,
+  mass_cols = c,
+  row_coords = F,
+  col_coords = G
+))
+}
+```
+
+Korzystając z powyższej funkcji przeprowadzono analizę korespondencji
+dla danych dotyczących stopnia zadowolenia ze szkoleń w konteście
+dopasowania do indywidualnych potrzeb w pierwszym badanym okresie oraz
+stażu pracy. Tabela kontyngencji została utworzona na podstawie
+odpowiedzi na *PYT_2* (wiersze) i zmiennej *STAŻ* (kolumny). Celem
+analizy było zbadanie powiązań między typami odpowiedzi a grupami osób o
+różnym stażu.
+
+Wyniki zostały przedstawione za pomocą odpowiednich macierzy oraz
+wykresu.
+
+Analiza wykresu:
+
+Niebieskie okręgi reprezentują poszczególne odpowiedzi na pytanie
+*PYT_2* (czyli kategorie wierszy).
+
+Czerwone trójkąty to grupy stażu (*STAŻ*) – kategorie kolumn.
+
+Współrzędne punktów wyznaczane są w dwóch wymiarach – Dimension 1 i
+Dimension 2, które pokazują główne osie zmienności w danych (czyli
+różnice między kategoriami).
+
+Im dalej od środka (punktu przecięcia osi), tym bardziej dana kategoria
+odstaje od „przeciętnego profilu”, czyli ma bardziej unikalny rozkład
+względem drugiej zmiennej.
+
+Odpowiedź na PYT_2 oznaczone "1" znajduje się daleko po prawej stronie
+na osi Dimension 1, co oznacza, że ta odpowiedź znacznie różni się od
+innych – jej profil odpowiedzi jest specyficzny. Najprawdopodobniej
+występowała głównie w jednej grupie stażu, prawdopodobnie były to osoby
+ze stażem ponad trzyletnim, ponieważ punkty leżą blisko siebie.
+
+Odpowiedzi "2", "-1" i "-2" Znajdują się po stronie lewej, w pobliżu
+środka. Są bliżej siebie, więc ich rozkład odpowiedzi był podobny. Leżą
+również relatywnie blisko punktu kolumny „2” oraz kolumny "1", co
+sugeruje, że były często wybierane przez osoby z tej grupy stażu.
+
+Intepretacja wyników:
+
+**mass_rows:** W ankiecie najwięcej zostało udzielonych odpowiedzi 2
+(52%) oraz -2 (37%), co oznacza, że to one najbardziej wpływają na
+strukturę danych. Natomiast odpowiedź 1 ma znikomy wpływ ( 1%)
+
+**mass_cols:** Dominującym stażem wśró ankietowanych jest odpowiedź 2
+(70%), czyli ta grupa badanych występuje najczęściej i w największym
+stopniu kształtuje zależności między zmiennymi. Najmniejszą grupą są
+osoby ze stażem 3 ( 9.5%).
+
+**row_coords:** Odpowiedź -1 silnie odstaje w pierwszym wymiarze (3.05),
+co oznacza, że zachowuje się zupełnie inaczej niż pozostałe i
+najprawdopodobniej jest powiązana z jedną konkretną kategorią kolumn;
+pozostałe kategorie są bardziej zbliżone do centrum.
+
+**col_coords:** Staż pracy powyżej 3 lat (1.02) wyróżnia się w pierwszym
+wymiarze, co sugeruje silny związek z wyjątkową kategorią wierszy
+(najpewniej tą, która odstaje), natomiast pozostałe są mniej
+zróżnicowane.
+
+```{r, echo= FALSE}
+correspondence_analysis(tabela_PYT_2_STAZ)
+```
+
 # Część dodatkowa
 
 ## Zadanie 1
