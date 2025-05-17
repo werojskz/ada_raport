@@ -56,12 +56,20 @@ W firmie technologicznej przeprowadzono ankietę, w której pracownicy
 zostali poproszeni o wyrażenie opinii na temat skuteczności szkolenia
 "Efektywna komunikacja w zespole" zorganizowanego przez firmę. Wśród
 próbki 200 pracowników (losowanie proste ze zwracaniem) uzyskano
-wyniki:\
-- 14 pracowników- bardzo niezadowolonych,\
-- 17 pracowników- niezadowolonych,\
-- 40 pracowników- nie ma zdania,\
-- 100 pracowników- zadowolonych,\
-- 29 pracowników- bardzo zadowolonych,\
+wyniki:
+
+-   14 pracowników- bardzo niezadowolonych,
+
+-   17 pracowników- niezadowolonych,
+
+-   40 pracowników- nie ma zdania,
+
+-   100 pracowników- zadowolonych,
+
+-   29 pracowników- bardzo zadowolonych,
+
+
+
 Na podstawie danych wyznaczono przedział ufności dla wektora
 prawodobieństw opisującego stopień zadowolenia ze szkolenia. Wybrano
 dwie metody dokładną Cloppera-Pearsona oraz asymptotyczną Wilsona.
@@ -69,7 +77,7 @@ Przyjęto poziom ufności 0.95.
 
 ```{r df,echo=FALSE, results='hide'}
 
-# Dane
+
 counts <- c(14, 17, 40, 100, 29)
 n <- sum(counts)
 kategorie <- c("zdecyd. nie zgadz.",
@@ -78,7 +86,6 @@ kategorie <- c("zdecyd. nie zgadz.",
 estymatory <- counts / n
 alpha<-0.05
 
-# Przedziały ufności
 results_cp <- binom.confint(x = counts, 
                             n = n, conf.level =1-alpha/5,
                             methods = "exact")
@@ -122,15 +129,21 @@ dokładniejsze oszacowania.
 ## Zadanie 2
 
 Napisano funkcję *testuj_hipoteze_multinomial()*, która wyznacza wartość
-poziomu krytycznego w następujących testach:\
-- chi-kwadrat Pearsona,\
-- chi-kwadrat największej wiarogodności,\
+poziomu krytycznego w następujących testach:
+
+-   chi-kwadrat Pearsona,
+
+-   chi-kwadrat największej wiarogodności,
+
 służacych do weryfikacji hipotezy $H_0: p = p_0$ przy hipotezie
 alternatywnej $H_0: p\not = p_0$ na podstawie obserwacji $x$ wektora
 losowego $X$ z rozkładu wielomianowego z parametrami $n$ i $p$.\
-Funkcja przyjmuje dwa parametry:\
-- $x$ - wektor obserwacji,\
-- $p_0$ - wektor hipotetycznych prawdopodobieństw.\
+Funkcja przyjmuje dwa parametry:
+
+-   $x$ - wektor obserwacji,
+
+-   $p_0$ - wektor hipotetycznych prawdopodobieństw.
+
 Funkcja zwraca tabelę z wynikami testu: statystykę oraz p-value.
 
 ```{r typy, results='hide'}
@@ -210,17 +223,14 @@ attach(df)
 ```
 
 ```{r,echo=FALSE, results='hide'}
-# 1. Filtrowanie pracowników z Działu Produktowego
+
 df_prod <- subset(df, DZIAŁ == "PD")
 
-# 2. Liczność odpowiedzi na PYT_1
 x <- table(df_prod$PYT_1)
-x <- as.numeric(x)  # upewniamy się, że to wektor liczbowy
+x <- as.numeric(x)  
 
-# 3. Hipotetyczny równomierny rozkład
 p0 <- rep(1/length(x), length(x))
 
-# 4. Funkcja z zadania 2
 testuj_hipoteze_multinomial(x, p0)
 
 ```
@@ -243,7 +253,9 @@ wskazują na bardzo wysokie wartości statystyk testowych (odpowiednio
 64,86 oraz 52,53) oraz p-value równe 0. Przy przyjętym poziomie
 istotności $\alpha=0.05$, w obu testach odrzucamy hipotezę zerową o
 równomiernym rozkładzie odpowiedzi na pytanie PYT_1 wśród pracowników
-Działu Produkcyjnego. Oznacza to, że rozkład odpowiedzi na PYT_1 nie
+Działu Produkcyjnego.
+
+Oznacza to, że rozkład odpowiedzi na PYT_1 nie
 jest równomierny — nie wszystkie odpowiedzi ("zdecydowanie się nie
 zgadzam", "nie zgadzam się", "nie mam zdania", "zgadzam się",
 "zdecydowanie się zgadzam") są jednakowo prawdopodobne.
@@ -508,15 +520,41 @@ też sprowadzamy odpowiedzi do postaci binarnej (TAK/NIE). Można
 zauważyć, że bardziej szczegółowe dane (skala porządkowa) mogą
 dostarczyć dokładniejszych i bardziej czułych wyników analizy
 statystycznej niż uproszczona zmienna binarna, która może zatracać
-istotne różnice w ocenach.
+istotne różnice w ocenach.\newpage
 
 # Część III
 
 ## Zadanie 7
 
 Funkcja *chisq.test()*, służy do wykonania testu niezależności
-chi-kwadrat. Zwraca ona statystykę testu chi-kwadrat, stopnie swobody,
-p-value. Na tej podstawie można ocenić, czy zmienne są niezależne.
+chi-kwadrat. Przyjmuje argumenty:
+
+-   x: Wektor liczbowy, macierz lub czynnik,
+
+-   y: Drugi wektor (ignorowany, jeśli x to macierz),
+ jeśli oba są czynnikami.
+ 
+-   correct: Czy stosować korektę ciągłości (dla tabel 2x2).
+
+-   p: Wektor prawdopodobieństw,
+
+-   rescale.p: Czy skalować p, by sumowało się do 1,
+
+-   simulate.p.value: Czy obliczać p wartość metodą Monte Carlo.
+
+-   B: Liczba replikacji Monte Carlo.
+
+Zwraca ona:
+
+-   statystykę testu chi-kwadrat,
+
+-   stopnie swobody,
+
+-   p-value. 
+
+Na tej podstawie można ocenić, czy zmienne są niezależne.
+
+
 Hipoteza zerowa $H_0$: zmienne są niezależne, hipoteza alternatywna
 $H_1:$ zmienna są zależne.
 
@@ -537,20 +575,21 @@ Korzystając z funkcji poznanej w zadaniu 7. zweryfikowano hipotezę, że
 stopień zadowolenia ze szkoleń w kontekście dopasowania do
 indywidualnych potrzeb w pierwszym badanym okresie nie zależy od
 zajmowanego stanowiska. Przyjęto poziom istotności 0.01.\
+
+
 Zatem hipotezą zerową $H_0$ jest: PYT_2 i CZY_KIER są niezależne.
+
+
 Hipotezą alternatywną $H_1$ jest: PYT_2 i CZY_KIER są zależne.
 
 ```{r, echo=FALSE, results='hide'}
-# Tworzymy tabelę kontyngencji
+
 tabela <- table(df$PYT_2, df$CZY_KIER)
 
-# Test chi-kwadrat
 test <- chisq.test(tabela)
 
-# Wyświetlenie wyników testu
 print(test)
 
-# Wyświetlenie reszt standaryzowanych
 print(test$stdres)
 
 ```
@@ -571,7 +610,7 @@ print(test$stdres)
 \end{table}
 
 ```{r, echo=FALSE}
-# Wykres asocjacyjny
+
 assocplot(tabela, main = "Wykres asocjacyjny: PKT_2 vs CZY_KIER")
 
 ```
@@ -582,14 +621,19 @@ zależność między oceną dopasowania szkoleń a tym, czy ktoś pełni funkcj�
 kierowniczą.\
 Przedstawiono również reszty standaryzowane. Reszty są różnicą miezy
 wartościami obserwowanymi a oczekiwanymi. Jednak różnica standaryzowana
-jest dana wzorem: $$R=\frac{O-E}{\sqrt{E}}$$ gdzie:\
-- $O$ - wartość obserwowana,\
-- $E$ - wartość oczekiwana.\
+jest dana wzorem: $$R=\frac{O-E}{\sqrt{E}}$$ gdzie:
+
+-   $O$ - wartość obserwowana,
+
+-   $E$ - wartość oczekiwana.
+
 Test chi-kwadrat mówi czy jest zależność, a reszty pokazują gdzie
 dokładnie ona jest. Reszty pokazują, które kombinacje zmiennych łamią
 założenie niezależności. Gdy $R=0$, to wartość obserwowana i oczekiwana
 są do siebie zbliżone, nie daje nam to efektu. Gdy $|R|>2$, różnica jest
 istotna statystycznie.\
+
+
 W powstałej tabeli reszt standaryzowanych, wartość $|R|>2$ w PYT_2=1.
 Zatem kierownicy odpowiedzieli '1' o wiele więcej razy niż się
 oczekiwano, a nie-kierownicy odpowiedzieli '1' o wiele mniej razy niż
@@ -599,24 +643,35 @@ niezależności.\
 Następnie przedstawiono wykres asocjacyjny, który ukazuje reszty
 standaryzowane dla tabeli kontyngencji. Każdy słupek odnosi się do
 jednej z kategorii PYT_2. Oś Y przedstawia odpowiedzi CZY_KIER - "TAK"
-lub "NIE". Kolor czerwony słupka określa, że jest mniej przypadków niż
+lub "NIE". 
+
+Kolor czerwony słupka określa, że jest mniej przypadków niż
 oczekiwano (ujemna reszta), a czarny, że więcej przypadków niż
 oczekiwano (dodatnia reszta).Wartości z tabeli wyraźnie widać na
 wykresie - dla odpowiedzi '1' w PYT_2, pojawiają się największe reszty
 standaryzowane, a więc najsilniejsze odchylenia od niezależności.
+
 Analiza wykresu asocjacyjnego wskazuje, że osoby na stanowiskach
 kierowniczych częściej oceniały szkolenia jako średnio dopasowane,
 natomiast osoby niepełniące funkcji kierowniczych częściej udzielały
 ocen skrajnych (niskich lub wysokich).
 
-powrownanie z zad 6!!!
+Wyniki z Zadania 8 są bardziej przekonujące dzięki analizie bardziej szczegółowych danych i użyciu testu chi-kwadrat. Pokazują, że zajmowanie stanowiska kierowniczego ma wpływ na ocenę dopasowania szkoleń. Zadanie 6 potwierdza to w ograniczonym zakresie – zależność była widoczna jedynie w jednej z wersji kodowania danych.
 
 ## Zadanie 9
 
 Przeprowadzono symulacje w celu oszacowania mocy testu Fishera oraz mocy
-testu chi-kwadrat Pearsona, generując dane z tabeli 2×2, w której
-$p_{11} = 1/40$, $p_{12} = 3/40$, $p_{21} = 19/40$, $p_{22} = 17/40$.
-Symulacje wykonano dla $n =50$, $n=100$ oraz $n=1000$.\\
+testu chi-kwadrat Pearsona, generując dane z tabeli 2×2, w której:
+
+-   $p_{11} = 1/40$, 
+
+-   $p_{12} = 3/40$,
+
+-   $p_{21} = 19/40$,
+
+-   $p_{22} = 17/40$.
+
+$500$ symulacji wykonano dla $n =50$, $n=100$ oraz $n=1000$.
 
 ```{r,echo=FALSE, results='hide'}
 moc_testu <- function(n, p, N = 500, alpha = 0.05, test = "chisq") {
@@ -678,7 +733,7 @@ niewykrycia zależności w danych.Oznacza to dużą szansę na błąd II
 rodzaju, czyli nieodrzucenie fałszywej hipotezy zerowej. Dla n = 100 moc
 rośnie, ale nadal może być niewystarczająca w badaniach wymagających
 dużej czułości. Dopiero przy dużej liczności próby (n = 1000) oba testy
-niemal zawsze wykrywają zależność (moc ≈ 1). Test Fishera okazuje się
+niemal zawsze wykrywają zależność. Test Fishera okazuje się
 nieco bardziej efektywny przy małych próbach.
 
 ## Zadanie 10
@@ -687,6 +742,17 @@ Napisano funkcję, która dla danych z tablicy dwudzielczej oblicza
 wartość poziomu krytycznego w teście niezależnosci opartym na ilorazie
 wiarogodności. Korzystając z napisanej funkcji, wykonano test dla danych
 przeanalizowanych w zadaniu 8.
+
+Użyto poniższych wzorów:
+
+-   Decyzja (iloraz wiarygodności): $$
+\lambda = \prod_{i,j} \left( \frac{n_{i+} \cdot n_{+j}}{n \cdot n_{ij}} \right)^{n_{ij}}$$
+
+-   Statystyka testowa: $$G^2 = -2 \log \lambda$$
+
+-   Wartość krytyczna (p-value): $$p = 1 - F_{\chi^2_{(r-1)(c-1)}}(G^2)$$
+
+
 
 ```{r, results='hide'}
 test_IW <- function(tabela) {
@@ -711,12 +777,14 @@ Otrzymana wartość statystyki wyniosła $G^{2} = 8.33$ przy $3$ stopniach
 swobody, a odpowiadająca jej wartość p wyniosła $p = 0.0397$. Przy
 założonym poziomie istotności $\alpha = 0.01$, nie ma podstaw do
 odrzucenia hipotezy zerowej o niezależności badanych zmiennych
-($p>\alpha$). Oznacza to, że test $G^{2}$ nie wykazał istotnego
+($p>\alpha$). 
+
+Oznacza to, że test $G^{2}$ nie wykazał istotnego
 statystycznie związku między oceną dopasowania szkoleń do indywidualnych
 potrzeb (PYT_2) a pełnieniem funkcji kierowniczej (CZY_KIER). Wynik ten
 jest nieco odmienny od wyniku testu chi-kwadrat z zadania 8, w którym
 zależność uznano za istotną. Może to wynikać z różnic w czułości testów
-przy danej liczności próby oraz przyjętym poziomie istotności. \newpage
+przy danej liczności próby.\newpage
 
 # Część IV i V
 
@@ -1116,7 +1184,7 @@ zróżnicowane.
 ```{r, echo= FALSE}
 correspondence_analysis(tabela_PYT_2_STAZ)
 ```
-
+\newpage
 # Część dodatkowa
 
 ## Zadanie 1
@@ -1169,8 +1237,13 @@ względnego (RR) nie jest bardziej oddalona od wartości 1 (wartość
 odpowiadająca niezależności) niż wartość odpowiadającego ilorazu szans
 (OR).\
 Innymi słowy należy pokazać, że: $$|RR-1|\leq|OR-1|$$ dla dwóch
-prawdopodobieństw: - $\pi_1=P(Zdarzenie|Grupa1)$, -
-$\pi_2=P(Zdarzenie|Grupa2)$. gdzie $\pi_1, \pi_2 \in (0,1)$.
+prawdopodobieństw: 
+
+-   $\pi_1=P(Zdarzenie|Grupa1)$, 
+
+-   $\pi_2=P(Zdarzenie|Grupa2)$. 
+
+gdzie $\pi_1, \pi_2 \in (0,1)$.
 
 Obliczamy ryzyko względne: $$RR=\frac{\pi_1}{\pi_2}$$ oraz iloraz szans:
 $$OR=\frac{\pi_1(1-\pi_2)}{\pi_2(1-pi_1)} $$ Wtedy
@@ -1185,11 +1258,13 @@ ponieważ w mianownik prawdodpodobieństwo $\pi_2$ jest przemnożone przez
 wyrażenie $1-\pi_1$, które jest mniejsze od 1. Zatem mianownik
 $\pi_2(1-\pi_1)<\pi_2$, co powoduje, że prawa strona nierówności jest
 ostro większa. W przypadku, gdy $\pi_1,\pi_2=\frac{1}{2}$, lewa strona
-nierówności równa się prawej, co należało udowodnić.\
+nierówności równa się prawej, co należało udowodnić.
+
+
 Dla dowolnych prawdopodobieństw $\pi_{1}$ oraz $\pi_{2}$ odpowiadających
 ryzyku w dwóch grupach, wartość ryzyka względnego (RR) jest zawsze
 bliższa wartości 1 (czyli niezależności) niż odpowiadający jej iloraz
-szans (OR). Intuicyjnie wynika to z faktu, że OR „przesadza” efekt
+szans (OR). Intuicyjnie wynika to z faktu, że OR „przesądza” efekt
 relacji, szczególnie gdy prawdopodobieństwa są duże — i dlatego jest
 bardziej oddalony od 1. W analizie danych epidemiologicznych i
 klinicznych często wskazuje się, że RR jest łatwiejszy do interpretacji,
@@ -1200,17 +1275,25 @@ a OR bywa bardziej „drastyczny”.
 Niech D oznacza posiadanie pewnej choroby, a E pozostawanie wystawionym
 na pewny czynnik ryzyka. W badaniach epidemiologicznych definuje się
 miarę AR nazywaną ryzykiem przypisanym (ang. attributable risk).\
-a) Niech $P(E′) = 1−P(E)$, wówczas $AR = [P(D)−P(D|E′)]/P(D)$.\
-- $D$: posiadanie choroby,\
-- $E$: ekspozycja na czynnik ryzyka,\
-- $E'$: brak ekspozycji,\
-- $P(D)$: ogólne prawdopodobieństwo zachorowania,\
-- $P(D∣E'$): prawdopodobieństwo zachorowania bez czynnika ryzyka.\
+a)    Niech $P(E′) = 1−P(E)$, wówczas $AR = [P(D)−P(D|E′)]/P(D)$.
+
+-   $D$: posiadanie choroby,
+
+-   $E$: ekspozycja na czynnik ryzyka,
+
+-   $E'$: brak ekspozycji,
+
+-   $P(D)$: ogólne prawdopodobieństwo zachorowania,
+
+-   $P(D∣E'$): prawdopodobieństwo zachorowania bez czynnika ryzyka.
+
 Miara AR mówi nam, jaki ułamek wszystkich przypadków choroby (D) można
 przypisać działaniu czynnika ryzyka (E). Licznik - różnica między
 ogólnym ryzykiem choroby a ryzykiem u osób nieeksponowanych, czyli efekt
 „ponad tło”. Mianownik - skaluje to względem całkowitego ryzyka.\
-b) Pokaż, żee AR ma związek z ryzykiem względnym, tzn.:
+
+
+b)    Pokaż, żee AR ma związek z ryzykiem względnym, tzn.:
 $$ AR=[P(E)(RR−1)]/[1+P(E)(RR−1)]$$
 
 \begin{align*}
