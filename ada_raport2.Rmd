@@ -72,59 +72,79 @@ wyniki:
 
 Na podstawie danych wyznaczono przedział ufności dla wektora
 prawodobieństw opisującego stopień zadowolenia ze szkolenia. Wybrano
-dwie metody dokładną Cloppera-Pearsona oraz asymptotyczną Wilsona.
+trzy metody: 
+
+-   dokładną (Cloppera-Pearsona),
+
+-   asymptotyczną (Walda),
+
+-   Wilsona.
+
+
 Przyjęto poziom ufności 0.95.
 
 ```{r df,echo=FALSE, results='hide'}
 
 
+
+library(binom)
+
 counts <- c(14, 17, 40, 100, 29)
 n <- sum(counts)
-kategorie <- c("zdecyd. nie zgadz.",
-               "nie zgadz.", "nie mam zdania",
-               "zgadz.", "zdecyd. zgadzam")
-estymatory <- counts / n
-alpha<-0.05
+kategorie <- c("Bardzo niezadowolony", "Niezadowolony", "Nie ma zdania", "Zadowolony", "Bardzo zadowolony")
+alpha <- 0.05
 
-results_cp <- binom.confint(x = counts, 
-                            n = n, conf.level =1-alpha/5,
-                            methods = "exact")
-results_wilson <- binom.confint(x = counts,
-                                n = n, conf.level = 1-alpha/5,
-                                methods = "wilson")
+# Obliczenia
+results_cp <- binom.confint(x = counts, n = n, conf.level = 1 - alpha / 5, methods = "exact")
+results_wilson <- binom.confint(x = counts, n = n, conf.level = 1 - alpha / 5, methods = "wilson")
+results_wald <- binom.confint(x = counts, n = n, conf.level = 1 - alpha / 5, methods = "asymptotic")
 
-print(results_cp[c("x","lower","upper")])
-print(results_wilson[c("x","lower","upper")])
+# Dodaj długość przedziału
+results_cp$length <- results_cp$upper - results_cp$lower
+results_wilson$length <- results_wilson$upper - results_wilson$lower
+results_wald$length <- results_wald$upper - results_wald$lower
+
+# Wyświetl interesujące kolumny
+print(results_cp[c("x", "lower", "upper", "length")])
+print(results_wilson[c("x", "lower", "upper", "length")])
+print(results_wald[c("x", "lower", "upper", "length")])
 
 
 ```
 
-\begin{table}[H]
+\begin{table}[ht]
 \centering
-\caption{Przedziały ufności dla dwóch estymacji}
-\begin{tabular}{|c|cc|cc|}
+\begin{tabular}{lccc}
 \hline
-\multirow{2}{*}{\textbf{x}} & \multicolumn{2}{c|}{\textbf{Pierwsza estymacja}} & \multicolumn{2}{c|}{\textbf{Druga estymacja}} \\
-\cline{2-5}
-& \textbf{Lower} & \textbf{Upper} & \textbf{Lower} & \textbf{Upper} \\
+Kategoria & Clopper-Pearson & Wilson & Wald \\
 \hline
-14 & 0{,0317} & 0{,1299} & 0{,0360} & 0{,1316} \\
-17 & 0{,0421} & 0{,1487} & 0{,0466} & 0{,1500} \\
-40 & 0{,1326} & 0{,2822} & 0{,1373} & 0{,2819} \\
-100 & 0{,4074} & 0{,5926} & 0{,4104} & 0{,5896} \\
-29 & 0{,0875} & 0{,2200} & 0{,0923} & 0{,2205} \\
+Bardzo niezadowolony & [0.032, 0.130] & [0.036, 0.132] & [0.024, 0.112] \\
+Niezadowolony        & [0.042, 0.149] & [0.047, 0.150] & [0.034, 0.136] \\
+Nie ma zdania        & [0.132, 0.282] & [0.137, 0.282] & [0.127, 0.273] \\
+Zadowolony           & [0.407, 0.593] & [0.410, 0.590] & [0.409, 0.591] \\
+Bardzo zadowolony    & [0.087, 0.220] & [0.092, 0.221] & [0.081, 0.209] \\
 \hline
 \end{tabular}
+\caption{Porównanie przedziałów ufności dla udziału odpowiedzi w poszczególnych kategoriach}
 \end{table}
 
-Porównując pierwszą i drugą estymację, widać że przedziały ufności dla
-wszystkich wartości x są bardzo podobne, z minimalnymi przesunięciami w
-kierunku wyższych wartości w drugiej estymacji. Różnice są jednak bardzo
-niewielkie, co świadczy o stabilności oszacowań i sugeruje, że wyniki
-obu metod są zgodne.\
-W obu przypadkach szerokość przedziałów maleje wraz ze wzrostem liczby
-obserwacji x, co jest zgodne z intuicją — większe próby dają
-dokładniejsze oszacowania.
+\begin{table}[ht]
+\centering
+\begin{tabular}{lccc}
+\hline
+Kategoria & Clopper-Pearson & Wilson & Wald \\
+\hline
+Bardzo niezadowolony & 0.098 & 0.096 & 0.093 \\
+Niezadowolony        & 0.107 & 0.103 & 0.102 \\
+Nie ma zdania        & 0.150 & 0.145 & 0.146 \\
+Zadowolony           & 0.185 & 0.179 & 0.182 \\
+Bardzo zadowolony    & 0.133 & 0.128 & 0.128 \\
+\hline
+\end{tabular}
+\caption{Porównanie długości przedziałów ufności dla udziału odpowiedzi}
+\end{table}
+
+Przedziały ufności  dla udziału odpowiedzi w poszczególnych kategoriach są do siebie zbliżone, choć zauważalne są różnice w ich szerokości. Przedziały wyznaczone metodą Walda są zazwyczaj węższe, jednak znane są z mniejszej dokładności przy małych licznościach. Metoda Cloppera–Pearsona, będąca metodą dokładną, daje najbezpieczniejsze i najszersze przedziały. W przypadku największej kategorii ("Zadowolony") wszystkie metody wskazują stosunkowo wąski i zbliżony przedział, co wynika z dużej liczby obserwacji. Dla skrajnych kategorii, gdzie liczności są mniejsze, różnice pomiędzy metodami stają się bardziej zauważalne.
 
 ## Zadanie 2
 
@@ -144,55 +164,65 @@ Funkcja przyjmuje dwa parametry:
 
 -   $p_0$ - wektor hipotetycznych prawdopodobieństw.
 
-Funkcja zwraca tabelę z wynikami testu: statystykę oraz p-value.
+Funkcja zwraca tabelę z wynikami testu: statystykę, p-value oraz wartość krytyczną.
 
 ```{r typy, results='hide'}
 
-testuj_hipoteze_multinomial <- function(x, p0) {
+testuj_hipoteze_multinomial <- function(x, p0, alpha = 0.05) {
   # Dane wejściowe:
-  # x  - wektor obserwacji (liczności)
-  # p0 - wektor hipotetycznych prawdopodobieństw
+  # x     - wektor obserwacji (liczności)
+  # p0    - wektor hipotetycznych prawdopodobieństw
+  # alpha - poziom istotności
+  
   n <- sum(x)
   k <- length(x)
   expected <- n * p0
+  df <- k - 1
   
   chisq_stat <- sum((x - expected)^2 / expected)
-  pval_chisq <- 1 - pchisq(chisq_stat, df = k - 1)
+  pval_chisq <- 1 - pchisq(chisq_stat, df = df)
   
   nonzero <- x > 0
   g2_stat <- 2 * sum(x[nonzero] * log(x[nonzero] / expected[nonzero]))
-  pval_g2 <- 1 - pchisq(g2_stat, df = k - 1)
+  pval_g2 <- 1 - pchisq(g2_stat, df = df)
+  
+  critical_value <- qchisq(1 - alpha, df = df)
   
   result <- data.frame(
     Test = c("Chi-kwadrat Pearsona", 
              "Chi-kwadrat największej wiarygodności"),
     Statystyka = round(c(chisq_stat, g2_stat), 4),
+    Wartosc_krytyczna = round(critical_value, 4),
     P_value = round(c(pval_chisq, pval_g2), 4)
   )
   return(result)
 }
-x <- c(14, 17, 40, 100, 29)
+
+# Przykład użycia:
+x <- c(14, 17, 40, 30, 29)
 p0 <- rep(0.2, 5)
 testuj_hipoteze_multinomial(x, p0)
+
 
 ```
 
 \begin{table}[H]
 \centering
 \caption{Wyniki testów chi-kwadrat dla weryfikacji hipotezy $H_0 : \mathbf{p} = \mathbf{p_0}$}
-\begin{tabular}{|l|c|c|}
+\begin{tabular}{|l|c|c|c|}
 \hline
-\textbf{Test} & \textbf{Statystyka} & \textbf{P-value} \\
+\textbf{Test} & \textbf{Statystyka} & \textbf{P-value} & \textbf{Wartość krytyczna} \\
 \hline
-Chi-kwadrat Pearsona & 123{,}1500 & 0{,}0000 \\
-Chi-kwadrat największej wiarygodności & 106{,}1186 & 0{,}0000 \\
+Chi-kwadrat Pearsona & 17{,}15 & 0{,}0018 & 9{,}4877 \\
+Chi-kwadrat największej wiarygodności & 17{,}60 & 0{,}0015 & 9{,}4877 \\
 \hline
 \end{tabular}
 \end{table}
 
+
 Zarówno test chi-kwadrat Pearsona, jak i test chi-kwadrat największej
-wiarygodności dały bardzo wysokie wartości statystyk testowych
-(odpowiednio $123.15$ oraz $106.12$) oraz p-value równe 0.\
+wiarygodności dały wysokie wartości statystyk testowych
+ oraz p-value bliskie $0.001$.\
 Przy standardowym poziomie istotności $\alpha=0.05$ oba testy prowadzą
 do odrzucenia hipotezy zerowej $H_0:p=p_0$. Oznacza to, że rozkład
 empiryczny obserwacji istotnie różni się od rozkładu teoretycznego
@@ -208,7 +238,17 @@ skuteczne wykorzystanie w praktyce wiedzy zdobytej w trakcie szkoleń?"
 jest równomierny, tzn. jest jednakowe prawdopodobieństwo, że pracownik
 zatrudniony w Dziale Produkcjnym udzielił odpowiedzi "zdecydowanie się
 nie zgadzam", "nie zgadzam się", "nie mam zdania", "zgadzam się",
-"zdecydowanie się zgadzam" na pytanie PYT_1. Przyjęto poziom istotności
+"zdecydowanie się zgadzam" na pytanie PYT_1.
+
+Postawiono hipotezy:
+
+-   $H_0$: rozkład odpowiedzi jest równomierny $(p1 = p2 = … = p5 = 0.2)$,
+
+-   $H_1$: rozkład odpowiedzi różni się od równomiernego
+
+
+Do weryfikacji hipotezy zastosowano dwa testy chi-kwadrat: test Pearsona oraz test najwięk
+szej wiarygodności.Przyjęto poziom istotności
 $0.05$.
 
 ```{r,echo=FALSE, results='hide'}
@@ -229,8 +269,8 @@ df_prod <- subset(df, DZIAŁ == "PD")
 x <- table(df_prod$PYT_1)
 x <- as.numeric(x)  
 
-p0 <- rep(1/length(x), length(x))
-
+p0 <- c(0.2, 0.2, 0.2, 0.2, 0.2)
+print(x)
 testuj_hipoteze_multinomial(x, p0)
 
 ```
@@ -238,27 +278,19 @@ testuj_hipoteze_multinomial(x, p0)
 \begin{table}[H]
 \centering
 \caption{Wyniki testów chi-kwadrat dla odpowiedzi na pytanie PYT\_1 w Dziale Produkcyjnym}
-\begin{tabular}{|l|c|c|}
+\begin{tabular}{|l|c|c|c|}
 \hline
-\textbf{Test} & \textbf{Statystyka} & \textbf{P-value} \\
+\textbf{Test} & \textbf{Statystyka} & \textbf{P-value} & \textbf{Wartość krytyczna} \\
 \hline
-Chi-kwadrat Pearsona & 64{,}8571 & 0{,}0000 \\
-Chi-kwadrat największej wiarygodności & 52{,}5271 & 0{,}0000 \\
+Chi-kwadrat Pearsona & 64{,}8571 & 0{,}0000 & 9{,}4877 \\
+Chi-kwadrat największej wiarygodności & 52{,}5271 & 0{,}0000 & 9{,}4877 \\
 \hline
 \end{tabular}
 \end{table}
 
-Przeprowadzone testy chi-kwadrat Pearsona oraz największej wiarygodności
-wskazują na bardzo wysokie wartości statystyk testowych (odpowiednio
-64,86 oraz 52,53) oraz p-value równe 0. Przy przyjętym poziomie
-istotności $\alpha=0.05$, w obu testach odrzucamy hipotezę zerową o
-równomiernym rozkładzie odpowiedzi na pytanie PYT_1 wśród pracowników
-Działu Produkcyjnego.
 
-Oznacza to, że rozkład odpowiedzi na PYT_1 nie
-jest równomierny — nie wszystkie odpowiedzi ("zdecydowanie się nie
-zgadzam", "nie zgadzam się", "nie mam zdania", "zgadzam się",
-"zdecydowanie się zgadzam") są jednakowo prawdopodobne.
+Zarówno dla testu chi-kwadrat Pearsona jak i testu największej wiarygodności, otrzymane wartości statystyk są większe od wartości krytycznej, co oznacza, że na poziomie istotności $0.05$ istnieją podstawy do odrzucenia hipotezy zerowej o zgodności rozkładu odpowiedzi z rozkładem teoretycznym. Oznacza to, że rozkład odpowiedzi na PYT_1 nie
+jest równomierny — nie wszystkie odpowiedzi są jednakowo prawdopodobne.
 
 \newpage
 
@@ -571,16 +603,16 @@ badanymi cechami.
 
 ## Zadanie 8
 
-Korzystając z funkcji poznanej w zadaniu 7. zweryfikowano hipotezę, że
+Korzystając z funkcji poznanej w zadaniu 6. zweryfikowano hipotezę, że
 stopień zadowolenia ze szkoleń w kontekście dopasowania do
 indywidualnych potrzeb w pierwszym badanym okresie nie zależy od
 zajmowanego stanowiska. Przyjęto poziom istotności 0.01.\
 
 
-Zatem hipotezą zerową $H_0$ jest: PYT_2 i CZY_KIER są niezależne.
+Zatem hipotezą zerową jest $H_0$: PYT_2 i CZY_KIER są niezależne.
 
 
-Hipotezą alternatywną $H_1$ jest: PYT_2 i CZY_KIER są zależne.
+Hipotezą alternatywną jest $H_1$: PYT_2 i CZY_KIER są zależne.
 
 ```{r, echo=FALSE, results='hide'}
 
@@ -654,7 +686,7 @@ standaryzowane, a więc najsilniejsze odchylenia od niezależności.
 Analiza wykresu asocjacyjnego wskazuje, że osoby na stanowiskach
 kierowniczych częściej oceniały szkolenia jako średnio dopasowane,
 natomiast osoby niepełniące funkcji kierowniczych częściej udzielały
-ocen skrajnych (niskich lub wysokich).
+ocen skrajnych.
 
 Wyniki z Zadania 8 są bardziej przekonujące dzięki analizie bardziej szczegółowych danych i użyciu testu chi-kwadrat. Pokazują, że zajmowanie stanowiska kierowniczego ma wpływ na ocenę dopasowania szkoleń. Zadanie 6 potwierdza to w ograniczonym zakresie – zależność była widoczna jedynie w jednej z wersji kodowania danych.
 
