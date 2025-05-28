@@ -123,6 +123,24 @@ eff_with
 eff_without
 ```
 
+```{r}
+# Testy chi-kwadrat niezależności
+test_all <- chisq.test(all)
+test_with <- chisq.test(with_comorb)
+test_without <- chisq.test(without_comorb)
+
+# Zbiór wyników
+test_results <- data.frame(
+  Tabela = c("Cała grupa", "Z chorobami", "Bez chorób"),
+  Chi2 = round(c(test_all$statistic, test_with$statistic, test_without$statistic), 2),
+  DF = c(test_all$parameter, test_with$parameter, test_without$parameter),
+  p_value = round(c(test_all$p.value, test_with$p.value, test_without$p.value), 4)
+)
+
+test_results
+
+```
+
 \subsection*{Analiza skuteczności metod leczenia}
 
 Dla całej grupy pacjentów skuteczność leczenia wynosi:
@@ -151,9 +169,26 @@ Dla pacjentów bez chorób współistniejących:
 
 \subsection*{Wniosek}
 
+\begin{table}[H]
+\centering
+\begin{tabular}{lrrr}
+\toprule
+Tabela & Statystyka \( \chi^2 \) & DF & \textit{p}-value \\
+\midrule
+Cała grupa         & 47.06 & 1 & <0.0001 \\
+Z chorobami        & 1.19  & 1 & 0.2755  \\
+Bez chorób         & 0.18  & 1 & 0.6699  \\
+\bottomrule
+\end{tabular}
+\caption{Wyniki testów \( \chi^2 \) niezależności dla skuteczności leczenia}
+\end{table}
+
 W każdej podgrupie (zarówno pacjentów z chorobami współistniejącymi, jak i bez nich) leczenie A okazuje się skuteczniejsze niż leczenie B. Jednakże w całej populacji obserwujemy odwrotny wniosek — leczenie B ma wyższą skuteczność. Jest to klasyczny przykład paradoksu Simpsona, w którym agregacja danych zaciemnia rzeczywiste zależności występujące w podgrupach.
 
+Dla całej grupy różnica skuteczności między Leczeniem A i B jest statystycznie istotna (p < 0.0001).
 
+W podgrupach (z i bez chorób współistniejących) nie ma podstaw do odrzucenia hipotezy niezależności – brak istotnych różnic w skuteczności między metodami.
+To potwierdza występowanie paradoksu Simpsona – agregacja danych prowadzi do innych wniosków niż analiza w podgrupach.
 
 ## Zadanie 7
 Dla danych z listy 1, przyjmując za zmienną 1 zmienną CZY_KIER, za zmienn 2– zmienną PYT_2 i za zmienną 3– zmienną STAŻ, przedstawiono interpretacje nastepujacych modeli log-liniowych: $[1 3], [13], [1 2 3], [12 3], [12 13]$ oraz $[1 23]$.
@@ -194,7 +229,6 @@ for (i in seq_along(formulas)) {
 }
 
 results
-
 
 
 
