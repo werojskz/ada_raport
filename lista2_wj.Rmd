@@ -3,7 +3,7 @@ title: "Analiza danych ankietowych"
 author:
 - Weronika Jaszkiewicz
 - Weronika Pyrtak
-subtitle: Sprawozdanie 2
+subtitle: Sprawozdanie 3
 output:
   pdf_document:
     extra_dependencies: ["multirow"]
@@ -156,7 +156,7 @@ W każdej podgrupie (zarówno pacjentów z chorobami współistniejącymi, jak i
 
 
 ## Zadanie 7
-
+Dla danych z listy 1, przyjmując za zmienną 1 zmienną CZY_KIER, za zmienn 2– zmienną PYT_2 i za zmienną 3– zmienną STAŻ, przedstawiono interpretacje nastepujacych modeli log-liniowych: $[1 3], [13], [1 2 3], [12 3], [12 13]$ oraz $[1 23]$.
 
 
 ```{r typy, results='hide'}
@@ -164,7 +164,7 @@ W każdej podgrupie (zarówno pacjentów z chorobami współistniejącymi, jak i
 # zmienne: CZY_KIER, PYT_2, STAZ
 # Wczytanie danych
 dane <- read.csv("ankieta.csv", sep = ";", fileEncoding = "Latin2")
-colnames(dane) <- c('DZIAŁ','STAZ','CZY_KIER', 'PYT_1', 'PYT_2', 'PYT_3', 'PŁEĆ', 'WIEK')
+colnames(dane) <- c('DZIAŁ','STAZ','CZY_KIER', 'PYT_1', 'PYT_2', 'PYT_3', 'PLEC', 'WIEK')
 
 # Tabela kontyngencji 3D
 tablica <- xtabs(~ CZY_KIER + PYT_2 + STAZ, data = dane)
@@ -223,6 +223,16 @@ Na podstawie analizy modeli log-liniowych można stwierdzić, że najlepszym dop
 
 ## Zadanie 8
 
+Przyjmując model log-liniowy $[123]$ dla zmiennych opisanych w zadaniu 7 oszacowano prawdopobiebieństwa:
+
+ -    ze osoba pracuj ˛ aca na stanowisku kierowniczym jest zdecydowanie zadowolona ze
+ szkoleń,
+ 
+ -    ze osoba o staż pracy krótszym niż rok pracuje na stanowisku kierowniczym;
+ 
+ -    ze osoba o stażu pracy powyżej trzech lat nie pracuje na stanowisku kierowniczym.
+ 
+ Jakie byłyby oszacowania powyższych prawdopodobieństw przy założeniu modelu $[12 23]$?
 
 
 ```{r,echo=FALSE, results='hide'}
@@ -306,7 +316,7 @@ Sytuacja & Prawdopodobieństwo \\
 \end{table}
 
 
-Prawdopodobieństwa oszacowane przez oba modele są do siebie bardzo zbliżone. Model pełny [1 2 3] odwzorowuje dokładnie strukturę danych (jest nadmiernie dopasowany), natomiast model [12 23] daje podobne wyniki przy mniejszej liczbie interakcji, dlatego może być uznany za bardziej parsymonialny (oszczędny) i praktyczny w interpretacji.
+Prawdopodobieństwa oszacowane przez oba modele są do siebie bardzo zbliżone. Model pełny $[1 2 3]$ odwzorowuje dokładnie strukturę danych - jest nadmiernie dopasowany, natomiast model $[12 23]$ daje podobne wyniki przy mniejszej liczbie interakcji, dlatego może być uznany za bardziej parsymonialny i praktyczny w interpretacji.
 
 \newpage
 
@@ -314,6 +324,14 @@ Prawdopodobieństwa oszacowane przez oba modele są do siebie bardzo zbliżone. 
 
 ## Zadanie 9
 
+Dla danych wskazanych w zadaniu 7 zweryfikowano następujące hipotezy:
+
+-   zmienne losowe CZY_KIER, PYT_2 i STAŻ sa wzajemnie niezależne;
+
+-   zmienna losowa PYT_2 jest niezależna od pary zmiennych CZY_KIER i STAŻ;
+
+-   zmienna losowa PYT_2 jest niezależna od zmiennej CZY_KIER, przy ustalonej
+ wartości zmiennej STAŻ
 
 ```{r, echo = FALSE}
 library(MASS)
@@ -377,4 +395,71 @@ Hipoteza H2 (PYT_2 niezależna od pary CZY_KIER i STAZ) nie została odrzucona, 
 
 Hipoteza H3 (warunkowa niezależność PYT_2 ⊥ CZY_KIER przy ustalonym STAZ) nie została odrzucona — wysokie p-value (0.8446) sugeruje, że warunkowa niezależność jest uzasadniona i dobrze opisuje dane.
 
+## zad dodatkowe 2
 
+Na podstawie danych z listy 1 dokonano wyboru modelu rozważajżc uwzględnienie zmiennych PYT_1, PYT_2 i PŁEĆ w oparciu o:
+-   testy,
+
+-   kryterium AIC,
+
+-   kryterium BIC.
+```{r}
+
+library(MASS)
+
+# Tabela 3D
+tablica <- xtabs(~ PYT_1 + PYT_2 + PLEC, data = dane)
+N <- sum(tablica)
+max_df <- loglm(~ PYT_1 * PYT_2 * PLEC, data = tablica)$df  # pełny model
+
+# Modele
+models <- list(
+  M1 = ~ PYT_1 + PYT_2 + PLEC,
+  M2 = ~ PYT_1 * PYT_2 + PLEC,
+  M3 = ~ PYT_1 * PLEC + PYT_2,
+  M4 = ~ PYT_2 * PLEC + PYT_1,
+  M5 = ~ PYT_1 * PYT_2 + PYT_2 * PLEC,
+  M6 = ~ PYT_1 * PLEC + PYT_2 * PLEC,
+  M7 = ~ PYT_1 * PYT_2 * PLEC
+)
+
+# Zbieranie wyników
+results <- data.frame(Model = names(models), Deviance = NA, DF = NA, p_value = NA, AIC = NA, BIC = NA)
+
+for (i in seq_along(models)) {
+  fit <- loglm(models[[i]], data = tablica)
+  dev <- fit$deviance
+  df <- fit$df
+  params <- max_df - df  # liczba parametrów modelu
+  results$Deviance[i] <- round(dev, 2)
+  results$DF[i] <- df
+  results$p_value[i] <- round(pchisq(dev, df = df, lower.tail = FALSE), 4)
+  results$AIC[i] <- round(dev + 2 * params, 2)
+  results$BIC[i] <- round(dev + log(N) * params, 2)
+}
+
+results
+
+
+
+```
+
+\begin{table}[H]
+\centering
+\begin{tabular}{lrrrrr}
+\toprule
+Model & Deviance & DF & \textit{p}-value & AIC & BIC \\
+\midrule
+M1: PYT\_1 + PYT\_2 + PLEC                       & 226.06 & 31 & 0.0000 & 164.06 & 61.81 \\
+M2: PYT\_1 * PYT\_2 + PLEC                       &  11.41 & 19 & 0.9094 & -26.59 & -89.26 \\
+M3: PYT\_1 * PLEC + PYT\_2                       & 224.42 & 27 & 0.0000 & 170.42 & 81.37 \\
+M4: PYT\_2 * PLEC + PYT\_1                       & 223.87 & 28 & 0.0000 & 167.87 & 75.52 \\
+M5: PYT\_1 * PYT\_2 + PYT\_2 * PLEC              &   9.22 & 16 & 0.9040 & -22.78 & -75.55 \\
+M6: PYT\_1 * PLEC + PYT\_2 * PLEC                & 222.24 & 24 & 0.0000 & 174.24 & 95.08 \\
+M7: PYT\_1 * PYT\_2 * PLEC (pełny)              &   0.00 &  0 & 1.0000 & 0.00   & 0.00 \\
+\bottomrule
+\end{tabular}
+\caption{Porównanie modeli log-liniowych dla PYT\_1, PYT\_2 i PLEC}
+\end{table}
+
+Najlepszym modelem log-liniowym opisującym zależności między zmiennymi PYT_1, PYT_2 i PLEC jest model M2, który łączy dobrą jakość dopasowania z prostotą i minimalnymi wartościami AIC i BIC.
