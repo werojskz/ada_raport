@@ -1,0 +1,409 @@
+---
+title: "Analiza danych ankietowych"
+author:
+- Weronika Jaszkiewicz
+- Weronika Pyrtak
+subtitle: Sprawozdanie 3
+output:
+  html_document:
+    toc: true
+    df_print: paged
+  pdf_document:
+    extra_dependencies: ["multirow"]
+    latex_engine: xelatex
+    toc: true
+    fig_caption: true
+    fig_width: 5
+    fig_height: 4
+    number_sections: false
+header-includes:
+- \usepackage{polyglossia}
+- \setmainlanguage{polish}
+- \usepackage{graphicx}
+- \usepackage{float}
+fontsize: 12pt
+editor_options: 
+  markdown: 
+    wrap: 72
+---
+
+```{r setup, include=FALSE, message=FALSE, warning=FALSE}
+if (!require(knitr)) install.packages("knitr")
+if (!require(readr)) install.packages("readr")
+if (!require(latex2exp)) install.packages("latex2exp")
+if (!require(dplyr)) install.packages("dplyr")
+if (!require(ggplot2)) install.packages("ggplot2")
+if (!require(vctrs)) install.packages("vctrs")
+if (!require(tidyr)) install.packages("tidyr")
+if (!require(xtable)) install.packages("xtable")
+if (!require(binom)) install.packages("binom")
+if (!require(energy)) install.packages("energy")
+if (!require(DescTools)) install.packages("DescTools")
+
+knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(warning = FALSE, message = FALSE)
+knitr::opts_chunk$set(fig.pos = "H", out.extra = "", fig.align = "center")
+
+```
+
+# Część I oraz II
+
+## Zadanie 1
+
+Funkcja *p_wartosc_warunkowy_test_symetrii()* realizuje warunkowy test
+symetrii dla tabeli $2×2$. Test opiera się na liczbie niesymetrycznych
+par, których suma traktowana jest jako próba w rozkładzie dwumianowym z
+prawdopodobieństwem sukcesu $0.5$ (hipoteza symetrii). P-wartość
+obliczana jest jako dwustronne prawdopodobieństwo uzyskania wyniku co
+najmniej tak ekstremalnego jak zaobserwowany.
+
+```{r}
+p_wartosc_warunkowy_test_symetrii<- function(tabela){
+  n1 <- tabela[1,2]
+  n2 <- tabela[2,1]
+  n <- n1 + n2
+  p <- 0 
+  
+  if(n1 < n/2){
+    for (i in 1:n1) {
+    p <- p + choose(n, i) * (0.5)^i * (0.5)^(n - i)
+    }
+  }else if(n1 > n/2){
+    for (i in n1:n) {
+    p <- p + choose(n, i) * (0.5)^i * (0.5)^(n - i)
+    }
+  }else{
+      p <- 1
+  }
+    return(list(p_value = p))
+  }
+```
+
+## Zadanie 2
+
+Dane dotyączce reakcji na lek po godzinie od jego przyjęcia dla dwóch
+różnych leków przeciwbólowych stosowanych w migrenie zostały
+przedstawione w poniższej tabelce. Dla tych danych przeprowadzono test
+McNemara (z poprawką na ciągłość) oraz test warunkowy, miały one na celu
+zweryfikowanie hipotezy, że leki są jednakowo skuczene. Przyjmowany
+poziom istotności: $\alpha = 0.05$.
+
+```{r, echo = FALSE}
+library(knitr)
+tabela_zad_2 <- matrix(c(1, 2, 5, 4), 
+                      nrow = 2, 
+                      byrow = FALSE,
+                      dimnames = list(
+                        c("Negatywna", "Pozytywna"), 
+                        c("Negatywna", "Pozytywna")
+                      ))
+
+kable(tabela_zad_2, caption = "Reakcja na lek A vs lek B")
+```
+
+**Test McNemara z poprawka na ciagłość**
+
+```{r, echo = FALSE}
+mcnemar.test(tabela_zad_2, correct=TRUE)
+```
+
+Wynik test wskazuje na brak podstaw do odrzucenia hipotezy zerowej.
+Oznacza to, że brak istotnych statystycznie różnic pomiędzy
+skutecznością leku A i leku B, zatem można uznać, że leki A i B są
+jednakowo skuteczne w tej próbie.
+
+**Test warunkowy**
+
+```{r, echo=FALSE}
+p_wartosc_warunkowy_test_symetrii(tabela_zad_2)
+```
+
+P-wartość uzyskana w warunkowym teście symetrii jest znacznie większa od
+poziomu istotności. Oznacza to, że nie ma podstaw do odrzucenia hipotezy
+zerowej, czyli nie ma statystycznie istotnych różnic w skuteczności
+między lekiem A i lekiem B.
+
+## Zadanie 3
+
+W celu porównania mocy testu Z oraz testu $Z_0$ przeprowadzono symulacje
+rozważając różne długości próby: $n = (50, 100, 200, 500)$.
+
+```{r, echo = FALSE}
+test_z <- function(tabela_n){
+  n <-  sum(tabela_n)
+  tabela_p <- tabela_n / n
+  p_1sum <- sum(tabela_p[1,])
+  p_sum1 <- sum(tabela_p[,1])
+  D <- (tabela_n[1,2]-tabela_n[2,1])/n
+  sigma_k <- (p_1sum * (1-p_1sum) + p_sum1 * (1-p_sum1) - 2*(tabela_p[1,1] * tabela_p[2,2] - tabela_p[1,2] * tabela_p[2,1]))/n
+  z <- D/sqrt(sigma_k)
+  p_value <- 2 * (1-pnorm(abs(z)))
+  
+  return(p_value)
+}
+
+test_Z0 <- function(tabela){
+  n12 <- tabela[1,2]
+  n21 <- tabela[2,1]
+  
+  z0 <- (n12 - n21)/sqrt(n12 + n21)
+  p_value <- 2*(1 - pnorm(abs(z0)))
+  return(p_value)
+}
+```
+
+```{r, echo = FALSE}
+generate_table <- function(n, p12, p21) {
+  n12 <- rbinom(1, n, p12)
+  n21 <- rbinom(1, n, p21)
+  n11 <- floor((n - n12 - n21) / 2)
+  n22 <- n - n12 - n21 - n11
+  tabela <- matrix(c(n11, n12, n21, n22), nrow = 2, byrow = TRUE)
+  return(tabela)
+}
+```
+
+```{r, echo = FALSE}
+power_sim_test <- function(n, p12, p21, test, alpha = 0.05, B = 10000) {
+  rej <- 0  
+  
+  for(i in 1:B) {
+    tabela <- generate_table(n, p12, p21)
+    p_val <- test(tabela)
+    if(p_val < alpha) rej <- rej + 1 
+  }
+  
+  power <- rej / B
+  return(power)
+}
+```
+
+```{r, echo = FALSE}
+alpha <- 0.05
+B <- 1000
+p21 <- 0.5
+p12_values <- seq(0, 1, by = 0.05)
+n_values <- c(50, 100, 200, 500)  # różne rozmiary próby
+```
+
+```{r, echo = FALSE}
+results <- data.frame()
+
+for(n in n_values) {
+  for(p12 in p12_values) {
+    power <- power_sim_test(n, p12, p21, test_z, alpha, B)
+    results <- rbind(results, data.frame(n = n, p12 = p12, power = power))
+  }
+}
+
+# Kolory do wykresu
+cols <- c("red", "blue", "green3", "purple")
+
+par(mar = c(5, 4, 4, 8), xpd = TRUE)
+
+# Rysujemy pusty wykres z zakresami i opisami
+plot(NULL, xlim = c(0,1), ylim = c(0,1),
+     xlab = expression(p[1]),
+     ylab = "Moc testu (power)",
+     main = expression("Moc testu Z dla różnych n"))
+
+# Rysujemy linie dla różnych n
+for(i in seq_along(n_values)) {
+  subset_data <- subset(results, n == n_values[i])
+  lines(subset_data$p12, subset_data$power, col = cols[i], lwd = 2)
+}
+
+par(xpd = FALSE)
+
+# Dodajemy przerywane linie pomocnicze
+abline(h = 0.05, lty = 2, col = "darkgray")  # linia pozioma
+abline(v = 0.5, lty = 2, col = "darkgray")   # linia pionowa
+
+par(xpd = TRUE)
+
+# Dodajemy legendę
+legend("topright", inset = c(-0.25, 0), 
+       legend = paste("n =", n_values),
+       col = cols, lwd = 2, bty = "n")
+```
+
+Na wykresie przedstawiono estymowaną moc testu $Z$ przy hipotezie
+zerowej $H_0: p_1 = 0.5$ . Krzywe mocy są symetryczne względem wartości
+$p_1 = 0.5$, co potwierdza, że test działa zgodnie z założeniem
+testowania dwustronnego.
+
+Moc testu$Z$ wzrasta wraz z oddalaniem się wartości $p_1 = 0.5$. Oznacza
+to, że im większe jest rzeczywiste odchylenie od hipotezy zerowej, tym
+większa jest szansa na jej odrzucenie.
+
+Z wykresu wynika również, że test $Z$ staje się bardziej czuły wraz ze
+wzrostem liczności próby. Dla większych wartości moc testu szybciej
+rośnie i osiąga wartości bliskie 1. To wskazuje, że test jest bardziej
+skuteczny przy większych próbach.
+
+```{r, echo=FALSE}
+results <- data.frame()
+
+for(n in n_values) {
+  for(p12 in p12_values) {
+    power <- power_sim_test(n, p12, p21, test_Z0, alpha, B)
+    results <- rbind(results, data.frame(n = n, p12 = p12, power = power))
+  }
+}
+
+# Kolory do wykresu
+cols <- c("red", "blue", "green3", "purple")
+
+par(mar = c(5, 4, 4, 8), xpd = TRUE)
+
+# Rysujemy pusty wykres z zakresami i opisami
+plot(NULL, xlim = c(0,1), ylim = c(0,1),
+     xlab = expression(p[1]),
+     ylab = "Moc testu (power)",
+     main = expression("Moc testu " * Z[0] * " dla różnych n"))
+
+# Rysujemy linie dla różnych n
+for(i in seq_along(n_values)) {
+  subset_data <- subset(results, n == n_values[i])
+  lines(subset_data$p12, subset_data$power, col = cols[i], lwd = 2)
+}
+
+par(xpd = FALSE)
+
+# Dodajemy przerywane linie pomocnicze
+abline(h = 0.05, lty = 2, col = "darkgray")  # linia pozioma
+abline(v = 0.5, lty = 2, col = "darkgray")   # linia pionowa
+
+par(xpd = TRUE)
+
+# Dodajemy legendę
+legend("topright", inset = c(-0.25, 0), 
+       legend = paste("n =", n_values),
+       col = cols, lwd = 2, bty = "n")
+```
+
+Na wykresie przedstawiono estymowaną moc testu $Z_0$ przy hipotezie
+zerowej $H_0: p_1 = 0.5$. Widać wyraźną symetrię względem $p_1 = 0.5$,
+co jets zgodne z założeniem testowania dwustronnego.
+
+Można zauważyć, że moc testu rośnie wraz z oddalaniem się od od
+$p_1 = 0.5$. – im większa różnica między wartością rzeczywistą a
+wartością podaną w hipotezie zerowej, tym większa szansa na jej
+odrzucenie.
+
+Dodatkowo, dla większych prób test $Z_0$ jest bardziej czuły – moc
+rośnie szybciej i szybciej zbliża się do wartości 1. Oznacza to, że test
+łatwiej wykrywa niewielkie różnice przy większej liczbie obserwacji.
+
+Na podstawie symulacji stwierdzono, że testy $Z$ i $Z_0$​ wykazują bardzo
+podobne właściwości – moc obu testów rośnie wraz z licznością próby oraz
+oddalaniem się $p_1 = 0.5$. Oba testy są symetryczne względem
+$p_1 = 0.5$ , co jest zgodne z założeniem testowania dwustronnego. Nie
+zaobserwowano istotnych różnic w mocy między testami, co sugeruje, że w
+analizowanych warunkach są równoważne pod względem skuteczności.
+
+## Zadanie 4
+
+Celem badania było zweryfikowanie hipotezy, że zadowolenie ze szkoleń w
+pierwszym badanym okresie i w drugim badanym okresie pierwszego badania
+odpowiada modelowi symetrii.
+
+```{r, echo =FALSE}
+df <- read.csv("ankieta.csv", sep = ";", fileEncoding = "Latin2")
+
+df$CZY_ZADOW <- cut(df$PYT_2, breaks = c(-3, 0, 2),
+                    labels = c('NIE', 'TAK'))
+
+df$CZY_ZADOW_2 <- cut(df$PYT_3, breaks = c(-3, 0, 2),
+                      labels = c("NIE", "TAK"),
+                      include.lowest = TRUE)
+
+tabela_czy_zadow <- table(df$CZY_ZADOW, df$CZY_ZADOW_2)
+dimnames(tabela_czy_zadow) <- list(
+  "Zadowolony (pomiar 1)" = levels(df$CZY_ZADOW),
+  "Zadowolony (pomiar 2)" = levels(df$CZY_ZADOW_2)
+)
+kable(tabela_czy_zadow, 
+      caption = "Tabela zadowolenia: pomiar 1 vs pomiar 2",
+      row.names = TRUE)
+
+mcnemar.test(tabela_czy_zadow, correct=TRUE)
+
+```
+
+Na podstawie wyniku testu McNemara (z poprawka na ciagłość) odrzucamy
+hipotezę zerową ($p-value = 0.03764 < \alpha = 0.05$). Zatem możemy
+stwierdzić, że poziom zadowolenia ze szkoleń uległ istotnej
+statystycznie zmianie między pierwszym a drugim okresem badania.
+
+## Zadanie 5
+
+Na podstawie danych przedstawionych w poniższej tableli sprawdzono, czy
+odpowiedzi w pierwszym badanym okresie i w drugim okresie odpowiadają
+modelowi symetrii. W tym celu przeprowadzono dwa testy:
+
+```{r, echo=FALSE}
+tabela <- matrix(c(
+  10, 2, 1, 1, 0,
+  0, 15, 1, 1, 0,
+  1, 1, 32, 6, 0,
+  0, 0, 1, 96, 3,
+  1, 1, 0, 1, 26
+), nrow = 5, byrow = TRUE)
+
+rownames(tabela) <- c("-2", "-1", "0", "1", "2")
+colnames(tabela) <- c("-2", "-1", "0", "1", "2")
+
+kable(tabela, caption = "Tabela reakcji", 
+      align = "c")
+```
+
+**Test Bowkera**
+
+```{r, echo = FALSE}
+test_bowker <- mcnemar.test(tabela)
+test_bowker
+```
+
+Wynik testu Bowkera daje spodziewany wynik p-value = NA. Jest on
+spowodowany tym, że w liczniku statystyki testowej obliczamy
+$n_{ij} + n_{ji}$, co powoduje dzielenie przez 0.
+
+**Tesr IW**
+
+```{r,echo = FALSE}
+
+test_IW <- function(tabela){
+  I <- nrow(tabela)
+  n <- sum(tabela)
+  G2 <- 0
+  for (i in 1:I){
+    for(j in 1: I){
+      n_ij <- tabela[i,j]
+      n_ji <- tabela[j,i]
+      p_ij_est <- (n_ij + n_ji)/(2 * n)
+      if(n_ij == 0){
+        G2 <- G2 + 0
+      }
+      else{
+      G2 <- G2 + n_ij * log(n_ij/(n*p_ij_est))
+    }}
+  }
+  G2 <- 2*G2
+  r <- I*(I-1)/2
+  p_value <- 1 - pchisq(G2, r)
+  
+  return(list(statistic = G2, p_value = p_value))
+}
+
+test_IW(tabela)
+```
+
+W teście IW p-wartość przekracza standardowy poziom istotności
+($\alpha = 0.05$), co zonacza, że nie ma podstaw do odrzucenia hipotezy
+zerowej.Zatem test IW również nie wykazuje istotnych różnic między
+ocenami podejścia firmy w dwóch okresach.
+
+W związku z tym, także na podstawie tego testu można stwierdzić, że
+ocena podejścia firmy do umożliwiania wdrażania wiedzy nie uległa
+istotnej zmianie.
