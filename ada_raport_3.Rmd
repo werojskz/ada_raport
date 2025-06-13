@@ -5,9 +5,6 @@ author:
 - Weronika Pyrtak
 subtitle: Sprawozdanie 3
 output:
-  html_document:
-    toc: true
-    df_print: paged
   pdf_document:
     extra_dependencies: ["multirow"]
     latex_engine: xelatex
@@ -16,6 +13,9 @@ output:
     fig_width: 5
     fig_height: 4
     number_sections: false
+  html_document:
+    toc: true
+    df_print: paged
 header-includes:
 - \usepackage{polyglossia}
 - \setmainlanguage{polish}
@@ -53,8 +53,9 @@ knitr::opts_chunk$set(fig.pos = "H", out.extra = "", fig.align = "center")
 Funkcja *p_wartosc_warunkowy_test_symetrii()* realizuje warunkowy test
 symetrii dla tabeli $2×2$. Test opiera się na liczbie niesymetrycznych
 par, których suma traktowana jest jako próba w rozkładzie dwumianowym z
-prawdopodobieństwem sukcesu $0.5$ (hipoteza symetrii). P-wartość
-obliczana jest jako dwustronne prawdopodobieństwo uzyskania wyniku co
+prawdopodobieństwem sukcesu $0.5$ (hipoteza symetrii).
+
+P-wartość obliczana jest jako dwustronne prawdopodobieństwo uzyskania wyniku co
 najmniej tak ekstremalnego jak zaobserwowany.
 
 ```{r}
@@ -83,7 +84,9 @@ p_wartosc_warunkowy_test_symetrii<- function(tabela){
 
 Dane dotyączce reakcji na lek po godzinie od jego przyjęcia dla dwóch
 różnych leków przeciwbólowych stosowanych w migrenie zostały
-przedstawione w poniższej tabelce. Dla tych danych przeprowadzono test
+przedstawione w poniższej tabeli.
+
+Dla tych danych przeprowadzono test
 McNemara (z poprawką na ciągłość) oraz test warunkowy, miały one na celu
 zweryfikowanie hipotezy, że leki są jednakowo skuczene. Przyjmowany
 poziom istotności: $\alpha = 0.05$.
@@ -365,11 +368,11 @@ test_bowker <- mcnemar.test(tabela)
 test_bowker
 ```
 
-Wynik testu Bowkera daje spodziewany wynik p-value = NA. Jest on
+Wynik testu Bowkera daje spodziewany wynik $p-value = NA$. Jest on
 spowodowany tym, że w liczniku statystyki testowej obliczamy
 $n_{ij} + n_{ji}$, co powoduje dzielenie przez 0.
 
-**Tesr IW**
+**Test IW**
 
 ```{r,echo = FALSE}
 
@@ -407,3 +410,392 @@ ocenami podejścia firmy w dwóch okresach.
 W związku z tym, także na podstawie tego testu można stwierdzić, że
 ocena podejścia firmy do umożliwiania wdrażania wiedzy nie uległa
 istotnej zmianie.
+
+# Część III
+
+
+## Zadanie 6
+
+W pewnym badaniu porównywano skuteczność dwóch metod leczenia: Leczenie A
+ to nowa procedura, a Leczenie B to stara procedura.
+ 
+ Przeanalizowano wyniki dla całej grupy pacjentów oraz wyniki w podgrupach ze względu
+ na dodatkową zmienną i odpowiedziono na pytanie, czy dla danych występuje paradoks Simpsona.
+
+
+```{r df,echo=FALSE, results='hide'}
+
+# Dane zbiorcze
+all <- matrix(c(117, 104, 177, 44), nrow = 2, byrow = TRUE)
+colnames(all) <- c("Poprawa", "Brak")
+rownames(all) <- c("Leczenie_A", "Leczenie_B")
+
+# Dane dla pacjentów z chorobami współistniejącymi
+with_comorbidities <- matrix(c(17, 101, 2, 36), nrow = 2, byrow = TRUE)
+colnames(with_comorbidities) <- c("Poprawa", "Brak")
+rownames(with_comorbidities) <- c("Leczenie_A", "Leczenie_B")
+
+# Dane dla pacjentów bez chorób współistniejących
+without_comorbidities <- matrix(c(100, 3, 175, 8), nrow = 2, byrow = TRUE)
+colnames(without_comorbidities) <- c("Poprawa", "Brak")
+rownames(without_comorbidities) <- c("Leczenie_A", "Leczenie_B")
+
+# Funkcja do obliczania skuteczności
+effectiveness <- function(data) {
+  prop <- data[, "Poprawa"] / rowSums(data)
+  return(round(prop, 3))
+}
+
+# Skuteczność leczenia
+eff_all <- effectiveness(all)
+eff_with_com <- effectiveness(with_comorbidities)
+eff_without_com <- effectiveness(without_comorbidities)
+
+# Wyświetlenie wyników
+cat("Skuteczność - cała grupa:\n")
+print(eff_all)
+cat("\nSkuteczność - z chorobami współistniejącymi:\n")
+print(eff_with_com)
+cat("\nSkuteczność - bez chorób współistniejących:\n")
+print(eff_without_com)
+
+
+
+```
+
+```{r, echo=FALSE}
+# Dane
+all <- matrix(c(117, 104, 177, 44), nrow = 2, byrow = TRUE,
+              dimnames = list(c("Leczenie A", "Leczenie B"), c("Poprawa", "Brak")))
+
+with_comorb <- matrix(c(17, 101, 2, 36), nrow = 2, byrow = TRUE,
+                      dimnames = list(c("Leczenie A", "Leczenie B"), c("Poprawa", "Brak")))
+
+without_comorb <- matrix(c(100, 3, 175, 8), nrow = 2, byrow = TRUE,
+                         dimnames = list(c("Leczenie A", "Leczenie B"), c("Poprawa", "Brak")))
+
+# Funkcja do obliczania skuteczności
+effectiveness <- function(data) {
+  round(data[, "Poprawa"] / rowSums(data), 3)
+}
+
+# Wyniki
+eff_all <- effectiveness(all)
+eff_with <- effectiveness(with_comorb)
+eff_without <- effectiveness(without_comorb)
+
+eff_all
+eff_with
+eff_without
+```
+
+```{r,echo=FALSE}
+# Testy chi-kwadrat niezależności
+test_all <- chisq.test(all)
+test_with <- chisq.test(with_comorb)
+test_without <- chisq.test(without_comorb)
+
+# Zbiór wyników
+test_results <- data.frame(
+  Tabela = c("Cała grupa", "Z chorobami", "Bez chorób"),
+  Chi2 = round(c(test_all$statistic, test_with$statistic, test_without$statistic), 2),
+  DF = c(test_all$parameter, test_with$parameter, test_without$parameter),
+  p_value = round(c(test_all$p.value, test_with$p.value, test_without$p.value), 4)
+)
+
+test_results
+
+```
+
+\subsection*{Analiza skuteczności metod leczenia}
+
+Dla całej grupy pacjentów skuteczność leczenia wynosi:
+\[
+\begin{aligned}
+\text{Leczenie A:} & \quad \frac{117}{117 + 104} \approx 0{,}529 \\
+\text{Leczenie B:} & \quad \frac{177}{177 + 44} \approx 0{,}801 \\
+\end{aligned}
+\]
+
+Dla pacjentów z chorobami współistniejącymi:
+\[
+\begin{aligned}
+\text{Leczenie A:} & \quad \frac{17}{17 + 101} \approx 0{,}144 \\
+\text{Leczenie B:} & \quad \frac{2}{2 + 36} \approx 0{,}053 \\
+\end{aligned}
+\]
+
+Dla pacjentów bez chorób współistniejących:
+\[
+\begin{aligned}
+\text{Leczenie A:} & \quad \frac{100}{100 + 3} \approx 0{,}971 \\
+\text{Leczenie B:} & \quad \frac{175}{175 + 8} \approx 0{,}956 \\
+\end{aligned}
+\]
+
+\subsection*{Wniosek}
+
+\begin{table}[H]
+\centering
+\begin{tabular}{lrrr}
+\toprule
+Tabela & Statystyka \( \chi^2 \) & DF & \textit{p}-value \\
+\midrule
+Cała grupa         & 47.06 & 1 & <0.0001 \\
+Z chorobami        & 1.19  & 1 & 0.2755  \\
+Bez chorób         & 0.18  & 1 & 0.6699  \\
+\bottomrule
+\end{tabular}
+\caption{Wyniki testów \( \chi^2 \) niezależności dla skuteczności leczenia}
+\end{table}
+
+W każdej podgrupie leczenie A okazuje się skuteczniejsze niż leczenie B. Jednakże w całej populacji obserwujemy odwrotny wniosek — leczenie B ma wyższą skuteczność. 
+
+Jest to klasyczny przykład paradoksu Simpsona, w którym agregacja danych zaciemnia rzeczywiste zależności występujące w podgrupach.
+
+Dla całej grupy różnica skuteczności między Leczeniem A i B jest statystycznie istotna ($p < 0.0001$).
+
+W podgrupach nie ma podstaw do odrzucenia hipotezy niezależności – brak istotnych różnic w skuteczności między metodami.
+To potwierdza występowanie paradoksu Simpsona – agregacja danych prowadzi do innych wniosków niż analiza w podgrupach.
+
+## Zadanie 7
+Dla danych z listy 1, przyjmując za zmienną 1 - zmienną CZY_KIER, za zmienną 2 – zmienną PYT_2 i za zmienną 3 – zmienną STAŻ, przedstawiono interpretacje nastepujacych modeli log-liniowych: $[1 3], [13], [1 2 3], [12 3], [12 13]$ oraz $[1 23]$.
+
+
+```{r typy, results='hide'}
+# Zakładamy, że dane masz w ramce danych `dane`
+# zmienne: CZY_KIER, PYT_2, STAZ
+# Wczytanie danych
+dane <- read.csv("ankieta.csv", sep = ";", fileEncoding = "Latin2")
+colnames(dane) <- c('DZIAŁ','STAZ','CZY_KIER', 'PYT_1', 'PYT_2', 'PYT_3', 'PLEC', 'WIEK')
+
+# Tabela kontyngencji 3D
+tablica <- xtabs(~ CZY_KIER + PYT_2 + STAZ, data = dane)
+
+# powinno zwrócić: "CZY_KIER" "PYT_2" "STAZ"
+library(MASS)
+
+# Lista nazw i formuł modeli log-liniowych
+model_names <- c("[1 3]", "[13]", "[1 2 3]", "[12 3]", "[12 13]", "[1 23]")
+formulas <- list(
+  ~ CZY_KIER + STAZ,
+  ~ CZY_KIER + STAZ + CZY_KIER:STAZ,
+  ~ CZY_KIER * PYT_2 * STAZ,
+  ~ CZY_KIER * PYT_2 + STAZ,
+  ~ CZY_KIER * PYT_2 + CZY_KIER * STAZ,
+  ~ CZY_KIER + PYT_2 * STAZ + CZY_KIER:STAZ
+)
+
+# Dopasowanie modeli i zapis wyników
+results <- data.frame(Model = model_names, Deviance = NA, DF = NA, p_value = NA)
+
+for (i in seq_along(formulas)) {
+  fit <- loglm(formulas[[i]], data = tablica)
+  results$Deviance[i] <- round(fit$deviance, 2)
+  results$DF[i] <- fit$df
+  results$p_value[i] <- round(pchisq(fit$deviance, df = fit$df, lower.tail = FALSE), 4)
+}
+
+results
+
+
+
+
+```
+
+\begin{table}[H]
+\centering
+\begin{tabular}{lrrr}
+\toprule
+Model & Deviance & DF & \textit{p}-value \\
+\midrule
+{[1 3]}     & 203.07 & 20 & 0.0000 \\
+{[13]}      & 183.98 & 18 & 0.0000 \\
+{[1 2 3]}   &   0.00 &  0 & 1.0000 \\
+{[12 3]}    &  33.91 & 14 & 0.0021 \\
+{[12 13]}   &  14.82 & 12 & 0.2512 \\
+{[1 23]}    &   4.88 &  9 & 0.8446 \\
+\bottomrule
+\end{tabular}
+\caption{Dopasowanie modeli log-liniowych: wartość statystyki deviance, liczba stopni swobody i wartość \textit{p}.}
+\end{table}
+
+
+Na podstawie analizy modeli log-liniowych można stwierdzić, że najlepszym dopasowaniem do danych charakteryzuje się model $[1 23]$, który uwzględnia zależność pomiędzy zmiennymi PYT_2 i STAZ oraz ich wspólny wpływ na CZY_KIER. 
+
+Model ten ma wysoką wartość p-value ($0,8446$), co oznacza brak podstaw do jego odrzucenia, a jednocześnie jest prostszy niż model pełny $[1 2 3]$. Modele $[1 3]$ i $[13]$ należy odrzucić ze względu na istotnie słabe dopasowanie ($p < 0,001$).
+
+## Zadanie 8
+
+Przyjmując model log-liniowy $[123]$ dla zmiennych opisanych w zadaniu 7 oszacowano prawdopobiebieństwa:
+
+ -    ze osoba pracująca na stanowisku kierowniczym jest zdecydowanie zadowolona ze
+ szkoleń,
+ 
+ -    ze osoba o staż pracy krótszym niż rok pracuje na stanowisku kierowniczym;
+ 
+ -    ze osoba o stażu pracy powyżej trzech lat nie pracuje na stanowisku kierowniczym.
+ 
+ Jakie byłyby oszacowania powyższych prawdopodobieństw przy założeniu modelu $[12 23]$?
+
+
+```{r,echo=FALSE, results='hide'}
+
+library(MASS)
+
+# Utwórz tabelę kontyngencji
+tablica <- xtabs(~ CZY_KIER + PYT_2 + STAZ, data = dane)
+
+# Dopasuj model [1 2 3] (pełny)
+fit_123 <- loglm(~ CZY_KIER * PYT_2 * STAZ, data = tablica)
+
+# Wyciągnij częstości dopasowane przez model
+fit_vals <- fitted(fit_123)
+
+# Normalizuj do prawdopodobieństw
+probs <- fit_vals / sum(fit_vals)
+
+# Sprawdź poziomy zmiennych
+levels_CZY_KIER <- dimnames(probs)$CZY_KIER
+levels_PYT_2    <- dimnames(probs)$PYT_2
+levels_STAZ     <- dimnames(probs)$STAZ
+
+# Pytania z treści:
+# 1. osoba na stanowisku kierowniczym i zdecydowanie zadowolona (PYT_2 == "2")
+probs["Tak", "2", ]  # wszystkie STAŻe
+
+# 2. osoba o stażu < 1 rok i nie pracuje na kierowniczym
+probs["Nie", , "1"]  # wszystkie odpowiedzi PYT_2
+
+# 3. osoba o stażu > 3 lata (np. STAŻ == "3") i nie pracuje na kierowniczym
+probs["Nie", , "3"]
+
+
+
+```
+
+```{r,echo=FALSE, results='hide'}
+
+# Model [12 23]
+fit_1223 <- loglm(~ CZY_KIER * PYT_2 + PYT_2 * STAZ, data = tablica)
+
+# Prawdopodobieństwa
+probs_1223 <- fitted(fit_1223) / sum(fitted(fit_1223))
+
+# Te same kombinacje co wcześniej
+probs_1223["Tak", "2", ]
+probs_1223["Nie", , "1"]
+probs_1223["Nie", , "3"]
+
+```
+
+\begin{table}[H]
+\centering
+\begin{tabular}{p{10cm}c}
+\toprule
+Sytuacja & Prawdopodobieństwo \\
+\midrule
+1. Osoba na stanowisku kierowniczym, zdecydowanie zadowolona ze szkoleń (PYT\_2 = "2") & 0.1667 \\
+2. Osoba o stażu krótszym niż 1 rok (STAŻ = "1"), nie pracuje na stanowisku kierowniczym & 0.2083 \\
+3. Osoba o stażu powyżej 3 lat (STAŻ = "3"), nie pracuje na stanowisku kierowniczym & 0.0833 \\
+\bottomrule
+\end{tabular}
+\caption{Prawdopodobieństwa przy założeniu modelu log-liniowego [1 2 3]}
+\end{table}
+
+
+
+\begin{table}[H]
+\centering
+\begin{tabular}{p{10cm}c}
+\toprule
+Sytuacja & Prawdopodobieństwo \\
+\midrule
+1. Osoba na stanowisku kierowniczym, zdecydowanie zadowolona ze szkoleń (PYT\_2 = "2") & 0.1513 \\
+2. Osoba o stażu krótszym niż 1 rok (STAŻ = "1"), nie pracuje na stanowisku kierowniczym & 0.2174 \\
+3. Osoba o stażu powyżej 3 lat (STAŻ = "3"), nie pracuje na stanowisku kierowniczym & 0.0865 \\
+\bottomrule
+\end{tabular}
+\caption{Prawdopodobieństwa przy założeniu modelu log-liniowego [12 23]}
+\end{table}
+
+
+Prawdopodobieństwa oszacowane przez oba modele są do siebie bardzo zbliżone. Model pełny $[1 2 3]$ odwzorowuje dokładnie strukturę danych - jest nadmiernie dopasowany, natomiast model $[12 23]$ daje podobne wyniki przy mniejszej liczbie interakcji, dlatego może być uznany za bardziej parsymonialny i praktyczny w interpretacji.
+
+\newpage
+
+# Część IV
+
+## Zadanie 9
+
+Dla danych wskazanych w zadaniu 7 zweryfikowano następujące hipotezy:
+
+-   zmienne losowe CZY_KIER, PYT_2 i STAŻ sa wzajemnie niezależne;
+
+-   zmienna losowa PYT_2 jest niezależna od pary zmiennych CZY_KIER i STAŻ;
+
+-   zmienna losowa PYT_2 jest niezależna od zmiennej CZY_KIER, przy ustalonej
+ wartości zmiennej STAŻ
+
+```{r, echo = FALSE}
+library(MASS)
+
+# Tabela 3D
+tablica <- xtabs(~ CZY_KIER + PYT_2 + STAZ, data = dane)
+
+# HIPOTEZA 1: CZY_KIER, PYT_2, STAZ są wzajemnie niezależne
+# model z samymi efektami głównymi
+fit_H1 <- loglm(~ CZY_KIER + PYT_2 + STAZ, data = tablica)
+
+# HIPOTEZA 2: PYT_2 niezależna od pary (CZY_KIER, STAZ)
+# tzn. model zawiera interakcję CZY_KIER:STAZ, ale nie z PYT_2
+fit_H2 <- loglm(~ CZY_KIER * STAZ + PYT_2, data = tablica)
+
+# HIPOTEZA 3: PYT_2 ⊥ CZY_KIER | STAZ — niezależność warunkowa
+# tzn. dozwolona interakcja PYT_2:STAZ, ale nie CZY_KIER:PYT_2
+fit_H3 <- loglm(~ PYT_2 * STAZ + CZY_KIER * STAZ, data = tablica)
+
+# Zbieramy wyniki
+hipotezy <- c("H1: całkowita niezależność",
+              "H2: PYT_2 niezależna od (CZY_KIER, STAZ)",
+              "H3: PYT_2 ⊥ CZY_KIER | STAZ")
+
+results <- data.frame(
+  Hipoteza = hipotezy,
+  Deviance = c(fit_H1$deviance, fit_H2$deviance, fit_H3$deviance),
+  DF = c(fit_H1$df, fit_H2$df, fit_H3$df),
+  p_value = c(
+    round(pchisq(fit_H1$deviance, df = fit_H1$df, lower.tail = FALSE), 4),
+    round(pchisq(fit_H2$deviance, df = fit_H2$df, lower.tail = FALSE), 4),
+    round(pchisq(fit_H3$deviance, df = fit_H3$df, lower.tail = FALSE), 4)
+  )
+)
+
+results
+
+```
+
+
+
+\begin{table}[H]
+\centering
+\begin{tabular}{p{10cm}rrr}
+\toprule
+Hipoteza & Deviance & DF & \textit{p}-value \\
+\midrule
+H1: całkowita niezależność (CZY\_KIER, PYT\_2, STAZ) & 42.24 & 17 & 0.0006 \\
+H2: PYT\_2 niezależna od pary (CZY\_KIER, STAZ) & 23.15 & 15 & 0.0810 \\
+H3: PYT\_2 $\perp$ CZY\_KIER $\mid$ STAZ (warunkowa niezależność) & 4.88 & 9 & 0.8446 \\
+\bottomrule
+\end{tabular}
+\caption{Weryfikacja hipotez o niezależności między zmiennymi za pomocą modeli log-liniowych}
+\end{table}
+
+
+
+Hipoteza $H_1$ została odrzucona na poziomie istotności $0,05$ — bardzo niskie p-value ($0.0006$) świadczy o silnych zależnościach między zmiennymi.
+
+Hipoteza $H_2$ nie została odrzucona, ale wartość $p = 0.0810$ jest bliska granicy — wskazuje na możliwy umiarkowany związek.
+
+Hipoteza $H_3$ nie została odrzucona — wysokie $p=0.8446$ sugeruje, że warunkowa niezależność jest uzasadniona i dobrze opisuje dane.
+
