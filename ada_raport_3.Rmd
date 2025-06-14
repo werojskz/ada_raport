@@ -17,10 +17,13 @@ output:
     toc: true
     df_print: paged
 header-includes:
-- \usepackage{polyglossia}
-- \setmainlanguage{polish}
-- \usepackage{graphicx}
-- \usepackage{float}
+  - \usepackage{booktabs}
+  - \usepackage[utf8]{inputenc}
+  - \usepackage{longtable}
+  - \usepackage{array}
+  - \usepackage{caption}
+  - \usepackage{float}
+  - \captionsetup[table]{skip=10pt}
 fontsize: 12pt
 editor_options: 
   markdown: 
@@ -627,7 +630,7 @@ Model ten ma wysoką wartość p-value ($0,8446$), co oznacza brak podstaw do je
 
 ## Zadanie 8
 
-Przyjmując model log-liniowy $[123]$ dla zmiennych opisanych w zadaniu 7 oszacowano prawdopobiebieństwa:
+Przyjmując model log-liniowy $[123]$ oraz $[12 23]$dla zmiennych opisanych w zadaniu 7 oszacowano prawdopobiebieństwa:
 
  -    ze osoba pracująca na stanowisku kierowniczym jest zdecydowanie zadowolona ze
  szkoleń,
@@ -639,88 +642,78 @@ Przyjmując model log-liniowy $[123]$ dla zmiennych opisanych w zadaniu 7 oszaco
  Jakie byłyby oszacowania powyższych prawdopodobieństw przy założeniu modelu $[12 23]$?
 
 
-```{r,echo=FALSE, results='hide'}
 
-library(MASS)
-
-# Utwórz tabelę kontyngencji
-tablica <- xtabs(~ CZY_KIER + PYT_2 + STAZ, data = dane)
-
-# Dopasuj model [1 2 3] (pełny)
-fit_123 <- loglm(~ CZY_KIER * PYT_2 * STAZ, data = tablica)
-
-# Wyciągnij częstości dopasowane przez model
-fit_vals <- fitted(fit_123)
-
-# Normalizuj do prawdopodobieństw
-probs <- fit_vals / sum(fit_vals)
-
-# Sprawdź poziomy zmiennych
-levels_CZY_KIER <- dimnames(probs)$CZY_KIER
-levels_PYT_2    <- dimnames(probs)$PYT_2
-levels_STAZ     <- dimnames(probs)$STAZ
-
-# Pytania z treści:
-# 1. osoba na stanowisku kierowniczym i zdecydowanie zadowolona (PYT_2 == "2")
-probs["Tak", "2", ]  # wszystkie STAŻe
-
-# 2. osoba o stażu < 1 rok i nie pracuje na kierowniczym
-probs["Nie", , "1"]  # wszystkie odpowiedzi PYT_2
-
-# 3. osoba o stażu > 3 lata (np. STAŻ == "3") i nie pracuje na kierowniczym
-probs["Nie", , "3"]
+```{r, echo=FALSE}
 
 
 
-```
+knitr::opts_chunk$set(echo = TRUE)
 
-```{r,echo=FALSE, results='hide'}
+# Wczytaj dane
+dane <- read.csv("ankieta.csv", sep = ";", fileEncoding = "Latin2")
+colnames(dane) <- c('DZIAŁ','STAZ','CZY_KIER', 'PYT_1', 'PYT_2', 'PYT_3', 'PLEC', 'WIEK')
+
+# Ustaw pełne poziomy, nawet jeśli część nie występuje w danych
+dane$CZY_KIER <- factor(dane$CZY_KIER, levels = c("Nie", "Tak"))
+dane$PYT_2    <- factor(dane$PYT_2, levels = as.character(-2:2))
+dane$STAZ     <- factor(dane$STAZ, levels = c("1", "2", "3"))
+
+# Tworzenie pełnej tablicy kontyngencji
+tab<- xtabs(~ CZY_KIER + PYT_2 + STAZ, data = dane, drop.unused.levels = FALSE)
+
+# Tablica kontyngencji
+#tab <- xtabs(~ CZY_KIER + PYT_2 + STAZ, data = dane)
+total <- sum(tab)
+
+# Model 123
+model_123 <- loglm(~ CZY_KIER * PYT_2 * STAZ, data = tab)
+p_123 <- fitted(model_123) / total
 
 # Model [12 23]
-fit_1223 <- loglm(~ CZY_KIER * PYT_2 + PYT_2 * STAZ, data = tablica)
+model_1223 <- loglm(~ CZY_KIER * PYT_2 + PYT_2 * STAZ, data = tab)
+p_1223 <- fitted(model_1223) / total
 
-# Prawdopodobieństwa
-probs_1223 <- fitted(fit_1223) / sum(fitted(fit_1223))
+# ---- Prawdopodobieństwo 1 ----
+# Kierownik zdecydowanie zadowolony ze szkoleń
+emp1 <- sum(tab["Tak", "2", ]) / total
+mod1_123 <- sum(p_123["Tak", "2", ])
+mod1_1223 <- sum(p_1223["Tak", "2", ])
 
-# Te same kombinacje co wcześniej
-probs_1223["Tak", "2", ]
-probs_1223["Nie", , "1"]
-probs_1223["Nie", , "3"]
+# ---- Prawdopodobieństwo 2 ----
+# Osoba o stażu <1 jest kierownikiem = P(Tak | STAZ = 1)
+emp2 <- sum(tab["Tak", , "1"]) / sum(tab[, , "1"])
+mod2_123 <- sum(p_123["Tak", , "1"]) / sum(p_123[, , "1"])
+mod2_1223 <- sum(p_1223["Tak", , "1"]) / sum(p_1223[, , "1"])
+
+# ---- Prawdopodobieństwo 3 ----
+# Osoba o stażu >3 NIE jest kierownikiem = P(Nie | STAZ = 3)
+emp3 <- sum(tab["Nie", , "3"]) / sum(tab[, , "3"])
+mod3_123 <- sum(p_123["Nie", , "3"]) / sum(p_123[, , "3"])
+mod3_1223 <- sum(p_1223["Nie", , "3"]) / sum(p_1223[, , "3"])
+
 
 ```
 
 \begin{table}[H]
 \centering
-\begin{tabular}{p{10cm}c}
+\caption{Porównanie estymowanych prawdopodobieństw dla modeli log-liniowych}
+\begin{tabular}{lccc}
 \toprule
-Sytuacja & Prawdopodobieństwo \\
+Opis prawdopodobieństwa & Dane & Model [123] & Model [12 23] \\
 \midrule
-1. Osoba na stanowisku kierowniczym, zdecydowanie zadowolona ze szkoleń (PYT\_2 = "2") & 0.1667 \\
-2. Osoba o stażu krótszym niż 1 rok (STAŻ = "1"), nie pracuje na stanowisku kierowniczym & 0.2083 \\
-3. Osoba o stażu powyżej 3 lat (STAŻ = "3"), nie pracuje na stanowisku kierowniczym & 0.0833 \\
+1. Kierownik zdecydowanie zadowolony ze szkoleń & 0.4815 & 0.4815 & 0.4815 \\
+2. Osoba o stażu krótszym niż rok jest kierownikiem & 0.0244 & 0.0244 & 0.1281 \\
+3. Osoba o stażu dłuższym niż 3 lata nie jest kierownikiem & 0.5263 & 0.5263 & 0.7781 \\
 \bottomrule
 \end{tabular}
-\caption{Prawdopodobieństwa przy założeniu modelu log-liniowego [1 2 3]}
 \end{table}
 
 
+Wszystkie trzy modele — dane empiryczne, model pełny [123] i uproszczony [12 23] — zgodnie wskazują, że osoby na stanowiskach kierowniczych są często zdecydowanie zadowolone ze szkoleń.
 
-\begin{table}[H]
-\centering
-\begin{tabular}{p{10cm}c}
-\toprule
-Sytuacja & Prawdopodobieństwo \\
-\midrule
-1. Osoba na stanowisku kierowniczym, zdecydowanie zadowolona ze szkoleń (PYT\_2 = "2") & 0.1513 \\
-2. Osoba o stażu krótszym niż 1 rok (STAŻ = "1"), nie pracuje na stanowisku kierowniczym & 0.2174 \\
-3. Osoba o stażu powyżej 3 lat (STAŻ = "3"), nie pracuje na stanowisku kierowniczym & 0.0865 \\
-\bottomrule
-\end{tabular}
-\caption{Prawdopodobieństwa przy założeniu modelu log-liniowego [12 23]}
-\end{table}
+W przypadku modelu [12 23] znacznie przeszacowano prawdopodobieństwo, że osoba o stażu krótszym niż rok jest kierownikiem (12.8% vs 2.4%), co świadczy o braku pełnej interakcji z czasem pracy.
 
-
-Prawdopodobieństwa oszacowane przez oba modele są do siebie bardzo zbliżone. Model pełny $[1 2 3]$ odwzorowuje dokładnie strukturę danych - jest nadmiernie dopasowany, natomiast model $[12 23]$ daje podobne wyniki przy mniejszej liczbie interakcji, dlatego może być uznany za bardziej parsymonialny i praktyczny w interpretacji.
+Model [12 23] również znacząco zawyżył szansę, że osoba z długim stażem nie pełni funkcji kierowniczej, co może świadczyć o jego niedopasowaniu względem rzeczywistego układu zależności między zmiennymi.
 
 \newpage
 
@@ -775,21 +768,103 @@ results
 
 ```
 
+```{r}
+anova_nadmodel <- function(mi_0, mi_1s) {
+  p <- list()
+  for (i in seq_along(mi_1s)) {
+    x <- anova(mi_0, mi_1s[[i]], test = "Chisq")
+    p[[i]] <- 1 - pchisq(x$Deviance[2], x$Df[2])
+  }
+  names(p) <- names(mi_1s)
+  return(p)
+}
+
+model_1_2_3 = glm(Freq ~ CZY_KIER + PYT_2 + STAZ, data = tablica, family = poisson)
+
+models <- list(
+  model_12 = glm(Freq ~ CZY_KIER * PYT_2 + STAZ, data = tablica, family = poisson),
+  model_13 = glm(Freq ~ CZY_KIER * STAZ + PYT_2, data = tablica, family = poisson),
+  model_23 = glm(Freq ~ PYT_2 * STAZ + CZY_KIER, data = tablica, family = poisson),
+  model_12_13 = glm(Freq ~ CZY_KIER * PYT_2 + CZY_KIER * STAZ + PYT_2 + STAZ, data = tablica, family = poisson),
+  model_12_23 = glm(Freq ~ CZY_KIER * PYT_2 + PYT_2 * STAZ + CZY_KIER + STAZ, data = tablica, family = poisson),
+  model_13_23 = glm(Freq ~ CZY_KIER * STAZ + PYT_2 * STAZ + CZY_KIER + PYT_2, data = tablica, family = poisson),
+  model_12_13_23 = glm(Freq ~ CZY_KIER * PYT_2 + CZY_KIER * STAZ + PYT_2 * STAZ , data = tablica, family = poisson),
+  model_123 = glm(Freq ~ CZY_KIER * PYT_2 * STAZ, data = tablica, family = poisson)
+)
+
+print(models)
+
+model_13 = glm(Freq ~ CZY_KIER * STAZ + PYT_2, family = poisson, data = tablica)
+
+models <- list(
+  model_12_13 = glm(Freq ~ CZY_KIER * PYT_2 + CZY_KIER * STAZ, data = tablica, family = poisson),
+  model_13_23 = glm(Freq ~ CZY_KIER * STAZ + PYT_2 * STAZ, data = tablica, family = poisson),
+  model_12_13_23 = glm(Freq ~ CZY_KIER * STAZ + PYT_2*STAZ + CZY_KIER*PYT_2, family = poisson, data = tablica),
+  model_123 = glm(Freq ~ CZY_KIER * PYT_2 * STAZ, data = tablica, family = poisson)
+)
+print(models)
+
+  model_13_23 = glm(Freq ~ CZY_KIER * STAZ + PYT_2 * STAZ, data = tablica, family = poisson)
+  
+models <- list(
+  model_12_13_23 = glm(Freq ~ CZY_KIER * STAZ + PYT_2*STAZ + CZY_KIER*PYT_2, family = poisson, data = tablica),
+  model_123 = glm(Freq ~ CZY_KIER * PYT_2 * STAZ, data = tablica, family = poisson)
+)
+
+print(models)
 
 
+```
+
+```{r}
+library(MASS)
+library(dplyr)
+library(xtable)
+
+# Lista modeli (przykład)
+modele <- list(
+  "[12 13]" = loglm(Freq ~ CZY_KIER * PYT_2 + CZY_KIER * STAZ, data = tablica),
+  "[13 23]" = loglm(Freq ~ CZY_KIER * STAZ + PYT_2 * STAZ, data = tablica),
+  "[12 23]" = loglm(Freq ~ CZY_KIER * PYT_2 + PYT_2 * STAZ, data = tablica),
+  "[12 13 23]" = loglm(Freq ~ CZY_KIER * PYT_2 + CZY_KIER * STAZ + PYT_2 * STAZ, data = tablica),
+  "[123]" = loglm(Freq ~ CZY_KIER * PYT_2 * STAZ, data = tablica),
+  "[13 2]" = loglm(Freq ~ CZY_KIER * STAZ + PYT_2, data = tablica),
+  "[1 23]" = loglm(Freq ~ CZY_KIER + PYT_2 * STAZ, data = tablica),
+  "[12 3]" = loglm(Freq ~ CZY_KIER * PYT_2 + STAZ, data = tablica)
+)
+
+# Wyciągnięcie p-wartości i zbudowanie tabeli
+wyniki <- lapply(modele, function(m) {
+  p <- summary(m)$lrt["Pr(>Chi)"]
+  data.frame(`p.wartość` = formatC(p, format = "e", digits = 2),
+             Wniosek = ifelse(p < 0.05, "Odrzucamy $H_0$", "Brak podstaw do odrzucenia $H_0$"))
+}) %>%
+  bind_rows(.id = "Model")
+
+# Wyświetlenie w LaTeX
+print(xtable(wyniki), include.rownames = FALSE, booktabs = TRUE, sanitize.text.function = identity)
+
+
+```
 \begin{table}[H]
 \centering
-\begin{tabular}{p{10cm}rrr}
+\caption{Porównanie dopasowania modeli log-liniowych}
+\begin{tabular}{lcc}
 \toprule
-Hipoteza & Deviance & DF & \textit{p}-value \\
+Model & p.wartość & Wniosek \\
 \midrule
-H1: całkowita niezależność (CZY\_KIER, PYT\_2, STAZ) & 42.24 & 17 & 0.0006 \\
-H2: PYT\_2 niezależna od pary (CZY\_KIER, STAZ) & 23.15 & 15 & 0.0810 \\
-H3: PYT\_2 $\perp$ CZY\_KIER $\mid$ STAZ (warunkowa niezależność) & 4.88 & 9 & 0.8446 \\
+{[12 13]}      & $4.73 \times 10^{-5}$ & Odrzucamy $H_0$ \\
+{[13 23]}      & $9.90 \times 10^{-6}$ & Odrzucamy $H_0$ \\
+{[12 23]}      & $1.63 \times 10^{-3}$ & Odrzucamy $H_0$ \\
+{[12 13 23]}   & $2.77 \times 10^{-5}$ & Odrzucamy $H_0$ \\
+{[123]}        & $6.20 \times 10^{-4}$ & Odrzucamy $H_0$ \\
+{[13 2]}       & $7.16 \times 10^{-5}$ & Odrzucamy $H_0$ \\
+{[1 23]}       & $5.59 \times 10^{-3}$ & Odrzucamy $H_0$ \\
+{[12 3]}       & $3.97 \times 10^{-2}$ & Odrzucamy $H_0$ \\
 \bottomrule
 \end{tabular}
-\caption{Weryfikacja hipotez o niezależności między zmiennymi za pomocą modeli log-liniowych}
 \end{table}
+
 
 
 
