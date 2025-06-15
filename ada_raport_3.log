@@ -1,4 +1,4 @@
-This is XeTeX, Version 3.141592653-2.6-0.999996 (TeX Live 2024) (preloaded format=xelatex 2024.10.5)  14 JUN 2025 18:23
+This is XeTeX, Version 3.141592653-2.6-0.999996 (TeX Live 2024) (preloaded format=xelatex 2024.10.5)  15 JUN 2025 15:18
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -900,60 +900,42 @@ LaTeX Font Info:    Font shape `TU/latinmodern-math.otf(3)/m/n' will be
 \tf@toc=\write4
 \openout4 = `ada_raport_3.toc'.
 
-LaTeX Font Info:    Font shape `TU/lmtt/bx/n' in size <12> not available
-(Font)              Font shape `TU/lmtt/b/n' tried instead on input line 160.
 [1
 
-] [2]
+]
+LaTeX Font Info:    Font shape `TU/lmtt/bx/n' in size <12> not available
+(Font)              Font shape `TU/lmtt/b/n' tried instead on input line 162.
+[2] [3]
 File: ada_raport_3_files/figure-latex/unnamed-chunk-9-1.pdf Graphic file (type 
 pdf)
 <use ada_raport_3_files/figure-latex/unnamed-chunk-9-1.pdf>
 File: ada_raport_3_files/figure-latex/unnamed-chunk-10-1.pdf Graphic file (type
  pdf)
 <use ada_raport_3_files/figure-latex/unnamed-chunk-10-1.pdf>
-[3] [4] [5] [6] [7] [8]
-Overfull \hbox (24.60889pt too wide) in paragraph at lines 576--576
-[]\TU/lmtt/m/n/12 ## 1. Kierownik zdecydowanie zadowolony ze szkoleń & 0.0650 &
- 0.0650 & 0.0650 \\[] 
- []
-
-
-Overfull \hbox (61.72484pt too wide) in paragraph at lines 576--576
-[]\TU/lmtt/m/n/12 ##   2. Osoba o stażu krótszym niż rok jest kierownikiem & 0.
-0244 & 0.0244 & 0.1281 \\[] 
- []
-
-
-Overfull \hbox (104.96083pt too wide) in paragraph at lines 576--576
-[]\TU/lmtt/m/n/12 ##   3. Osoba o stażu dłuższym niż 3 lata nie jest kierowniki
-em & 0.5263 & 0.5263 & 0.7781 \\[] 
- []
-
-
-Overfull \hbox (44.32108pt too wide) in paragraph at lines 581--590
+[4] [5] [6] [7] [8] [9]
+Overfull \hbox (54.02908pt too wide) in paragraph at lines 504--513
  [][] 
  []
 
-[9]
-Missing character: There is no ⊥ (U+22A5) in font [lmmono12-regular]:!
-
-Underfull \hbox (badness 1902) in paragraph at lines 630--630
-[]|\TU/lmr/m/n/12 H1: całkowita niezależność (CZY_KIER, PYT_2,
+[10]
+Underfull \hbox (badness 1052) in paragraph at lines 572--576
+[]\TU/lmr/m/n/12 Wszystkie nadmodele istotnie poprawiają dopasowanie w porównan
+iu do modelu za-
  []
 
-[10] (./ada_raport_3.aux)
+[11] [12] (./ada_raport_3.aux)
  ***********
 LaTeX2e <2023-11-01> patch level 1
 L3 programming layer <2024-02-20>
  ***********
  ) 
 Here is how much of TeX's memory you used:
- 20966 strings out of 474772
- 384114 string characters out of 5761268
- 1933842 words of memory out of 5000000
- 42832 multiletter control sequences out of 15000+600000
- 564514 words of font info for 89 fonts, out of 8000000 for 9000
+ 20967 strings out of 474772
+ 384138 string characters out of 5761268
+ 1931842 words of memory out of 5000000
+ 42835 multiletter control sequences out of 15000+600000
+ 564506 words of font info for 88 fonts, out of 8000000 for 9000
  1348 hyphenation exceptions out of 8191
- 90i,11n,121p,1009b,518s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 90i,9n,121p,1009b,438s stack positions out of 10000i,1000n,20000p,200000b,200000s
 
-Output written on ada_raport_3.pdf (10 pages).
+Output written on ada_raport_3.pdf (12 pages).
