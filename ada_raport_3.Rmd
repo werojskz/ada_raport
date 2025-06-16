@@ -90,13 +90,13 @@ p_wartosc_warunkowy_test_symetrii<- function(tabela){
 \newpage
 ## Zadanie 2
 
-Dane dotyączce reakcji na lek po godzinie od jego przyjęcia dla dwóch
+Dane dotyczące reakcji na lek po godzinie od jego przyjęcia dla dwóch
 różnych leków przeciwbólowych stosowanych w migrenie zostały
 przedstawione w poniższej tabeli.
 
 Dla tych danych przeprowadzono test
 McNemara (z poprawką na ciągłość) oraz test warunkowy, miały one na celu
-zweryfikowanie hipotezy, że leki są jednakowo skuczene. Przyjmowany
+zweryfikowanie hipotezy, że leki są jednakowo skuteczne. Przyjmowany
 poziom istotności: $\alpha = 0.05$.
 
 ```{r, echo = FALSE}
@@ -198,7 +198,7 @@ p12_values <- seq(0, 1, by = 0.05)
 n_values <- c(50, 100, 200, 500)  # różne rozmiary próby
 ```
 
-```{r, echo = FALSE}
+```{r fig.width=6, fig.height=5, echo = FALSE}
 results <- data.frame()
 
 for(n in n_values) {
@@ -211,32 +211,36 @@ for(n in n_values) {
 # Kolory do wykresu
 cols <- c("red", "blue", "green3", "purple")
 
-par(mar = c(5, 4, 4, 8), xpd = TRUE)
+# Zwiększamy marginesy po prawej stronie, aby zmieścić legendę
+par(mar = c(5, 4, 4, 6), xpd = TRUE)
 
-# Rysujemy pusty wykres z zakresami i opisami
-plot(NULL, xlim = c(0,1), ylim = c(0,1),
+# Pusty wykres
+plot(NULL, xlim = c(0, 1), ylim = c(0, 1),
      xlab = expression(p[1]),
      ylab = "Moc testu (power)",
      main = expression("Moc testu Z dla różnych n"))
 
-# Rysujemy linie dla różnych n
+# Linie dla różnych n
 for(i in seq_along(n_values)) {
   subset_data <- subset(results, n == n_values[i])
   lines(subset_data$p12, subset_data$power, col = cols[i], lwd = 2)
 }
 
+# Linie pomocnicze
+abline(h = 0.05, lty = 2, col = "darkgray")
+abline(v = 0.5, lty = 2, col = "darkgray")
+
+# Legenda po prawej stronie, poza wykresem
+legend(x = 1.05, y = 1,               # współrzędne: x tuż za 1.0, y od góry
+       legend = paste("n =", n_values),
+       col = cols, lwd = 2, bty = "n", xpd = TRUE)
+
+
+# Reset xpd
 par(xpd = FALSE)
 
-# Dodajemy przerywane linie pomocnicze
-abline(h = 0.05, lty = 2, col = "darkgray")  # linia pozioma
-abline(v = 0.5, lty = 2, col = "darkgray")   # linia pionowa
 
-par(xpd = TRUE)
 
-# Dodajemy legendę
-legend("topright", inset = c(-0.25, 0), 
-       legend = paste("n =", n_values),
-       col = cols, lwd = 2, bty = "n")
 ```
 
 Na wykresie przedstawiono estymowaną moc testu $Z$ przy hipotezie
@@ -253,7 +257,7 @@ wzrostem liczności próby. Dla większych wartości moc testu szybciej
 rośnie i osiąga wartości bliskie 1. To wskazuje, że test jest bardziej
 skuteczny przy większych próbach.
 
-```{r, echo=FALSE}
+```{r fig.width=6, fig.height=5, echo=FALSE,}
 results <- data.frame()
 
 for(n in n_values) {
@@ -266,10 +270,11 @@ for(n in n_values) {
 # Kolory do wykresu
 cols <- c("red", "blue", "green3", "purple")
 
-par(mar = c(5, 4, 4, 8), xpd = TRUE)
+# Zwiększamy margines z prawej strony, by zrobić miejsce na legendę
+par(mar = c(5, 4, 4, 6), xpd = TRUE)
 
 # Rysujemy pusty wykres z zakresami i opisami
-plot(NULL, xlim = c(0,1), ylim = c(0,1),
+plot(NULL, xlim = c(0, 1), ylim = c(0, 1),
      xlab = expression(p[1]),
      ylab = "Moc testu (power)",
      main = expression("Moc testu " * Z[0] * " dla różnych n"))
@@ -280,30 +285,32 @@ for(i in seq_along(n_values)) {
   lines(subset_data$p12, subset_data$power, col = cols[i], lwd = 2)
 }
 
-par(xpd = FALSE)
-
-# Dodajemy przerywane linie pomocnicze
+# Linie pomocnicze
 abline(h = 0.05, lty = 2, col = "darkgray")  # linia pozioma
 abline(v = 0.5, lty = 2, col = "darkgray")   # linia pionowa
 
-par(xpd = TRUE)
-
-# Dodajemy legendę
-legend("topright", inset = c(-0.25, 0), 
+# Dodajemy legendę po prawej stronie
+legend(x = 1.05, y = 1,               # współrzędne: x tuż za 1.0, y od góry
        legend = paste("n =", n_values),
-       col = cols, lwd = 2, bty = "n")
+       col = cols, lwd = 2, bty = "n", xpd = TRUE)
+
+
+# Reset xpd
+par(xpd = FALSE)
+
+
 ```
 
 Na wykresie przedstawiono estymowaną moc testu $Z_0$ przy hipotezie
 zerowej $H_0: p_1 = 0.5$. Widać wyraźną symetrię względem $p_1 = 0.5$,
-co jets zgodne z założeniem testowania dwustronnego.
+co jest zgodne z założeniem testowania dwustronnego.
 
-Można zauważyć, że moc testu rośnie wraz z oddalaniem się od od
-$p_1 = 0.5$. – im większa różnica między wartością rzeczywistą a
+Można zauważyć, że moc testu rośnie wraz z oddalaniem się od
+$p_1 = 0.5$. - im większa różnica między wartością rzeczywistą a
 wartością podaną w hipotezie zerowej, tym większa szansa na jej
 odrzucenie.
 
-Dodatkowo, dla większych prób test $Z_0$ jest bardziej czuły – moc
+Dodatkowo, dla większych prób test $Z_0$ jest bardziej czuły - moc
 rośnie szybciej i szybciej zbliża się do wartości 1. Oznacza to, że test
 łatwiej wykrywa niewielkie różnice przy większej liczbie obserwacji.
 
@@ -352,7 +359,7 @@ statystycznie zmianie między pierwszym a drugim okresem badania.
 
 ## Zadanie 5
 
-Na podstawie danych przedstawionych w poniższej tableli sprawdzono, czy
+Na podstawie danych przedstawionych w poniższej tabeli sprawdzono, czy
 odpowiedzi w pierwszym badanym okresie i w drugim okresie odpowiadają
 modelowi symetrii. W tym celu przeprowadzono dwa testy:
 
@@ -414,7 +421,7 @@ test_IW(tabela)
 ```
 
 W teście IW p-wartość przekracza standardowy poziom istotności
-($\alpha = 0.05$), co zonacza, że nie ma podstaw do odrzucenia hipotezy
+($\alpha = 0.05$), co oznacza, że nie ma podstaw do odrzucenia hipotezy
 zerowej.Zatem test IW również nie wykazuje istotnych różnic między
 ocenami podejścia firmy w dwóch okresach.
 
@@ -434,7 +441,7 @@ W pewnym badaniu porównywano skuteczność dwóch metod leczenia: Leczenie A
  to nowa procedura, a Leczenie B to stara procedura.
  
  Przeanalizowano wyniki dla całej grupy pacjentów oraz wyniki w podgrupach ze względu
- na dodatkową zmienną i odpowiedziono na pytanie, czy dla danych występuje paradoks Simpsona.
+ na dodatkową zmienną i odpowiedziano na pytanie, czy dla danych występuje paradoks Simpsona.
 
 
 ```{r df,echo=FALSE, results='hide'}
@@ -636,7 +643,7 @@ Model ten ma wysoką wartość p-value ($0,8446$), co oznacza brak podstaw do je
 
 ## Zadanie 8
 
-Przyjmując model log-liniowy $[123]$ oraz $[12 \: 23]$ dla zmiennych opisanych w zadaniu 7 oszacowano prawdopobiebieństwa:
+Przyjmując model log-liniowy $[123]$ oraz $[12 \: 23]$ dla zmiennych opisanych w zadaniu 7 oszacowano prawdopobieństwa:
 
  -    ze osoba pracująca na stanowisku kierowniczym jest zdecydowanie zadowolona ze
  szkoleń,
